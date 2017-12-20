@@ -9,7 +9,7 @@
 
 
 	// This class is exported from the MathLibrary.dll  
-void getShit();
+TEST_API void getTest();
 
 
 #endif // !_TEST_H

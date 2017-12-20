@@ -1,6 +1,6 @@
 #include "test.h"  
 #include <stdio.h>
 
-void getShit(){
+void getTest(){
 	printf("test");
 }

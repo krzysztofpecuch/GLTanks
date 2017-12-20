@@ -6,3 +6,4 @@
 x64
 accesslib/accesslib/Debug/accesslib.tlog/
 *.idb
+*.user
