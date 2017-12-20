@@ -1,5 +1,8 @@
-*.sln
 *.db
-*.filters
 *.opendb
-*.vcxproj
+*.pro
+*.aps
+.vs
+x64
+accesslib/accesslib/Debug/accesslib.tlog/
+*.idb
