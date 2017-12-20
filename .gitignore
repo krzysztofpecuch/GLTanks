@@ -1,6 +1,5 @@
 *.db
 *.opendb
-*.pro
 *.aps
 .vs
 x64
