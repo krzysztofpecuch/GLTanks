@@ -25,7 +25,7 @@ void Game::run()
 
 void Game::initialize()
 {
-
+    m_server.run();
 }
 
 void Game::handleEvents()

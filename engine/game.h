@@ -6,6 +6,8 @@
 #include <SFML/Graphics.hpp>
 #include <qDebug>
 
+#include "server.h"
+
 class Game
 {
 public:
@@ -24,7 +26,7 @@ private:
 
     sf::RenderWindow m_window;
     sf::Event m_event;
-
+    Server m_server;
     std::vector<Tank> m_tanks;
     Tank m_rudy;
 };
