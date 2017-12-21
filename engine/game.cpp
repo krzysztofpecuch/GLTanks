@@ -1,8 +1,8 @@
 #include "game.h"
 
-
 Game::Game() :
-    m_window(sf::VideoMode(800, 800), "GL Tanks", sf::Style::Titlebar | sf::Style::Close)
+    m_window(sf::VideoMode(800, 800), "GL Tanks", sf::Style::Titlebar | sf::Style::Close),
+    m_server(*this)
 {
 
 }
@@ -103,7 +103,9 @@ void Game::draw()
 
 void Game::addTank()
 {
-    Tank tank;
+    static int x = 0;
+    static int y = 0;
+    Tank tank(sf::Vector2i(x++, y++));
     m_tanks.push_back(tank);
 }
 

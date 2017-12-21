@@ -1,11 +1,13 @@
 #include "server.h"
+#include "game.h"
 
 #include <iostream>
 #include <chrono>
 
 const int PORT = 55000;
 
-Server::Server()
+Server::Server(Game &game) :
+    m_game(game)
 {
     std::cout << sf::IpAddress::getLocalAddress().toString() << std::endl;
 }
@@ -50,12 +52,12 @@ void Server::manageConnections()
             client->markAsConnected();
             client->socket().setBlocking(false);
 
-//            std::cout << "New client with id " << client->id() << " connected from address: " << client->socket().getRemoteAddress() << std::endl;
-
             sf::Packet packet;
             packet << client->id();
 
             client->socket().send(packet);
+
+            m_game.addTank();
 
             m_clients.push_back(client);
         }

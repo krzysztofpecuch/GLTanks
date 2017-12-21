@@ -13,6 +13,7 @@ public:
     Game();
 
     void run();
+    void addTank();
 
 private:
     void initialize();
@@ -20,7 +21,6 @@ private:
     void handleKeyboardInput();
     void update();
     void draw();
-    void addTank();
     void deleteTank();
 
     sf::RenderWindow m_window;

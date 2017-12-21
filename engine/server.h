@@ -9,10 +9,12 @@
 
 #include "client.h"
 
+class Game;
+
 class Server
 {
 public:
-    Server();
+    Server(Game& game);
     ~Server();
 
     void run();
@@ -23,6 +25,7 @@ private:
     std::thread* m_listeningThread = nullptr;
     sf::TcpListener m_listener;
     std::vector<Client*> m_clients;
+    Game& m_game;
 
     int m_connectedClients = 0;
 
