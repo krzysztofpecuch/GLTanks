@@ -6,7 +6,9 @@ CONFIG -= qt
 SOURCES += main.cpp \
     game.cpp \
     server.cpp \
-    client.cpp
+    client.cpp \
+    resources.cpp \
+    tank.cpp
 
 
 INCLUDEPATH += C:\SFML-2.4.2\include
@@ -20,4 +22,6 @@ CONFIG(release, debug|release): LIBS += -lsfml-audio -lsfml-system -lsfml-networ
 HEADERS += \
     game.h \
     server.h \
-    client.h
+    client.h \
+    resources.h \
+    tank.h

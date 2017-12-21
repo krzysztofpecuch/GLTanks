@@ -4,7 +4,6 @@
 
 Tank::Tank(sf::Vector2i tile)
 {
-    qDebug() << "drugi konstuktor";
     m_sprite.setTexture(Resources::getTexture(TextureType::Tank));
 
     m_sprite.setPosition(tile.x * TILE_SIZE ,tile.y * TILE_SIZE);

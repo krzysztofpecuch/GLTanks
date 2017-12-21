@@ -2,8 +2,6 @@
 
 #include <vector>
 
-#include <QDebug>
-
 const std::string texturesPath = "";
 const std::string texturesExtention = ".png";
 const std::vector<std::string> fileNames = {"tank"};
@@ -25,7 +23,7 @@ Resources::Resources()
 
         if (!texture.loadFromFile(path))
         {
-            qDebug() << "Can't load texture: " << path.c_str();
+//            qDebug() << "Can't load texture: " << path.c_str();
         }
 
         m_textures.insert(std::pair<TextureType, sf::Texture>(types[i], texture));

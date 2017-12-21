@@ -4,7 +4,6 @@
 #include "tank.h"
 
 #include <SFML/Graphics.hpp>
-#include <qDebug>
 
 #include "server.h"
 
