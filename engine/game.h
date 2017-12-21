@@ -27,7 +27,6 @@ private:
     sf::Event m_event;
     Server m_server;
     std::vector<Tank> m_tanks;
-    Tank m_rudy;
 };
 
 #endif // GAME_H

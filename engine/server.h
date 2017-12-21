@@ -22,10 +22,7 @@ private:
 
     std::thread* m_listeningThread = nullptr;
     sf::TcpListener m_listener;
-//    sf::TcpSocket m_client;
-    std::vector<Client*> m_clients; // last client is always not connected, added in case of new connection incoming
-
-//    std::map<int, Client> m_clients;
+    std::vector<Client*> m_clients;
 
     int m_connectedClients = 0;
 

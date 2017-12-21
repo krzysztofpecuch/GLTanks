@@ -1,6 +1,7 @@
 #include "server.h"
 
 #include <iostream>
+#include <chrono>
 
 const int PORT = 55000;
 
@@ -48,7 +49,8 @@ void Server::manageConnections()
         {
             client->markAsConnected();
             client->socket().setBlocking(false);
-            std::cout << "New client with id " << client->id() << " connected from address: " << client->socket().getRemoteAddress() << std::endl;
+
+//            std::cout << "New client with id " << client->id() << " connected from address: " << client->socket().getRemoteAddress() << std::endl;
 
             sf::Packet packet;
             packet << client->id();
