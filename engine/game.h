@@ -5,6 +5,7 @@
 #include "server.h"
 
 #include <SFML/Graphics.hpp>
+#include "tilemap.h"
 
 #include <map>
 
@@ -27,6 +28,7 @@ private:
     sf::RenderWindow m_window;
     sf::Event m_event;
     Server m_server;
+	TileMap m_tilemap;
     std::map<int, Tank> m_tanks;
 };
 

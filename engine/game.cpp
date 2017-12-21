@@ -13,6 +13,11 @@ void Game::run()
 
     initialize();
 
+    if(!m_tilemap.load("graphics/tilenew.png", sf::Vector2u(50, 50), 16, 16))
+    {
+        throw "Tiles could not be loaded";
+    }
+
     while (m_window.isOpen())
     {
         while (m_window.pollEvent(m_event))
@@ -82,6 +87,7 @@ void Game::draw()
     m_window.clear(sf::Color::Black);
 
     //draw things here
+    m_window.draw(m_tilemap);
 
     for(const auto& tank: m_tanks)
     {
