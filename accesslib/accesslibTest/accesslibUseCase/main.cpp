@@ -1,5 +1,4 @@
-#include "PacketHandler.h"
-#include "socket.h"
+#include "ApiHandler.h"
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -15,20 +14,13 @@ public:
 };
 
 int main() {
-	ConnectSocket conn;
-	conn.connect();
-
-	recievePacket();
-	int n;
-	
-
-	Test *t = new Test();
-	cout << t->getX();
 	Stub s;
-	
-		cout << t->getStub().x;
 
-		vector<Stub> list = t->getStubs();
+	ApiHandler *ah = new ApiHandler();
+
+	ah->connect("127.0.0.1");
+	
+	
 	system("pause");
 	return 0;
 }
