@@ -67,14 +67,6 @@ void Game::handleKeyboardInput()
     case sf::Keyboard::Right:
         m_tanks[0].turnRight();
         break;
-    case sf::Keyboard::Space:
-        addTank();
-        break;
-    case sf::Keyboard::Delete:
-        deleteTank();
-        break;
-
-
     default:
         break;
     }
@@ -90,26 +82,26 @@ void Game::draw()
     m_window.clear(sf::Color::Black);
 
     //draw things here
-    //m_window.draw(m_rudy);
+
     for(const auto& tank: m_tanks)
     {
-        m_window.draw(tank);
+        m_window.draw(tank.second);
     }
 
     m_window.display();
-
-//    qDebug() << "posssition" << m_rudy.getPossition().x << m_rudy.getPossition().y;
 }
 
-void Game::addTank()
+void Game::addTank(int id)
 {
     static int x = 0;
     static int y = 0;
+
     Tank tank(sf::Vector2i(x++, y++));
-    m_tanks.push_back(tank);
+    m_tanks[id] = tank;
 }
 
-void Game::deleteTank()
+void Game::deleteTank(int id)
 {
-
+    const auto& position = m_tanks.find(id);
+    m_tanks.erase(position);
 }

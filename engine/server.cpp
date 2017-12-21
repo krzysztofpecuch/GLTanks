@@ -57,7 +57,7 @@ void Server::manageConnections()
 
             client->socket().send(packet);
 
-            m_game.addTank();
+            m_game.addTank(client->id());
 
             m_clients.push_back(client);
         }
@@ -72,6 +72,7 @@ void Server::manageConnections()
             if (m_clients[i]->socket().receive(dummy) == sf::Socket::Disconnected)
             {
                 std::cout << "Client with id " << m_clients[i]->id() << " disconnected from server" << std::endl;
+                m_game.deleteTank(m_clients[i]->id());
                 m_clients.erase(m_clients.begin() + i);
                 break;
             }
