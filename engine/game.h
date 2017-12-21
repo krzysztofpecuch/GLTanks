@@ -19,10 +19,13 @@ private:
     void handleKeyboardInput();
     void update();
     void draw();
+    void addTank();
+    void deleteTank();
 
     sf::RenderWindow m_window;
     sf::Event m_event;
 
+    std::vector<Tank> m_tanks;
     Tank m_rudy;
 };
 

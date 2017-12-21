@@ -2,8 +2,7 @@
 
 
 Game::Game() :
-    m_window(sf::VideoMode(800, 800), "GL Tanks", sf::Style::Titlebar | sf::Style::Close),
-    m_rudy(sf::Vector2i())
+    m_window(sf::VideoMode(800, 800), "GL Tanks", sf::Style::Titlebar | sf::Style::Close)
 {
 
 }
@@ -54,17 +53,24 @@ void Game::handleKeyboardInput()
         m_window.close();
         break;
     case sf::Keyboard::Up:
-        m_rudy.moveStraight();
+        m_tanks[0].moveStraight();
         break;
     case sf::Keyboard::Down:
-        m_rudy.moveBackward();
+        m_tanks[0].moveBackward();
         break;
     case sf::Keyboard::Left:
-        m_rudy.turnLeft();
+        m_tanks[0].turnLeft();
         break;
     case sf::Keyboard::Right:
-        m_rudy.turnRight();
+        m_tanks[0].turnRight();
         break;
+    case sf::Keyboard::Space:
+        addTank();
+        break;
+    case sf::Keyboard::Delete:
+        deleteTank();
+        break;
+
 
     default:
         break;
@@ -81,7 +87,24 @@ void Game::draw()
     m_window.clear(sf::Color::Black);
 
     //draw things here
-    m_window.draw(m_rudy);
+    //m_window.draw(m_rudy);
+    for(const auto& tank: m_tanks)
+    {
+        m_window.draw(tank);
+    }
 
     m_window.display();
+
+//    qDebug() << "posssition" << m_rudy.getPossition().x << m_rudy.getPossition().y;
+}
+
+void Game::addTank()
+{
+    Tank tank;
+    m_tanks.push_back(tank);
+}
+
+void Game::deleteTank()
+{
+
 }

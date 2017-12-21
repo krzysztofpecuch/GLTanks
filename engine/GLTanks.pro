@@ -5,11 +5,13 @@ CONFIG += qt
 
 SOURCES += main.cpp \
     game.cpp \
-    tank.cpp
+    tank.cpp \
+    resources.cpp
 
 HEADERS += \
     game.h \
-    tank.h
+    tank.h \
+    resources.h
 
 INCLUDEPATH += C:\Projects\SFML-2.4.2\include
 DEPENDPATH  += C:\Projects\SFML-2.4.2\include
