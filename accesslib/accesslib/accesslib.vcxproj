@@ -19,11 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="PacketHandler.cpp" />
+    <ClCompile Include="ApiHandler.cpp" />
     <ClCompile Include="socket.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\PacketHandler.h" />
+    <ClInclude Include="include\ApiHandler.h" />
     <ClInclude Include="include\socket.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

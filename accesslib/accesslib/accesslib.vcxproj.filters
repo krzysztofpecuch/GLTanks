@@ -15,18 +15,18 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="PacketHandler.cpp">
+    <ClCompile Include="socket.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="socket.cpp">
+    <ClCompile Include="ApiHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\PacketHandler.h">
+    <ClInclude Include="include\socket.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\socket.h">
+    <ClInclude Include="include\ApiHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
