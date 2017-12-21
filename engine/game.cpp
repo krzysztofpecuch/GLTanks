@@ -9,6 +9,8 @@ Game::Game() :
 
 void Game::run()
 {
+    m_server.run();
+
     initialize();
 
     while (m_window.isOpen())
@@ -21,11 +23,12 @@ void Game::run()
         update();
         draw();
     }
+
 }
 
 void Game::initialize()
 {
-    m_server.run();
+
 }
 
 void Game::handleEvents()
