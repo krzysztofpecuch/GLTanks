@@ -1,4 +1,5 @@
 #include "PacketHandler.h"
+#include "socket.h"
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -14,6 +15,9 @@ public:
 };
 
 int main() {
+	ConnectSocket conn;
+	conn.connect();
+
 	recievePacket();
 	int n;
 	

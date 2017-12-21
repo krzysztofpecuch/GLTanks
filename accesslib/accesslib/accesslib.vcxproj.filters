@@ -18,9 +18,15 @@
     <ClCompile Include="PacketHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="socket.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\PacketHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\socket.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
