@@ -15,16 +15,10 @@ typedef struct Player
 	int turn;
 } Player;
 
-typedef struct Map
-{
-	int sizeX;
-	int sizeY;
-	std::string mapData;
-} Map;
-
 enum PACKET_TYPE
 {
 	TYPE_BULLET_COUNT,
 	TYPE_BULLETS,
+	TYPE_MAP_CREATOR,
 	TYPE_MAP_PLAYERS
 };

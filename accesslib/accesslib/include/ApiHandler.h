@@ -19,7 +19,7 @@ using namespace sf;
 class TcpSocket;
 class Packet;
 struct Bullet;
-struct Players;
+struct Player;
 struct Map;
 enum PACKET_TYPE;
 
@@ -48,15 +48,15 @@ private:
 	
 	array<Player*, 4> playersArr;
 	
-	Map* map;
+	std::string mapData;
 	int mapSizeX;
 	int mapSizeY;
-	void createMap();
+	void createMap(int mapSizeX, int mapSizeY);
 
 	vector<Bullet> *bullets;
 	int bulletsSize;
 	
-	void parsePacket(Packet* p, PACKET_TYPE type);
+	void parsePacket(Packet* p, int type);
 	void sendPacket(Packet* p);
 };
 #endif // !PACKETHANDLER_H

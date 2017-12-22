@@ -37,13 +37,12 @@ void ApiHandler::connect(const char* serverAddr) {
 	}
 }
 
-void ApiHandler::createMap()
+void ApiHandler::createMap(int sizeX, int sizeY)
 {
-	*p >> mapSizeX >> mapSizeY;
-	mapArray = new int*[mapSizeY];
-	for (int i = 0; i < mapSizeY; i++)
+	mapArray = new int*[sizeY];
+	for (int i = 0; i < sizeY; i++)
 	{
-		mapArray[i] = new int[mapSizeX];
+		mapArray[i] = new int[sizeX];
 	}
 }
 
@@ -67,22 +66,28 @@ void ApiHandler::sendAction(int action) {
 	}
 }
 
-void ApiHandler::parsePacket(Packet* p, PACKET_TYPE type)
+void ApiHandler::parsePacket(Packet* p, int type)
 {
-	if (type == TYPE_BULLET_COUNT)
+	if (type == PACKET_TYPE::TYPE_BULLET_COUNT)
 	{
 		*p >> bulletsSize;
 		//create appropriate vector
 	}
 
-	if (type == TYPE_BULLETS)
+	if (type == PACKET_TYPE::TYPE_BULLETS)
 	{
 		// take all info about bullets and push to vector
 	}
 
-	if (type == TYPE_MAP_PLAYERS)
+	if (type == PACKET_TYPE::TYPE_MAP_CREATOR)
 	{
-		*p >> *map >> *playersArr[0] >> *playersArr[1] >> *playersArr[2] >> *playersArr[3];
+		*p >> mapSizeX >> mapSizeY;
+		createMap(mapSizeX, mapSizeY);
+	}
+
+	if (type == PACKET_TYPE::TYPE_MAP_PLAYERS)
+	{
+		*p >> mapData >> *playersArr[0] >> *playersArr[1] >> *playersArr[2] >> *playersArr[3];
 	}
 }
 
