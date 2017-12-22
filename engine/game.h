@@ -16,6 +16,7 @@ public:
 
     void run();
     void addTank(int id);
+    void moveTank(int id, int direction);
     void deleteTank(int id);
 
 private:

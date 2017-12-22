@@ -61,8 +61,6 @@ void Game::handleEvents()
 
 void Game::handleKeyboardInput()
 {
-
-
     switch (m_event.key.code)
     {
     case sf::Keyboard::Escape:
@@ -85,8 +83,6 @@ void Game::handleKeyboardInput()
     default:
         break;
     }
-
-
 }
 
 void Game::update()
@@ -111,11 +107,30 @@ void Game::draw()
 
 void Game::addTank(int id)
 {
-   //sf::Vector2i position = START_POSITIONS[m_server.connectedClientsCount() - 1];
-    StartPosition position = START_POSITIONS[m_server.connectedClientsCount() - 1];
+   StartPosition position = START_POSITIONS[m_server.connectedClientsCount() - 1];
+//    StartPosition position = START_POSITIONS[0];
 
     Tank tank(position);
     m_tanks[id] = tank;
+}
+
+void Game::moveTank(int id, int direction)
+{
+    switch (direction)
+    {
+    case 0:
+        m_tanks[id].moveStraight();
+        break;
+    case 1:
+        m_tanks[id].turnLeft();
+        break;
+    case 2:
+        m_tanks[id].turnRight();
+        break;
+    case 3:
+        m_tanks[id].moveBackward();
+        break;
+    }
 }
 
 void Game::deleteTank(int id)

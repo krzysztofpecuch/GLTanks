@@ -24,14 +24,16 @@ private:
     void manageConnections();
 
     void acceptNewClients();
+    void receiveData();
     void deleteDisconnectedClients();
 
     void end();
 
+    Game& m_game;
     std::thread* m_listeningThread = nullptr;
     sf::TcpListener m_listener;
     std::vector<Client*> m_clients;
-    Game& m_game;
+    sf::Packet m_packet;
 
     bool m_running = false;
 };

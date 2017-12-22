@@ -52,6 +52,7 @@ void Server::manageConnections()
     while (m_running)
     {
         acceptNewClients();
+        receiveData();
         deleteDisconnectedClients();
     }
 }
@@ -61,9 +62,9 @@ void Server::acceptNewClients()
     Client* client = new Client();
     if (m_listener.accept(client->socket()) == sf::Socket::Done)
     {
-        std::cout << "Client with id " << client->id() << " disconnected from server" << std::endl;
-
         client->markAsConnected();
+
+        std::cout << "Client with id " << client->id() << " connected to server" << std::endl;
         client->socket().setBlocking(false);
 
         sf::Packet packet;
@@ -79,6 +80,26 @@ void Server::acceptNewClients()
     {
         delete client;
     }
+}
+
+void Server::receiveData()
+{
+    for (const auto& client : m_clients)
+    {
+        m_packet.clear();
+
+        if (client->socket().receive(m_packet) == sf::Socket::Done)
+        {
+            int data;
+            m_packet >> data;
+
+            std::cout << "Data " << data << " received" << std::endl;
+
+            m_game.moveTank(client->id(), data);
+        }
+    }
+
+
 }
 
 void Server::deleteDisconnectedClients()
