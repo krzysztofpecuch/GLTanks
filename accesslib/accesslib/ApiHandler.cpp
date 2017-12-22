@@ -1,11 +1,18 @@
 #include "ApiHandler.h"
 
-ApiHandler::ApiHandler() : bulletsSize(0)
+ApiHandler::ApiHandler()
 {
 	connectionID = -1;
 	listeningMode = true;
 	ts = nullptr;
 	p = nullptr;
+
+	bulletsSize = 0;
+	packetBulletCount = false;
+	packetBullets = false;
+	packetMap = false;
+	packetMapPlayers = false;
+	allPacketsReceived = false;
 }
 
 ApiHandler::~ApiHandler()
@@ -77,22 +84,35 @@ void ApiHandler::parsePacket(Packet* p, int type)
 	{
 		*p >> bulletsSize;
 		//create appropriate vector
+
+		packetBulletCount = true;
 	}
 
 	if (type == PACKET_TYPE::TYPE_BULLETS)
 	{
 		// take all info about bullets and push to vector
+
+		packetBullets = true;
 	}
 
 	if (type == PACKET_TYPE::TYPE_MAP_CREATOR)
 	{
 		*p >> mapSizeX >> mapSizeY;
 		createMap(mapSizeX, mapSizeY);
+
+		packetMap = true;
 	}
 
 	if (type == PACKET_TYPE::TYPE_MAP_PLAYERS)
 	{
 		*p >> mapData >> *playersArr[0] >> *playersArr[1] >> *playersArr[2] >> *playersArr[3];
+
+		packetMapPlayers = true;
+	}
+
+	if (packetBulletCount && packetBullets && packetMap && packetMapPlayers)
+	{
+		allPacketsReceived = true;
 	}
 }
 
