@@ -24,6 +24,7 @@ struct Map;
 enum PACKET_TYPE;
 
 #include <array>
+#include <string>
 #include <vector>
 using namespace std;
 #endif  
@@ -36,6 +37,7 @@ public:
 	void connect(const char* serverAddr);
 	void listenForPacket();
 	void sendAction(int action);
+	void forceSendAction(int action);
 	bool getState();
 	int getConnectionID();
 	int** mapArray;

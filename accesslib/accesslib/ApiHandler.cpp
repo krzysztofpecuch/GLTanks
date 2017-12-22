@@ -69,13 +69,23 @@ void ApiHandler::listenForPacket() {
 }
 
 void ApiHandler::sendAction(int action) {
-	while (!listeningMode) {
-		Packet move;
-		move << action;
-		if (ts->send(move) == Socket::Done) {
+	if (!listeningMode) {
+		Packet movementInformation;
+		movementInformation << action;
+		if (ts->send(movementInformation) == Socket::Done) {
+			cout << "Sent move " << action << endl;
 			listeningMode = true;
 		}
+	}	
+}
+
+void ApiHandler::forceSendAction(int action) {
+	Packet movementInformation;
+	movementInformation << action;
+	if (ts->send(movementInformation) == Socket::Done) {
+		cout << "Sent move " << action << endl;
 	}
+	movementInformation.clear();
 }
 
 void ApiHandler::parsePacket(Packet* p, int type)
