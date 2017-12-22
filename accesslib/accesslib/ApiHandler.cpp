@@ -2,12 +2,11 @@
 
 ApiHandler::ApiHandler() : bulletsSize(0)
 {
-	readyForAction = false;
+	connectionID = -1;
+	listeningMode = true;
 	ts = nullptr;
 	p = nullptr;
-//	connect();
 }
-
 
 ApiHandler::~ApiHandler()
 {
@@ -49,9 +48,9 @@ void ApiHandler::createMap()
 }
 
 void ApiHandler::listenForPacket() {
-	while (!readyForAction) {
+	while (listeningMode) {
 		if (ts->receive(*p) == Socket::Done) {
-//			readyForAction = true;
+			
 //			parsePacket();
 //			p.clear();
 		}
@@ -59,12 +58,11 @@ void ApiHandler::listenForPacket() {
 }
 
 void ApiHandler::sendAction(int action) {
-	
-	while (readyForAction) {
+	while (!listeningMode) {
 		Packet move;
 		move << action;
 		if (ts->send(move) == Socket::Done) {
-			readyForAction = false;
+			listeningMode = true;
 		}
 	}
 }

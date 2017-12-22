@@ -34,21 +34,26 @@ public:
 	~ApiHandler();
 
 	void connect(const char* serverAddr);
-	void createMap();
 	void listenForPacket();
 	void sendAction(int action);
+	bool getState();
+	int getConnectionID();
 	int** mapArray;
 private:
 	TcpSocket *ts;
 	Packet *p;
 	int connectionID;
 	int actionToTake;
-	bool readyForAction;
-	vector<Bullet> *bullets;
+	bool listeningMode;
+	
 	array<Player*, 4> playersArr;
+	
 	Map* map;
 	int mapSizeX;
 	int mapSizeY;
+	void createMap();
+
+	vector<Bullet> *bullets;
 	int bulletsSize;
 	
 	void parsePacket(Packet* p, PACKET_TYPE type);
