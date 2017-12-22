@@ -7,13 +7,13 @@ typedef struct Bullet
 	int turn;
 } Bullet;
 
-typedef struct Players
+typedef struct Player
 {
 	int ID;
 	int x;
 	int y;
 	int turn;
-} Players;
+} Player;
 
 typedef struct Map
 {

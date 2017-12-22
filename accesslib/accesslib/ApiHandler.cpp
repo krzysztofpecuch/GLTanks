@@ -69,11 +69,11 @@ void ApiHandler::sendAction(int action) {
 	}
 }
 
-void ApiHandler::parsePacket(Packet p, PACKET_TYPE type)
+void ApiHandler::parsePacket(Packet* p, PACKET_TYPE type)
 {
 	if (type == TYPE_BULLET_COUNT)
 	{
-		p >> bulletsSize;
+		*p >> bulletsSize;
 		//create appropriate vector
 	}
 
@@ -84,38 +84,8 @@ void ApiHandler::parsePacket(Packet p, PACKET_TYPE type)
 
 	if (type == TYPE_MAP_PLAYERS)
 	{
-		p >> map >> *playersArr[0] >> *playersArr[1] >> *playersArr[2] >> *playersArr[3];
+		*p >> *map >> *playersArr[0] >> *playersArr[1] >> *playersArr[2] >> *playersArr[3];
 	}
-}
-
-Packet& operator >>(Packet& p, Bullet& b)
-{
-	return p >> b.ID >> b.x >> b.y >> b.turn;
-}
-
-Packet& operator >>(Packet& p, Players& pArray)
-{
-	return p >> pArray.ID >> pArray.x >> pArray.y >> pArray.turn;
-}
-
-Packet& operator >>(Packet& p, Map& mArray)
-{
-	return p >> mArray.sizeX >> mArray.sizeY >> mArray.mapData;
-}
-
-Packet& operator <<(Packet& p, Bullet& b)
-{
-	return p << b.ID << b.x << b.y << b.turn;
-}
-
-Packet& operator <<(Packet& p, Players& pArray)
-{
-	return p << pArray.ID << pArray.x << pArray.y << pArray.turn;
-}
-
-Packet& operator <<(Packet& p, Map& mArray)
-{
-	return p << mArray.sizeX << mArray.sizeY << mArray.mapData;
 }
 
 // for parsePacket, to take bullets

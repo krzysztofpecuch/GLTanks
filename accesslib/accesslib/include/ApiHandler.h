@@ -9,6 +9,7 @@
 #include <iostream>
 #include "SFML\Network.hpp"
 #include "Bullet.h"
+#include "operators.h"
 
 using namespace std;
 using namespace sf;
@@ -19,6 +20,7 @@ class TcpSocket;
 class Packet;
 struct Bullet;
 struct Players;
+struct Map;
 enum PACKET_TYPE;
 
 #include <array>
@@ -42,21 +44,14 @@ private:
 	int connectionID;
 	int actionToTake;
 	bool readyForAction;
-	vector<Bullet*> bullets;
-	array<Players*, 4> playersArr;
-	Map map;
+	vector<Bullet> *bullets;
+	array<Player*, 4> playersArr;
+	Map* map;
 	int mapSizeX;
 	int mapSizeY;
 	int bulletsSize;
 	
-	void parsePacket(Packet p, PACKET_TYPE type);
-	void sendPacket(Packet p);
+	void parsePacket(Packet* p, PACKET_TYPE type);
+	void sendPacket(Packet* p);
 };
-
-Packet& operator >>(Packet& p, Bullet& bullet);
-Packet& operator >>(Packet& p, Players& pArray);
-Packet& operator >>(Packet& p, Map& mArray);
-Packet& operator <<(Packet& p, Bullet& b);
-Packet& operator <<(Packet& p, Players& pArray);
-Packet& operator <<(Packet& p, Map& mArray);
 #endif // !PACKETHANDLER_H
