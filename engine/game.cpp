@@ -1,6 +1,11 @@
 #include "game.h"
 
-const std::vector<sf::Vector2i> START_POSITIONS = { {1, 1}, {1, 15}, {15, 1}, {15, 15} };
+const std::vector<StartPosition> START_POSITIONS = {{sf::Vector2i{ 1,  1}, LEFT},
+                                                    {sf::Vector2i{ 1, 15}, LEFT},
+                                                    {sf::Vector2i{15,  1}, RIGHT},
+                                                    {sf::Vector2i{15, 15}, RIGHT}
+                                                   };
+
 
 Game::Game() :
     m_window(sf::VideoMode(850, 850), "GL Tanks", sf::Style::Titlebar | sf::Style::Close),
@@ -56,6 +61,8 @@ void Game::handleEvents()
 
 void Game::handleKeyboardInput()
 {
+
+
     switch (m_event.key.code)
     {
     case sf::Keyboard::Escape:
@@ -73,9 +80,13 @@ void Game::handleKeyboardInput()
     case sf::Keyboard::Right:
         m_tanks[1].turnRight();
         break;
+    case sf::Keyboard::Space:
+        addTank(0);
     default:
         break;
     }
+
+
 }
 
 void Game::update()
@@ -100,7 +111,8 @@ void Game::draw()
 
 void Game::addTank(int id)
 {
-    sf::Vector2i position = START_POSITIONS[m_server.connectedClientsCount() - 1];
+   //sf::Vector2i position = START_POSITIONS[m_server.connectedClientsCount() - 1];
+    StartPosition position = START_POSITIONS[m_server.connectedClientsCount() - 1];
 
     Tank tank(position);
     m_tanks[id] = tank;

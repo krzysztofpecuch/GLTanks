@@ -20,6 +20,11 @@ enum Directions
     LEFT,
     NUMBER_DIR_STATES
 };
+struct StartPosition
+{
+    sf::Vector2i position;
+    Directions direction;
+};
 
 
 class Tank: public sf::Drawable
@@ -27,6 +32,7 @@ class Tank: public sf::Drawable
 public:
 
     Tank(sf::Vector2i tile = {});
+    Tank(StartPosition initPosition);
 
 
     void shot();

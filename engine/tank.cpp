@@ -4,11 +4,41 @@
 
 Tank::Tank(sf::Vector2i tile)
 {
+   // std::cout<<  tile.x << " " << tile.y << std::endl;
     m_sprite.setTexture(Resources::getTexture(TextureType::Tank));
 
     m_sprite.setPosition(tile.x * TILE_SIZE ,tile.y * TILE_SIZE);
 
     m_currnetDir = Directions::DOWN;
+
+}
+
+Tank::Tank(StartPosition initPosition)
+{
+
+    m_sprite.setTexture(Resources::getTexture(TextureType::Tank));
+    m_sprite.setPosition(initPosition.position.x * TILE_SIZE ,initPosition.position.y * TILE_SIZE);
+
+    switch (initPosition.direction) {
+    case UP:
+        m_sprite.rotate(180);
+        m_currnetDir = Directions::UP;
+        break;
+    case DOWN:
+        m_currnetDir = Directions::DOWN;
+        break;
+    case LEFT:
+        m_sprite.rotate(90);
+        m_currnetDir = Directions::LEFT;
+        break;
+    case RIGHT:
+        m_sprite.rotate(-90);
+        m_currnetDir = Directions::RIGHT;
+        break;
+    default:
+        break;
+    }
+
 }
 
 void Tank::shot()
