@@ -47,11 +47,16 @@ void ApiHandler::createMap(int sizeX, int sizeY)
 }
 
 void ApiHandler::listenForPacket() {
+	int msgType;
 	while (listeningMode) {
+		msgType = -1;
 		if (ts->receive(*p) == Socket::Done) {
-			
-//			parsePacket();
-//			p.clear();
+			*p >> msgType;
+			if (p->endOfPacket()) {
+				if (ts->receive(*p) == Socket::Done) {
+					parsePacket(p, msgType);
+				}
+			}
 		}
 	}
 }
