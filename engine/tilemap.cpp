@@ -10,11 +10,13 @@ bool TileMap::load(const std::string &tileset, sf::Vector2u tileSize, unsigned i
 {
     std::ifstream file("graphics/map.txt");
 
-    int tiles[256];
+    const int tilesCount = 289;
+
+    int tiles[tilesCount];
 
     if(file.is_open())
     {
-        for(int i = 0; i < 256; ++i)
+        for(int i = 0; i < tilesCount; ++i)
         {
                 file >> tiles[i];
         }

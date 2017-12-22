@@ -2,7 +2,7 @@
 
 #include <vector>
 
-const std::string texturesPath = "";
+const std::string texturesPath = "graphics/";
 const std::string texturesExtention = ".png";
 const std::vector<std::string> fileNames = {"tank"};
 const std::vector<TextureType> types = {TextureType::Tank};

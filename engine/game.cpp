@@ -1,7 +1,7 @@
 #include "game.h"
 
 Game::Game() :
-    m_window(sf::VideoMode(800, 800), "GL Tanks", sf::Style::Titlebar | sf::Style::Close),
+    m_window(sf::VideoMode(850, 850), "GL Tanks", sf::Style::Titlebar | sf::Style::Close),
     m_server(*this)
 {
 
@@ -13,7 +13,7 @@ void Game::run()
 
     initialize();
 
-    if(!m_tilemap.load("graphics/tilenew.png", sf::Vector2u(50, 50), 16, 16))
+    if(!m_tilemap.load("graphics/tilenew.png", sf::Vector2u(50, 50), 17, 17))
     {
         throw "Tiles could not be loaded";
     }
