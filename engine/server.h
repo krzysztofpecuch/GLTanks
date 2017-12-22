@@ -18,6 +18,7 @@ public:
     ~Server();
 
     void run();
+    void sendData();
 
     int connectedClientsCount() const;
 private:

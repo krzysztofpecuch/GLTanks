@@ -28,9 +28,12 @@ private:
 
     sf::RenderWindow m_window;
     sf::Event m_event;
-    Server m_server;
-	TileMap m_tilemap;
+    sf::Clock m_clock;
+  Server m_server;
+    TileMap m_tilemap;
     std::map<int, Tank> m_tanks;
+
+    int m_elapsedTime = 0;
 };
 
 #endif // GAME_H

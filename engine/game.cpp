@@ -87,7 +87,13 @@ void Game::handleKeyboardInput()
 
 void Game::update()
 {
+    m_elapsedTime += m_clock.restart().asMilliseconds();
 
+    if (m_elapsedTime >= 1000)
+    {
+        m_server.sendData();
+        m_elapsedTime = 0;
+    }
 }
 
 void Game::draw()

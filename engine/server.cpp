@@ -30,6 +30,11 @@ void Server::run()
     m_listeningThread = new std::thread(&Server::manageConnections, this);
 }
 
+void Server::sendData()
+{
+
+}
+
 int Server::connectedClientsCount() const
 {
     return Client::connectedClients();
