@@ -3,6 +3,8 @@
 ApiHandler::ApiHandler() : bulletsSize(0)
 {
 	readyForAction = false;
+	ts = nullptr;
+	p = nullptr;
 //	connect();
 }
 
@@ -13,20 +15,26 @@ ApiHandler::~ApiHandler()
 	{
 		delete[] mapArray[i];
 	}
-	delete(ts);
+	
 
 	delete[] mapArray;
 
-	delete p;
+	if (ts != nullptr)
+		delete ts;
+	if (p != nullptr)
+		delete p;
 }
 
 void ApiHandler::connect(const char* serverAddr) {
 	ts = new TcpSocket();
 	if (ts->connect(serverAddr, 55000) == sf::Socket::Done)
 	{
-		std::string message = "Hi, I am a client";
-		ts->send(message.c_str(), message.size() + 1);
 		p = new Packet();
+		if (ts->receive(*p) == sf::Socket::Done) {
+			*p >> connectionID;
+			cout << "Connected to server at " << serverAddr << " and my ID is " << connectionID << endl;
+			p->clear();
+		}		
 	}
 	createMap();
 }
