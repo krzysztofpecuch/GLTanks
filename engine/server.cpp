@@ -30,6 +30,11 @@ void Server::run()
     m_listeningThread = new std::thread(&Server::manageConnections, this);
 }
 
+int Server::connectedClientsCount() const
+{
+    return Client::connectedClients();
+}
+
 void Server::end()
 {
     m_running = false;
@@ -46,36 +51,49 @@ void Server::manageConnections()
 
     while (m_running)
     {
-        Client* client = new Client();
-        if (m_listener.accept(client->socket()) == sf::Socket::Done)
+        acceptNewClients();
+        deleteDisconnectedClients();
+    }
+}
+
+void Server::acceptNewClients()
+{
+    Client* client = new Client();
+    if (m_listener.accept(client->socket()) == sf::Socket::Done)
+    {
+        std::cout << "Client with id " << client->id() << " disconnected from server" << std::endl;
+
+        client->markAsConnected();
+        client->socket().setBlocking(false);
+
+        sf::Packet packet;
+        packet << client->id();
+
+        client->socket().send(packet);
+
+        m_game.addTank(client->id());
+
+        m_clients.push_back(client);
+    }
+    else
+    {
+        delete client;
+    }
+}
+
+void Server::deleteDisconnectedClients()
+{
+    for (unsigned i = 0; i < m_clients.size(); ++i)
+    {
+        sf::Packet dummy;
+        if (m_clients[i]->socket().receive(dummy) == sf::Socket::Disconnected)
         {
-            client->markAsConnected();
-            client->socket().setBlocking(false);
+            std::cout << "Client with id " << m_clients[i]->id() << " disconnected from server" << std::endl;
+            m_clients[i]->markAsDisconnected();
+            m_game.deleteTank(m_clients[i]->id());
 
-            sf::Packet packet;
-            packet << client->id();
-
-            client->socket().send(packet);
-
-            m_game.addTank(client->id());
-
-            m_clients.push_back(client);
-        }
-        else
-        {
-            delete client;
-        }
-
-        for (unsigned i = 0; i < m_clients.size(); ++i)
-        {
-            sf::Packet dummy;
-            if (m_clients[i]->socket().receive(dummy) == sf::Socket::Disconnected)
-            {
-                std::cout << "Client with id " << m_clients[i]->id() << " disconnected from server" << std::endl;
-                m_game.deleteTank(m_clients[i]->id());
-                m_clients.erase(m_clients.begin() + i);
-                break;
-            }
+            m_clients.erase(m_clients.begin() + i);
+            break;
         }
     }
 }

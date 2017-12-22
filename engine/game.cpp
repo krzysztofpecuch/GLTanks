@@ -1,5 +1,7 @@
 #include "game.h"
 
+const std::vector<sf::Vector2i> START_POSITIONS = { {1, 1}, {1, 15}, {15, 1}, {15, 15} };
+
 Game::Game() :
     m_window(sf::VideoMode(850, 850), "GL Tanks", sf::Style::Titlebar | sf::Style::Close),
     m_server(*this)
@@ -9,14 +11,7 @@ Game::Game() :
 
 void Game::run()
 {
-    m_server.run();
-
     initialize();
-
-    if(!m_tilemap.load("graphics/tilenew.png", sf::Vector2u(50, 50), 17, 17))
-    {
-        throw "Tiles could not be loaded";
-    }
 
     while (m_window.isOpen())
     {
@@ -33,6 +28,12 @@ void Game::run()
 
 void Game::initialize()
 {
+    m_server.run();
+
+    if(!m_tilemap.load("graphics/tilenew.png", sf::Vector2u(50, 50), 17, 17))
+    {
+        throw "Tiles could not be loaded";
+    }
 
 }
 
@@ -61,16 +62,16 @@ void Game::handleKeyboardInput()
         m_window.close();
         break;
     case sf::Keyboard::Up:
-        m_tanks[0].moveStraight();
+        m_tanks[1].moveStraight();
         break;
     case sf::Keyboard::Down:
-        m_tanks[0].moveBackward();
+        m_tanks[1].moveBackward();
         break;
     case sf::Keyboard::Left:
-        m_tanks[0].turnLeft();
+        m_tanks[1].turnLeft();
         break;
     case sf::Keyboard::Right:
-        m_tanks[0].turnRight();
+        m_tanks[1].turnRight();
         break;
     default:
         break;
@@ -99,10 +100,9 @@ void Game::draw()
 
 void Game::addTank(int id)
 {
-    static int x = 0;
-    static int y = 0;
+    sf::Vector2i position = START_POSITIONS[m_server.connectedClientsCount() - 1];
 
-    Tank tank(sf::Vector2i(x++, y++));
+    Tank tank(position);
     m_tanks[id] = tank;
 }
 

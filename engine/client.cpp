@@ -19,6 +19,11 @@ void Client::markAsConnected()
     m_connectedClients++;
 }
 
+void Client::markAsDisconnected()
+{
+    m_connectedClients--;
+}
+
 int Client::id() const
 {
     return m_id;

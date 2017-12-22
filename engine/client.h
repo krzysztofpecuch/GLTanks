@@ -13,6 +13,7 @@ public:
     sf::TcpSocket& socket();
 
     void markAsConnected();
+    void markAsDisconnected();
     int id() const;
 
 

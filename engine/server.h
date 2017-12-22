@@ -18,16 +18,20 @@ public:
     ~Server();
 
     void run();
+
+    int connectedClientsCount() const;
 private:
     void manageConnections();
+
+    void acceptNewClients();
+    void deleteDisconnectedClients();
+
     void end();
 
     std::thread* m_listeningThread = nullptr;
     sf::TcpListener m_listener;
     std::vector<Client*> m_clients;
     Game& m_game;
-
-    int m_connectedClients = 0;
 
     bool m_running = false;
 };
