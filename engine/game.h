@@ -19,6 +19,8 @@ public:
     void moveTank(int id, int direction);
     void deleteTank(int id);
 
+	TileMap& getMap();
+
 private:
     void initialize();
     void handleEvents();

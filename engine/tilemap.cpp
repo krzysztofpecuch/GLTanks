@@ -6,13 +6,16 @@ TileMap::TileMap()
 
 }
 
-bool TileMap::load(const std::string &tileset, sf::Vector2u tileSize, unsigned int width, unsigned int height)
+TileMap::~TileMap()
+{
+
+}
+
+void TileMap::loadFile()
 {
     std::ifstream file("graphics/map.txt");
 
     const int tilesCount = 289;
-
-    int tiles[tilesCount];
 
     if(file.is_open())
     {
@@ -22,6 +25,10 @@ bool TileMap::load(const std::string &tileset, sf::Vector2u tileSize, unsigned i
         }
     }
     file.close();
+}
+
+bool TileMap::load(const std::string& tileset, sf::Vector2u tileSize, unsigned int width, unsigned int height)
+{
 
     if(!m_tileset.loadFromFile(tileset))
     {
@@ -56,6 +63,11 @@ bool TileMap::load(const std::string &tileset, sf::Vector2u tileSize, unsigned i
         }
     }
     return true;
+}
+
+const int &TileMap::getTileNumber(const int& row, const int& col) const
+{
+    return tiles[row * 17 + col];
 }
 
 void TileMap::draw(sf::RenderTarget &target, sf::RenderStates states) const

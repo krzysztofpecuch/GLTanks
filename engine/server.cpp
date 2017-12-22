@@ -88,6 +88,8 @@ void Server::acceptNewClients()
         client->socket().setBlocking(false);
 
         sf::Packet packet;
+		int rows, cols;
+
         packet << client->id();
 
         client->socket().send(packet);
