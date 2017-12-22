@@ -4,6 +4,9 @@
 #include <iostream>
 #include <chrono>
 
+#include "accesslib/Bullet.h"
+#include "accesslib/operators.h"
+
 const int PORT = 55000;
 
 Server::Server(Game &game) :
@@ -30,9 +33,21 @@ void Server::run()
     m_listeningThread = new std::thread(&Server::manageConnections, this);
 }
 
-void Server::sendData()
+void Server::sendData(const std::map<int, Tank>& tanks)
 {
 
+    for (const auto& tank : tanks)
+    {
+        sf::Packet packet;
+
+        Players player;
+        player.ID = tank.first;
+        player.x = tank.second.getPosition().x;
+        player.y = tank.second.getPosition().y;
+        player.turn = tank.second.getCurrentDir();
+
+        packet << player;
+    }
 }
 
 int Server::connectedClientsCount() const

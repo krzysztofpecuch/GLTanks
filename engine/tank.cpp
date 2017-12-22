@@ -145,7 +145,7 @@ void Tank::turnRight()
 
 }
 
-sf::Vector2i Tank::getPossition() const
+sf::Vector2i Tank::getPosition() const
 {
     switch (m_currnetDir) {
     case UP:
@@ -166,7 +166,7 @@ sf::Vector2i Tank::getPossition() const
     }
 }
 
-int Tank::getCurrnetDir() const
+int Tank::getCurrentDir() const
 {
     return m_currnetDir;
 }

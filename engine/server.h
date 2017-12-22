@@ -10,6 +10,7 @@
 #include "client.h"
 
 class Game;
+class Tank;
 
 class Server
 {
@@ -18,7 +19,7 @@ public:
     ~Server();
 
     void run();
-    void sendData();
+    void sendData(const std::map<int, Tank>& tanks);
 
     int connectedClientsCount() const;
 private:

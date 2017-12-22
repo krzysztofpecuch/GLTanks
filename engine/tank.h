@@ -41,8 +41,8 @@ public:
     void turnLeft();
     void turnRight();
 
-    sf::Vector2i getPossition() const;
-    int getCurrnetDir() const;
+    sf::Vector2i getPosition() const;
+    int getCurrentDir() const;
 
 private:
 

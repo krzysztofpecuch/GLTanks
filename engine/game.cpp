@@ -91,7 +91,7 @@ void Game::update()
 
     if (m_elapsedTime >= 1000)
     {
-        m_server.sendData();
+        m_server.sendData(m_tanks);
         m_elapsedTime = 0;
     }
 }
@@ -103,7 +103,7 @@ void Game::draw()
     //draw things here
     m_window.draw(m_tilemap);
 
-    for(const auto& tank: m_tanks)
+    for(const auto& tank : m_tanks)
     {
         m_window.draw(tank.second);
     }
