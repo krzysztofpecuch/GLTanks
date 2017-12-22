@@ -1,19 +1,26 @@
 #pragma once
-struct Bullet
+typedef struct Bullet
 {
 	int ID;
 	int x;
 	int y;
 	int turn;
-};
+} Bullet;
 
-struct Players
+typedef struct Players
 {
 	int ID;
 	int x;
 	int y;
 	int turn;
-};
+} Players;
+
+typedef struct Map
+{
+	int sizeX;
+	int sizeY;
+	std::string mapData;
+} Map;
 
 enum PACKET_TYPE
 {

@@ -43,7 +43,8 @@ private:
 	int actionToTake;
 	bool readyForAction;
 	vector<Bullet*> bullets;
-	array<Players*, 4> playersarr;
+	array<Players*, 4> playersArr;
+	Map map;
 	int mapSizeX;
 	int mapSizeY;
 	int bulletsSize;
@@ -54,6 +55,8 @@ private:
 
 Packet& operator >>(Packet& p, Bullet& bullet);
 Packet& operator >>(Packet& p, Players& pArray);
+Packet& operator >>(Packet& p, Map& mArray);
 Packet& operator <<(Packet& p, Bullet& b);
 Packet& operator <<(Packet& p, Players& pArray);
+Packet& operator <<(Packet& p, Map& mArray);
 #endif // !PACKETHANDLER_H
