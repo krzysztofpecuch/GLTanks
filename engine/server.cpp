@@ -40,7 +40,7 @@ void Server::sendData(const std::map<int, Tank>& tanks)
     {
         sf::Packet packet;
 
-        Players player;
+        Player player;
         player.ID = tank.first;
         player.x = tank.second.getPosition().x;
         player.y = tank.second.getPosition().y;
@@ -88,7 +88,7 @@ void Server::acceptNewClients()
         client->socket().setBlocking(false);
 
         sf::Packet packet;
-		int rows, cols;
+        int rows, cols;
 
         packet << client->id();
 

@@ -21,7 +21,7 @@ void TileMap::loadFile()
     {
         for(int i = 0; i < tilesCount; ++i)
         {
-                file >> tiles[i];
+                file >> m_tiles[i];
         }
     }
     file.close();
@@ -42,7 +42,7 @@ bool TileMap::load(const std::string& tileset, sf::Vector2u tileSize, unsigned i
     {
         for(unsigned int j = 0; j < height; ++j)
         {
-            int tileNumber = tiles[i + j * width];
+            int tileNumber = m_tiles[i + j * width];
 
             int tu = tileNumber % (m_tileset.getSize().x / tileSize.x);
             int tv = tileNumber / (m_tileset.getSize().x / tileSize.x);
@@ -67,7 +67,7 @@ bool TileMap::load(const std::string& tileset, sf::Vector2u tileSize, unsigned i
 
 const int &TileMap::getTileNumber(const int& row, const int& col) const
 {
-    return tiles[row * 17 + col];
+    return m_tiles[row * 17 + col];
 }
 
 void TileMap::draw(sf::RenderTarget &target, sf::RenderStates states) const

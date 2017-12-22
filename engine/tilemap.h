@@ -19,7 +19,7 @@ public:
 private:
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
-    int tiles[289];
+    int m_tiles[289];
     sf::VertexArray m_vertices;
     sf::Texture m_tileset;
 };

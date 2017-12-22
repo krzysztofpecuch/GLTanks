@@ -19,7 +19,7 @@ public:
     void moveTank(int id, int direction);
     void deleteTank(int id);
 
-	TileMap& getMap();
+    TileMap& getMap();
 
 private:
     void initialize();
@@ -31,7 +31,7 @@ private:
     sf::RenderWindow m_window;
     sf::Event m_event;
     sf::Clock m_clock;
-  Server m_server;
+	Server m_server;
     TileMap m_tilemap;
     std::map<int, Tank> m_tanks;
 

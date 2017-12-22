@@ -7,3 +7,5 @@ accesslib/accesslib/Debug/accesslib.tlog/
 *.idb
 *.pro.user
 *.pro
+engine/engine/
+*.sln
