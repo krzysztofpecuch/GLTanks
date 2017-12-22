@@ -8,7 +8,8 @@ SOURCES += main.cpp \
     server.cpp \
     client.cpp \
     resources.cpp \
-    tank.cpp
+    tank.cpp \
+    tilemap.cpp
 
 
 INCLUDEPATH += C:\SFML-2.4.2\include
@@ -24,4 +25,5 @@ HEADERS += \
     server.h \
     client.h \
     resources.h \
-    tank.h
+    tank.h \
+    tilemap.h

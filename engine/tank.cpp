@@ -30,10 +30,12 @@ Tank::Tank(StartPosition initPosition)
     case LEFT:
         m_sprite.rotate(90);
         m_currnetDir = Directions::LEFT;
+        m_sprite.move( TILE_SIZE ,0);
         break;
     case RIGHT:
         m_sprite.rotate(-90);
         m_currnetDir = Directions::RIGHT;
+        m_sprite.move( 0 , TILE_SIZE);
         break;
     default:
         break;
