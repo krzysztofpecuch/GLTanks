@@ -5,9 +5,13 @@
 #include "server.h"
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
 #include "tilemap.h"
 
 #include <map>
+#include <string>
+
+enum gameState {RUNNING, WAITING};
 
 class Game
 {
@@ -20,6 +24,8 @@ public:
     void deleteTank(int id);
 
     TileMap& getMap();
+
+	gameState state = gameState::WAITING;
 
 private:
     void initialize();
@@ -36,6 +42,7 @@ private:
     std::map<int, Tank> m_tanks;
 
     int m_elapsedTime = 0;
+	
 };
 
 #endif // GAME_H

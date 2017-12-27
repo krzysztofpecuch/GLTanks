@@ -5,7 +5,7 @@
 Tank::Tank(sf::Vector2i tile)
 {
     std::cout<<  tile.x << " " << tile.y << std::endl;
-    //m_sprite.setTexture(tankTexture);
+    //m_sprite.setTexture(*tankTexture);
 
     m_sprite.setPosition(tile.x * TILE_SIZE ,tile.y * TILE_SIZE);
 
@@ -14,10 +14,10 @@ Tank::Tank(sf::Vector2i tile)
 }
 
 Tank::~Tank() {
-	if (textureImage != nullptr)
-		delete textureImage;
-	if (tankTexture != nullptr)
-		delete tankTexture;
+	//if (textureImage != nullptr)
+	//	delete textureImage;
+	//if (tankTexture != nullptr)
+	//	delete tankTexture;
 }
 
 Tank::Tank(StartPosition initPosition)

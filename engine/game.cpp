@@ -149,22 +149,46 @@ void Game::update()
 
     if (m_elapsedTime >= 1000)
     {
-        m_server.sendData(m_tanks);
+		if (state == gameState::RUNNING) {
+			m_server.sendData(m_tanks);
+		}
         m_elapsedTime = 0;
     }
 }
 
 void Game::draw()
 {
-    m_window.clear(sf::Color::Black);
+	m_window.clear(sf::Color::Black);
 
-    //draw things here
-    m_window.draw(m_tilemap);
+	//draw things here
+	m_window.draw(m_tilemap);
 
-    for(const auto& tank : m_tanks)
-    {
-        m_window.draw(tank.second);
-    }
+	if (state == gameState::RUNNING){
+		for (const auto& tank : m_tanks)
+		{
+			m_window.draw(tank.second);
+		}
+	}
+	else {
+		sf::Text messageText;
+
+		sf::Font font;
+		font.loadFromFile("fonts/arial.ttf");
+
+		messageText.setFont(font);
+
+		messageText.setString("Waiting for " + std::to_string((4-m_tanks.size())) + " more players.");
+
+		messageText.setCharacterSize(60);
+
+		messageText.setFillColor(sf::Color::White);
+
+		sf::FloatRect textRect = messageText.getLocalBounds();
+		messageText.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
+		messageText.setPosition(m_window.getSize().x / 2.0f,  m_window.getSize().y / 2.0f);
+
+		m_window.draw(messageText);
+	}
 
     m_window.display();
 }

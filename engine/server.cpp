@@ -71,10 +71,14 @@ void Server::manageConnections()
 
     while (m_running)
     {
-		sf::sleep(sf::seconds(1));
-        acceptNewClients();
-        receiveData();
-        deleteDisconnectedClients();
+		if (m_game.state == gameState::WAITING) {
+			sf::sleep(sf::seconds(2));
+			acceptNewClients();
+		}
+		else {
+			receiveData();
+			deleteDisconnectedClients();
+		}
     }
 }
 
@@ -98,6 +102,10 @@ void Server::acceptNewClients()
         m_game.addTank(client->id());
 
         m_clients.push_back(client);
+		
+		if (m_clients.size() == 2) {
+			m_game.state = gameState::RUNNING;
+		}
     }
     else
     {
