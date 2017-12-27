@@ -1,11 +1,11 @@
 #include "tank.h"
 #include "resources.h"
-
+#include <random>
 
 Tank::Tank(sf::Vector2i tile)
 {
-   // std::cout<<  tile.x << " " << tile.y << std::endl;
-    m_sprite.setTexture(Resources::getTexture(TextureType::Tank));
+    std::cout<<  tile.x << " " << tile.y << std::endl;
+    //m_sprite.setTexture(tankTexture);
 
     m_sprite.setPosition(tile.x * TILE_SIZE ,tile.y * TILE_SIZE);
 
@@ -13,10 +13,47 @@ Tank::Tank(sf::Vector2i tile)
 
 }
 
+Tank::~Tank() {
+	if (textureImage != nullptr)
+		delete textureImage;
+	if (tankTexture != nullptr)
+		delete tankTexture;
+}
+
 Tank::Tank(StartPosition initPosition)
 {
+	//New for separate textures
+	textureImage = new sf::Image();
+	tankTexture = new sf::Texture();
+	
+	*textureImage = Resources::getTexture(TextureType::Tank).copyToImage();
 
-    m_sprite.setTexture(Resources::getTexture(TextureType::Tank));
+	//Random and replace colors of original texture
+	std::mt19937 rng;
+	rng.seed(std::random_device()());
+	std::uniform_int_distribution<std::mt19937::result_type> dist(0, 255);
+	
+	sf::Vector2u size = textureImage->getSize();
+	sf::Color randomizedBodyColor(dist(rng), dist(rng), dist(rng), 255);
+	sf::Color gunColor(255 - randomizedBodyColor.r, 255 - randomizedBodyColor.g, 255 - randomizedBodyColor.b, 255);
+	for (int w = 0; w < size.x; w++)
+	{
+		for (int h = 0; h < size.y; h++)
+		{
+			sf::Color currentColor = textureImage->getPixel(w, h);
+			if (currentColor == sf::Color(237, 28, 36, 255)) {
+				textureImage->setPixel(w, h, randomizedBodyColor);
+			} else {
+				textureImage->setPixel(w, h, gunColor);
+			}
+		}
+	}
+	
+	//Initialize texture from new randomized Image
+	tankTexture->loadFromImage(*textureImage);
+	m_sprite.setTexture(*tankTexture);
+	
+	//Same old
     m_sprite.setPosition(initPosition.position.x * TILE_SIZE ,initPosition.position.y * TILE_SIZE);
 
     switch (initPosition.direction) {
@@ -40,7 +77,6 @@ Tank::Tank(StartPosition initPosition)
     default:
         break;
     }
-
 }
 
 void Tank::shot()

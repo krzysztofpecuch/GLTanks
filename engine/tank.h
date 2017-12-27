@@ -33,6 +33,7 @@ public:
 
     Tank(sf::Vector2i tile = {});
     Tank(StartPosition initPosition);
+	~Tank();
 
 
     void shot();
@@ -49,6 +50,8 @@ private:
     int m_currnetDir;
 
     sf::Sprite  m_sprite;
+	sf::Texture *tankTexture;
+	sf::Image *textureImage;
 
 
 protected:

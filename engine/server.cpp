@@ -71,6 +71,7 @@ void Server::manageConnections()
 
     while (m_running)
     {
+		sf::sleep(sf::seconds(1));
         acceptNewClients();
         receiveData();
         deleteDisconnectedClients();

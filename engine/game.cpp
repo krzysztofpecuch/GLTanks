@@ -174,8 +174,8 @@ void Game::addTank(int id)
        StartPosition position = START_POSITIONS[m_server.connectedClientsCount() - 1];
 //    StartPosition position = START_POSITIONS[count];
 
-    Tank tank(position);
-    m_tanks[id] = tank;
+    m_tanks[id] = Tank(position);
+    
 }
 
 void Game::moveTank(int id, int direction)
