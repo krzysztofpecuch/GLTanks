@@ -103,7 +103,7 @@ void Server::acceptNewClients()
 
         m_clients.push_back(client);
 		
-		if (m_clients.size() == 2) {
+		if (m_clients.size() == 4) {
 			m_game.state = gameState::RUNNING;
 		}
     }

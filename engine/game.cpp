@@ -145,7 +145,15 @@ void Game::handleKeyboardInput()
 
 void Game::update()
 {
+	float elapsedTime = m_clock.getElapsedTime().asSeconds();
     m_elapsedTime += m_clock.restart().asMilliseconds();
+
+	if (state == gameState::RUNNING) {
+		for (auto& tank : m_tanks)
+		{
+			tank.second.update(elapsedTime);
+		}
+	}
 
     if (m_elapsedTime >= 1000)
     {
