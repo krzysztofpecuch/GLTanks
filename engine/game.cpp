@@ -1,5 +1,7 @@
 #include "game.h"
 
+#include <conio.h>
+
 const std::vector<StartPosition> START_POSITIONS = {{sf::Vector2i{ 1,  1}, LEFT},
                                                     {sf::Vector2i{ 1, 15}, LEFT},
                                                     {sf::Vector2i{15,  1}, RIGHT},
@@ -42,6 +44,15 @@ void Game::initialize()
         throw "Tiles could not be loaded";
     }
 
+
+//    sf::Font font;
+    font.loadFromFile("fonts/arial.ttf");
+
+    m_messageText.setFont(font);
+    m_messageText.setCharacterSize(60);
+    m_messageText.setFillColor(sf::Color::White);
+
+    setMessageText("Waiting for " + std::to_string((4-m_tanks.size())) + " more players.");
 }
 
 void Game::handleEvents()
@@ -148,7 +159,8 @@ void Game::update()
 	float elapsedTime = m_clock.getElapsedTime().asSeconds();
     m_elapsedTime += m_clock.restart().asMilliseconds();
 
-	if (state == gameState::RUNNING) {
+    if (state == gameState::RUNNING)
+    {
 		for (auto& tank : m_tanks)
 		{
 			tank.second.update(elapsedTime);
@@ -157,7 +169,8 @@ void Game::update()
 
     if (m_elapsedTime >= 1000)
     {
-		if (state == gameState::RUNNING) {
+        if (state == gameState::RUNNING)
+        {
 			m_server.sendData(m_tanks);
 		}
         m_elapsedTime = 0;
@@ -171,34 +184,57 @@ void Game::draw()
 	//draw things here
 	m_window.draw(m_tilemap);
 
-	if (state == gameState::RUNNING){
-		for (const auto& tank : m_tanks)
-		{
-			m_window.draw(tank.second);
-		}
-	}
-	else {
-		sf::Text messageText;
+    switch (state)
+    {
+    case RUNNING:
+    {
+        for (const auto& tank : m_tanks)
+        {
+            m_window.draw(tank.second);
+        }
 
-		sf::Font font;
-		font.loadFromFile("fonts/arial.ttf");
+        if (m_tanks.size() == 1)
+        {
+            setMessageText("Press any key to play again");
+            m_window.draw(m_messageText);
+            m_window.display();
 
-		messageText.setFont(font);
-
-		messageText.setString("Waiting for " + std::to_string((4-m_tanks.size())) + " more players.");
-
-		messageText.setCharacterSize(60);
-
-		messageText.setFillColor(sf::Color::White);
-
-		sf::FloatRect textRect = messageText.getLocalBounds();
-		messageText.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
-		messageText.setPosition(m_window.getSize().x / 2.0f,  m_window.getSize().y / 2.0f);
-
-		m_window.draw(messageText);
-	}
+            waitForKeyPress();
+            state = WAITING;
+        }
+        break;
+    }
+    case WAITING:
+    {
+        setMessageText("Waiting for " + std::to_string((4-m_tanks.size())) + " more players");
+        m_window.draw(m_messageText);
+        break;
+    }
+    }
 
     m_window.display();
+}
+
+void Game::setMessageText(const std::string& text)
+{
+    m_messageText.setString(text);
+
+    sf::FloatRect textRect = m_messageText.getLocalBounds();
+    m_messageText.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
+    m_messageText.setPosition(m_window.getSize().x / 2.0f,  m_window.getSize().y / 2.0f);
+}
+
+void Game::waitForKeyPress()
+{
+    bool keyPressed = false;
+    while (!keyPressed)
+    {
+        while (m_window.pollEvent(m_event))
+        {
+            if (m_event.type == sf::Event::KeyPressed)
+                keyPressed = true;
+        }
+    }
 }
 
 void Game::addTank(int id)

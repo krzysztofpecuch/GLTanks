@@ -69,19 +69,6 @@ void Server::manageConnections()
 
     m_running = true;
 
-    sf::Packet p;
-
-    p << 1;
-    p << 2;
-    p << 3;
-
-
-    int x, y, z;
-
-    p >> x;
-    p >> y;
-    p >> z;
-
     while (m_running)
     {
 		if (m_game.state == gameState::WAITING) {
@@ -90,8 +77,8 @@ void Server::manageConnections()
 		}
 		else {
 			receiveData();
-			deleteDisconnectedClients();
 		}
+        deleteDisconnectedClients();
     }
 }
 
@@ -106,8 +93,6 @@ void Server::acceptNewClients()
         client->socket().setBlocking(false);
 
         sf::Packet packet;
-//        int rows, cols;
-
         packet << client->id();
 
         client->socket().send(packet);
@@ -142,8 +127,6 @@ void Server::receiveData()
             m_game.moveTank(client->id(), data);
         }
     }
-
-
 }
 
 void Server::deleteDisconnectedClients()
@@ -154,6 +137,7 @@ void Server::deleteDisconnectedClients()
         if (m_clients[i]->socket().receive(dummy) == sf::Socket::Disconnected)
         {
             std::cout << "Client with id " << m_clients[i]->id() << " disconnected from server" << std::endl;
+            m_game.setMessageText("Waiting for " + std::to_string((4-Client::connectedClients())) + " more players");
             m_clients[i]->markAsDisconnected();
             m_game.deleteTank(m_clients[i]->id());
 

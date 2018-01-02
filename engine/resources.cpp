@@ -4,30 +4,34 @@
 #include <random>
 
 const std::string texturesPath = "graphics/";
+const std::string fontsPath = "fonts/";
 const std::string texturesExtention = ".png";
-const std::vector<std::string> fileNames = {"tank"};
-const std::vector<TextureType> types = {TextureType::Tank};
+const std::string fontsExtention = ".ttf";
+const std::vector<std::string> textureFileNames = {"tank"};
+const std::vector<std::string> fontFileNames = { "arial" };
+const std::vector<TextureType> textureTypes = {TextureType::Tank};
+const std::vector<FontType> fontTypes = {FontType::Arial};
 
 
 Resources Resources::m_resources = Resources();
 
 Resources::Resources()
 {
-    m_texturesCount = static_cast<int>(TextureType::Count);
+    int m_texturesCount = static_cast<int>(TextureType::Count);
 
     sf::Texture texture;
     std::string path;
 
     for (int i = 0; i < m_texturesCount; ++i)
     {
-        path = texturesPath + fileNames[i] + texturesExtention;
+        path = texturesPath + textureFileNames[i] + texturesExtention;
 
         if (!texture.loadFromFile(path))
         {
 //            qDebug() << "Can't load texture: " << path.c_str();
         }
 
-        m_textures.insert(std::pair<TextureType, sf::Texture>(types[i], texture));
+        m_textures.insert(std::pair<TextureType, sf::Texture>(textureTypes[i], texture));
     }
 
 //    if (!m_font.loadFromFile("fonts/LuckiestGuy.ttf"))
@@ -36,6 +40,8 @@ Resources::Resources()
 //    }
 
     m_originalTankTexture = m_textures.at(TextureType::Tank);
+
+
 }
 
 sf::Texture& Resources::getTexture(const TextureType &type)

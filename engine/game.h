@@ -22,10 +22,11 @@ public:
     void addTank(int id);
     void moveTank(int id, int direction);
     void deleteTank(int id);
+    void setMessageText(const std::string &text);
 
     TileMap& getMap();
 
-	gameState state = gameState::WAITING;
+    gameState state = gameState::WAITING;
 
 private:
     void initialize();
@@ -34,12 +35,17 @@ private:
     void update();
     void draw();
 
+    void waitForKeyPress();
+
     sf::RenderWindow m_window;
     sf::Event m_event;
     sf::Clock m_clock;
 	Server m_server;
     TileMap m_tilemap;
     std::map<int, Tank> m_tanks;
+    sf::Text m_messageText;
+
+    sf::Font font;
 
     int m_elapsedTime = 0;
 	

@@ -11,6 +11,12 @@ enum class TextureType
     Count
 };
 
+enum class FontType
+{
+    Arial,
+    Count
+};
+
 class Resources
 {
 public:
@@ -27,8 +33,6 @@ private:
     sf::Font m_font;
 
     sf::Texture m_originalTankTexture;
-
-    int m_texturesCount;
 };
 
 #endif // RESOURCES_H
