@@ -3,7 +3,8 @@
 
 TileMap::TileMap()
 {
-
+	sizeY = 17;
+	sizeX = 17;
 }
 
 TileMap::~TileMap()
@@ -70,9 +71,25 @@ const int &TileMap::getTileNumber(const int& row, const int& col) const
     return m_tiles[row * 17 + col];
 }
 
+const int* TileMap::getTileMap() {
+	return m_tiles;
+}
+
 void TileMap::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
     states.transform *= getTransform();
     states.texture = &m_tileset;
     target.draw(m_vertices, states);
+}
+
+int TileMap::getSizeY() {
+	return sizeY;
+}
+
+int TileMap::getSizeX() {
+	return sizeX;
+}
+
+int TileMap::getTileCount() {
+	return sizeY * sizeX;
 }

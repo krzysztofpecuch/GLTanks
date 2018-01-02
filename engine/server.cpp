@@ -7,6 +7,7 @@
 #include "accesslib/Bullet.h"
 #include "accesslib/operators.h"
 
+
 const int PORT = 55000;
 
 Server::Server(Game &game) :
@@ -35,19 +36,65 @@ void Server::run()
 
 void Server::sendData(const std::map<int, Tank>& tanks)
 {
+	sf::Packet packetType;
+	sf::Packet playersMapPacket;
+	sf::Packet mapSizePacket;
+	std::array<Player*, 4> players;
 
-    for (const auto& tank : tanks)
-    {
-        sf::Packet packet;
+	const int* map = m_game.getMap().getTileMap();
+	std::string textMap;
+	
+	for (int i = 0; i < m_game.getMap().getTileCount(); i++) {
+		textMap += std::to_string(map[i]);
+		if (i != 0 && (i%m_game.getMap().getSizeY() == 0)) {
+			textMap += '\n';
+		}
+	}
+	
+	playersMapPacket << textMap;
 
-        Players player;
-        player.ID = tank.first;
-        player.x = tank.second.getPosition().x;
-        player.y = tank.second.getPosition().y;
-        player.turn = tank.second.getCurrentDir();
+	int index = 0;
+	for (const auto& tank : tanks)
+	{
+		Player* player = new Player;
+		player->ID = tank.first;
+		player->x = tank.second.getPosition().x;
+		player->y = tank.second.getPosition().y;
+		player->turn = tank.second.getCurrentDir();
+		players[index] = player;
+		index++;
+	}
 
-        packet << player;
-    }
+	packetType << PACKET_TYPE::TYPE_MAP_PLAYERS;
+	for (int i = 0; i < MAX_PLAYER_NUMBER; i++)
+	{
+		playersMapPacket << *players[i];
+	}
+
+	for (const auto& client : m_clients)
+	{
+		if (client->socket().send(packetType) == sf::Socket::Done) {
+			if (client->socket().send(playersMapPacket) == sf::Socket::Done) {
+				std::cout << "Wyslano pakiet z graczami do klienta " << client->id() << std::endl;
+			}
+		}
+	}
+
+	packetType.clear();
+	packetType << PACKET_TYPE::TYPE_MAP_CREATOR;
+	mapSizePacket << m_game.getMap().getSizeX() << m_game.getMap().getSizeY();
+
+	for (const auto& client : m_clients) {
+		if (client->socket().send(packetType) == sf::Socket::Done) {
+			if (client->socket().send(mapSizePacket) == sf::Socket::Done) {
+				std::cout << "Wyslano pakiet z rozmiarami mapy do klienta " << client->id() << std::endl;
+			}
+		}
+	}
+
+	mapSizePacket.clear();
+	packetType.clear();
+	playersMapPacket.clear();
 }
 
 int Server::connectedClientsCount() const
@@ -72,7 +119,6 @@ void Server::manageConnections()
     while (m_running)
     {
 		if (m_game.state == gameState::WAITING) {
-//			sf::sleep(sf::seconds(2));
 			acceptNewClients();
 		}
 		else {
@@ -101,7 +147,7 @@ void Server::acceptNewClients()
 
         m_clients.push_back(client);
 		
-		if (m_clients.size() == 4) {
+		if (m_clients.size() == MAX_PLAYER_NUMBER) {
 			m_game.state = gameState::RUNNING;
 		}
     }
@@ -116,14 +162,11 @@ void Server::receiveData()
     for (const auto& client : m_clients)
     {
         m_packet.clear();
-
         if (client->socket().receive(m_packet) == sf::Socket::Done)
         {
             int data;
             m_packet >> data;
-
             std::cout << "Data " << data << " received" << std::endl;
-
             m_game.moveTank(client->id(), data);
         }
     }

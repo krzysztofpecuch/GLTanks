@@ -6,6 +6,7 @@
 #include <thread>
 #include <map>
 #include <vector>
+#include <array>
 
 #include "client.h"
 

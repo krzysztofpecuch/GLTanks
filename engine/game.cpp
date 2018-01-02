@@ -52,7 +52,7 @@ void Game::initialize()
     m_messageText.setCharacterSize(60);
     m_messageText.setFillColor(sf::Color::White);
 
-    setMessageText("Waiting for " + std::to_string((4-m_tanks.size())) + " more players.");
+    setMessageText("Waiting for " + std::to_string((MAX_PLAYER_NUMBER - m_tanks.size())) + " more players.");
 }
 
 void Game::handleEvents()
@@ -206,7 +206,7 @@ void Game::draw()
     }
     case WAITING:
     {
-        setMessageText("Waiting for " + std::to_string((4-m_tanks.size())) + " more players");
+        setMessageText("Waiting for " + std::to_string((MAX_PLAYER_NUMBER -m_tanks.size())) + " more players");
         m_window.draw(m_messageText);
         break;
     }

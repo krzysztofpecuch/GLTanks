@@ -11,6 +11,8 @@
 #include <map>
 #include <string>
 
+#define MAX_PLAYER_NUMBER 2
+
 enum gameState {RUNNING, WAITING};
 
 class Game
