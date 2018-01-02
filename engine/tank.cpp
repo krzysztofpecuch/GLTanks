@@ -22,37 +22,7 @@ Tank::~Tank() {
 
 Tank::Tank(StartPosition initPosition)
 {
-	//New for separate textures
-	textureImage = new sf::Image();
-	tankTexture = new sf::Texture();
-	
-	*textureImage = Resources::getTexture(TextureType::Tank).copyToImage();
-
-	//Random and replace colors of original texture
-	std::mt19937 rng;
-	rng.seed(std::random_device()());
-	std::uniform_int_distribution<std::mt19937::result_type> dist(0, 255);
-	
-	sf::Vector2u size = textureImage->getSize();
-	sf::Color randomizedBodyColor(dist(rng), dist(rng), dist(rng), 255);
-	sf::Color gunColor(255 - randomizedBodyColor.r, 255 - randomizedBodyColor.g, 255 - randomizedBodyColor.b, 255);
-	for (int w = 0; w < size.x; w++)
-	{
-		for (int h = 0; h < size.y; h++)
-		{
-			sf::Color currentColor = textureImage->getPixel(w, h);
-			if (currentColor == sf::Color(237, 28, 36, 255)) {
-				textureImage->setPixel(w, h, randomizedBodyColor);
-			} else {
-				textureImage->setPixel(w, h, gunColor);
-			}
-		}
-	}
-	
-	//Initialize texture from new randomized Image
-	tankTexture->loadFromImage(*textureImage);
-	m_sprite.setTexture(*tankTexture);
-	m_actualSprite.setTexture(*tankTexture);
+    m_actualSprite.setTexture(Resources::getTexture(TextureType::Tank));
 	
 	//Same old
     m_sprite.setPosition(initPosition.position.x * TILE_SIZE ,initPosition.position.y * TILE_SIZE);
@@ -216,9 +186,7 @@ int Tank::getCurrentDir() const
 
 void Tank::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
-	
-    target.draw(m_actualSprite);
-	
+    target.draw(m_actualSprite, states);
 }
 
 void Tank::update(float elapsed) {
@@ -259,8 +227,4 @@ void Tank::update(float elapsed) {
 		m_actualSprite.setRotation(m_sprite.getRotation());
 		m_actualSprite.move(distanceVector.x * TANK_SIZE, distanceVector.y * TANK_SIZE);
 	}
-	
-	
-	
-
 }

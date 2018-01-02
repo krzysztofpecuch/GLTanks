@@ -20,9 +20,13 @@ public:
     static sf::Font& getFont();
 
 private:
+    sf::Texture generateTankTexture();
+
     static Resources m_resources;
     std::map<TextureType, sf::Texture> m_textures;
     sf::Font m_font;
+
+    sf::Texture m_originalTankTexture;
 
     int m_texturesCount;
 };

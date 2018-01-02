@@ -40,7 +40,7 @@ void Server::sendData(const std::map<int, Tank>& tanks)
     {
         sf::Packet packet;
 
-        Player player;
+        Players player;
         player.ID = tank.first;
         player.x = tank.second.getPosition().x;
         player.y = tank.second.getPosition().y;
@@ -69,10 +69,23 @@ void Server::manageConnections()
 
     m_running = true;
 
+    sf::Packet p;
+
+    p << 1;
+    p << 2;
+    p << 3;
+
+
+    int x, y, z;
+
+    p >> x;
+    p >> y;
+    p >> z;
+
     while (m_running)
     {
 		if (m_game.state == gameState::WAITING) {
-			sf::sleep(sf::seconds(2));
+//			sf::sleep(sf::seconds(2));
 			acceptNewClients();
 		}
 		else {
@@ -93,7 +106,7 @@ void Server::acceptNewClients()
         client->socket().setBlocking(false);
 
         sf::Packet packet;
-        int rows, cols;
+//        int rows, cols;
 
         packet << client->id();
 

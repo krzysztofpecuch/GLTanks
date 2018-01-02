@@ -54,8 +54,8 @@ private:
 
 	sf::Sprite  m_sprite;
 	sf::Sprite m_actualSprite;
-	sf::Texture *tankTexture;
-	sf::Image *textureImage;
+    sf::Texture tankTexture;
+    sf::Image textureImage;
 	
 
 
