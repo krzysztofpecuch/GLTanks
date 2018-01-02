@@ -60,7 +60,7 @@ private:
 	int mapSizeY;
 	void createMap(int mapSizeX, int mapSizeY);
 
-	vector<Bullet> *bullets;
+	vector<Bullet*> bullets;
 	int bulletsSize;
 	
 	void parsePacket(Packet* p, int type);

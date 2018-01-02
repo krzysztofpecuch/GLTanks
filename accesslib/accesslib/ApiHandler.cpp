@@ -13,7 +13,6 @@ ApiHandler::ApiHandler()
 	}
 
 	bulletsSize = 0;
-	bullets = new vector<Bullet>;
 	packetBullets = false;
 	packetMap = false;
 	packetMapPlayers = false;
@@ -28,8 +27,7 @@ ApiHandler::~ApiHandler()
 	}
 	delete[] mapArray;
 
-	bullets->clear();
-	delete bullets;
+	bullets.clear();
 
 	if (ts != nullptr)
 		delete ts;
@@ -98,14 +96,14 @@ void ApiHandler::parsePacket(Packet* p, int type)
 {
 	if (type == PACKET_TYPE::TYPE_BULLETS)
 	{
-		bullets->clear();
-		Bullet b = {};
 		*p >> bulletsSize;
-		
+
+		bullets.clear();
+		Bullet b = {};
 		for (int i = 0; i < bulletsSize; i++)
 		{
 			*p >> b;
-			bullets->push_back(b);
+			bullets.push_back(&b);
 		}
 
 		packetBullets = true;
