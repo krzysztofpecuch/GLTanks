@@ -48,13 +48,12 @@ private:
 	int actionToTake;
 	bool listeningMode;
 
-	bool packetBulletCount;
 	bool packetBullets;
 	bool packetMap;
 	bool packetMapPlayers;
 	bool allPacketsReceived;
 	
-	array<Player*, 4> playersArr;
+	array<Player, 4> playersArr;
 	
 	std::string mapData;
 	int mapSizeX;

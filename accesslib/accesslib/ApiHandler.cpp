@@ -8,7 +8,7 @@ ApiHandler::ApiHandler()
 	p = nullptr;
 
 	bulletsSize = 0;
-	packetBulletCount = false;
+	bullets = new vector<Bullet>;
 	packetBullets = false;
 	packetMap = false;
 	packetMapPlayers = false;
@@ -21,9 +21,10 @@ ApiHandler::~ApiHandler()
 	{
 		delete[] mapArray[i];
 	}
-	
-
 	delete[] mapArray;
+
+	bullets->clear();
+	delete bullets;
 
 	if (ts != nullptr)
 		delete ts;
@@ -90,17 +91,17 @@ void ApiHandler::forceSendAction(int action) {
 
 void ApiHandler::parsePacket(Packet* p, int type)
 {
-	if (type == PACKET_TYPE::TYPE_BULLET_COUNT)
-	{
-		*p >> bulletsSize;
-		//create appropriate vector
-
-		packetBulletCount = true;
-	}
-
 	if (type == PACKET_TYPE::TYPE_BULLETS)
 	{
-		// take all info about bullets and push to vector
+		bullets->clear();
+		Bullet b = {};
+		*p >> bulletsSize;
+		
+		for (int i = 0; i < bulletsSize; i++)
+		{
+			*p >> b;
+			bullets->push_back(b);
+		}
 
 		packetBullets = true;
 	}
@@ -115,24 +116,17 @@ void ApiHandler::parsePacket(Packet* p, int type)
 
 	if (type == PACKET_TYPE::TYPE_MAP_PLAYERS)
 	{
-		*p >> mapData >> *playersArr[0] >> *playersArr[1] >> *playersArr[2] >> *playersArr[3];
+		*p >> mapData;
+		for (int i = 0; i < 4; i++)
+		{
+			*p >> playersArr[0] >> playersArr[1] >> playersArr[2] >> playersArr[3];
+		}
 
 		packetMapPlayers = true;
 	}
 
-	if (packetBulletCount && packetBullets && packetMap && packetMapPlayers)
+	if (packetBullets && packetMap && packetMapPlayers)
 	{
 		allPacketsReceived = true;
 	}
 }
-
-// for parsePacket, to take bullets
-//{
-//	Packet p;
-//	for () {
-//		Bullet *b = new Bullet();
-//		p >> b;
-//		vec.push_back(b);
-//		
-//	}
-//}
