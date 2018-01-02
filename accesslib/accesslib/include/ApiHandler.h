@@ -53,7 +53,7 @@ private:
 	bool packetMapPlayers;
 	bool allPacketsReceived;
 	
-	array<Player, 4> playersArr;
+	array<Player*, 4> playersArr;
 	
 	std::string mapData;
 	int mapSizeX;

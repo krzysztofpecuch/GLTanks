@@ -7,6 +7,11 @@ ApiHandler::ApiHandler()
 	ts = nullptr;
 	p = nullptr;
 
+	for (int i = 0; i < 4; i++)
+	{
+		playersArr[i] = new Player;
+	}
+
 	bulletsSize = 0;
 	bullets = new vector<Bullet>;
 	packetBullets = false;
@@ -117,11 +122,10 @@ void ApiHandler::parsePacket(Packet* p, int type)
 	if (type == PACKET_TYPE::TYPE_MAP_PLAYERS)
 	{
 		*p >> mapData;
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i < 2; i++)
 		{
-			*p >> playersArr[0] >> playersArr[1] >> playersArr[2] >> playersArr[3];
+			*p >> *playersArr[i];
 		}
-
 		packetMapPlayers = true;
 	}
 

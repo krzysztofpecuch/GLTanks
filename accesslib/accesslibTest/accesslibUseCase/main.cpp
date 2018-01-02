@@ -7,7 +7,7 @@ using namespace std;
 int main() {
 	ApiHandler *ah = new ApiHandler();
 
-	ah->connect("10.0.80.173");
+	ah->connect("10.0.80.54");
 	char c = 'z';
 	while (c != 'q') {
 		cin.get(c);
@@ -15,6 +15,7 @@ int main() {
 			continue;
 		int q = c - '0';
 		ah->forceSendAction(q);
+		ah->listenForPacket();
 	}
 	
 	
