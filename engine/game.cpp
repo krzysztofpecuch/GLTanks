@@ -36,7 +36,6 @@ void Game::run()
         update();
         draw();
     }
-
 }
 
 void Game::initialize()
@@ -75,7 +74,6 @@ void Game::handleEvents()
 
 void Game::handleKeyboardInput()
 {
-
     switch (m_event.key.code)
     {
     case sf::Keyboard::Escape:
@@ -146,10 +144,9 @@ void Game::handleKeyboardInput()
         m_tanks[1].turnRight();
         break;
         //testowo
-        //    case sf::Keyboard::Space:
-        //        addTank(count);
-        //        count++;
-        //        break;
+    case sf::Keyboard::C:
+        createBullet(m_tanks[1].getCurrentDir());
+        break;
     default:
         break;
     }
@@ -161,17 +158,20 @@ void Game::update()
     m_elapsedTime += m_clock.restart().asMilliseconds();
 
     if (state == gameState::RUNNING)
-    {
+	{
         for (auto& tank : m_tanks)
         {
             tank.second.update(elapsedTime);
+        }
+        for(auto& bulletss : m_vecbullets)
+        {
+            bulletss->update(elapsedTime);
         }
     }
 
     if (m_elapsedTime >= 1000)
     {
-        if (state == gameState::RUNNING)
-        {
+        if (state == gameState::RUNNING) {
             m_server.sendData(m_tanks);
         }
         m_elapsedTime = 0;
@@ -189,6 +189,11 @@ void Game::draw()
     {
     case RUNNING:
     {
+		for (auto& bullet : m_vecbullets)
+		{
+			m_window.draw(*bullet);
+		}
+
         for (const auto& tank : m_tanks)
         {
             m_window.draw(tank.second);
@@ -248,11 +253,11 @@ void Game::waitForKeyPress()
 
 void Game::addTank(int id)
 {
-    StartPosition position = START_POSITIONS[m_server.connectedClientsCount() - 1];
-    //    StartPosition position = START_POSITIONS[count];
+       StartPosition position = START_POSITIONS[m_server.connectedClientsCount() - 1];
+//    StartPosition position = START_POSITIONS[count];
 
     m_tanks[id] = Tank(position);
-    
+
 }
 
 void Game::moveTank(int id, int direction)
@@ -261,7 +266,7 @@ void Game::moveTank(int id, int direction)
     {
     case 0:
     {
-        switch (m_tanks[id].getCurrentDirection())
+        switch (m_tanks[id].getCurrentDir())
         {
         case Directions::UP:
             if(m_tilemap.getTileNumber(m_tanks[id].getPosition().y - 1, m_tanks[id].getPosition().x) != 1)
@@ -289,7 +294,7 @@ void Game::moveTank(int id, int direction)
             break;
         }
     }
-        break;
+    break;
     case 1:
         m_tanks[id].turnLeft();
         break;
@@ -297,7 +302,7 @@ void Game::moveTank(int id, int direction)
         m_tanks[id].turnRight();
         break;
     case 3:
-        switch (m_tanks[id].getCurrentDirection())
+        switch (m_tanks[id].getCurrentDir())
         {
         case Directions::UP:
             if(m_tilemap.getTileNumber(m_tanks[id].getPosition().y + 1, m_tanks[id].getPosition().x) != 1)
@@ -314,7 +319,7 @@ void Game::moveTank(int id, int direction)
         case Directions::RIGHT:
             if(m_tilemap.getTileNumber(m_tanks[id].getPosition().y, m_tanks[id].getPosition().x - 1) != 1)
             {
-                m_tanks[id].moveBackward();
+               m_tanks[id].moveBackward();
             }
             break;
         case Directions::LEFT:
@@ -335,6 +340,20 @@ void Game::deleteTank(int id)
 {
     const auto& position = m_tanks.find(id);
     m_tanks.erase(position);
+}
+
+void Game::createBullet(int direction)
+{
+    if(direction == 0 || direction == 2)
+    {
+        m_bullet = new Bullets(sf::Vector2f(3, 15), direction);
+    }else
+    {
+        m_bullet = new Bullets(sf::Vector2f(15, 3), direction);
+    }
+
+    m_bullet->setPos(sf::Vector2f(m_tanks[1].getPosition().x * TANK_SIZE + TANK_SIZE / 2, m_tanks[1].getPosition().y * TANK_SIZE + TANK_SIZE / 2));
+    m_vecbullets.push_back(m_bullet);
 }
 
 TileMap &Game::getMap()
