@@ -165,12 +165,12 @@ void Game::update()
         }
         for(auto& bulletss : m_vecbullets)
         {
-<<<<<<< HEAD
-            bulletss->update(elapsedTime);
-            checkColBull();
-=======
+
             bulletss.update(elapsedTime);
->>>>>>> 57eb0b1b4143500e064c4dc44ba8b2c38cf1f4ce
+            checkColBull();
+
+            bulletss.update(elapsedTime);
+
         }
     }
 
@@ -367,11 +367,12 @@ void Game::checkColBull()
 {
     for(auto& bullet : m_vecbullets)
     {
-        if(bullet->getRight() > m_tanks[2].getPosition().x * TANK_SIZE && bullet->getTop() < m_tanks[2].getPosition().y * TANK_SIZE + TANK_SIZE && bullet->getBottom() > m_tanks[2].getPosition().y * TANK_SIZE)
+        if(bullet.getLeft() < m_tanks[2].getPosition().x * TANK_SIZE + TANK_SIZE && bullet.getRight() > m_tanks[2].getPosition().x * TANK_SIZE && bullet.getTop() < m_tanks[2].getPosition().y * TANK_SIZE + TANK_SIZE && bullet.getBottom() > m_tanks[2].getPosition().y * TANK_SIZE)
         {
             // enemy.setPosition(sf::Vector2f(3000, 3000));
             deleteTank(2);
         }
+
     }
 }
 
