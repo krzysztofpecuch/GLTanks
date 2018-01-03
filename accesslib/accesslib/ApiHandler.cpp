@@ -27,6 +27,11 @@ ApiHandler::~ApiHandler()
 	}
 	delete[] mapArray;
 
+	for (int i = 0; i < 4; i++)
+	{
+		delete playersArr[i];
+	}
+
 	bullets.clear();
 
 	if (ts != nullptr)
@@ -83,12 +88,13 @@ void ApiHandler::listenForPacket() {
 		if (ts->receive(*p) == Socket::Done) {
 			*p >> msgType;
 			if (p->endOfPacket()) {
+				p->clear();
 				if (ts->receive(*p) == Socket::Done) {
 					parsePacket(p, msgType);
 				}
 			}
+			p->clear();
 		}
-		p->clear();
 	}
 }
 
@@ -99,7 +105,8 @@ void ApiHandler::sendAction(int action) {
 		if (ts->send(movementInformation) == Socket::Done) {
 			cout << "Sent move " << action << endl;
 			listeningMode = true;
-			allPacketsReceived = false;
+			packetBullets = false;
+			packetMapPlayers = false;
 		}
 	}	
 }
@@ -109,6 +116,9 @@ void ApiHandler::forceSendAction(int action) {
 	movementInformation << action;
 	if (ts->send(movementInformation) == Socket::Done) {
 		cout << "Sent move " << action << endl;
+		listeningMode = true;
+		packetBullets = false;
+		packetMapPlayers = false;
 	}
 	movementInformation.clear();
 }
@@ -119,11 +129,18 @@ void ApiHandler::parsePacket(Packet* p, int type)
 		int win;
 		*p >> win;
 		if (win) {
-			cout << "You won!" << endl;
+			cout << "You won! Class state reset." << endl;
 		}
 		else {
-			cout << "You lost!" << endl;
+			cout << "Game ended. Class state reset." << endl;
 		}
+
+		for (int i = 0; i < mapSizeY; i++)
+		{
+			delete[] mapArray[i];
+		}
+		delete[] mapArray;
+
 		allPacketsReceived = false;
 		listeningMode = true;
 		packetBullets = false;
@@ -145,6 +162,8 @@ void ApiHandler::parsePacket(Packet* p, int type)
 		}
 
 		packetBullets = true;
+
+		cout << "Recieved bullet packet" << endl;
 	}
 
 	if (type == PACKET_TYPE::TYPE_MAP_CREATOR && !packetMap)
@@ -153,6 +172,8 @@ void ApiHandler::parsePacket(Packet* p, int type)
 		createMap(mapSizeX, mapSizeY);
 
 		packetMap = true;
+
+		cout << "Recieved map size packet" << endl;
 	}
 
 	if (type == PACKET_TYPE::TYPE_MAP_PLAYERS)
@@ -164,14 +185,13 @@ void ApiHandler::parsePacket(Packet* p, int type)
 		}
 		updateMap(mapData);
 		packetMapPlayers = true;
+
+		cout << "Recieved map and player data packet" << endl;
 	}
 
-	if (!allPacketsReceived && packetMap && packetMapPlayers) //&& packetBullets
+	if (packetMap && packetMapPlayers) //&& packetBullets
 	{
-		allPacketsReceived = true;
 		listeningMode = false;
-		packetBullets = false;
-		packetMapPlayers = false;
 	}
 
 	
