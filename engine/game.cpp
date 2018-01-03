@@ -166,6 +166,7 @@ void Game::update()
         for(auto& bulletss : m_vecbullets)
         {
             bulletss->update(elapsedTime);
+            checkColBull();
         }
     }
 
@@ -354,6 +355,18 @@ void Game::createBullet(int direction)
 
     m_bullet->setPos(sf::Vector2f(m_tanks[1].getPosition().x * TANK_SIZE + TANK_SIZE / 2, m_tanks[1].getPosition().y * TANK_SIZE + TANK_SIZE / 2));
     m_vecbullets.push_back(m_bullet);
+}
+
+void Game::checkColBull()
+{
+    for(auto& bullet : m_vecbullets)
+    {
+        if(bullet->getRight() > m_tanks[2].getPosition().x * TANK_SIZE && bullet->getTop() < m_tanks[2].getPosition().y * TANK_SIZE + TANK_SIZE && bullet->getBottom() > m_tanks[2].getPosition().y * TANK_SIZE)
+        {
+            // enemy.setPosition(sf::Vector2f(3000, 3000));
+            deleteTank(2);
+        }
+    }
 }
 
 TileMap &Game::getMap()

@@ -4,8 +4,8 @@
 #include <iostream>
 #include <chrono>
 
-#include "accesslib/Bullet.h"
-#include "accesslib/operators.h"
+#include "acceslib/Bullet.h"
+#include "acceslib/operators.h"
 
 
 const int PORT = 55000;

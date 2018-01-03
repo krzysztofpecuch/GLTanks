@@ -26,7 +26,8 @@ public:
     void moveTank(int id, int direction);
     void deleteTank(int id);
     void setMessageText(const std::string &text);
-  void createBullet(int direction);
+	void createBullet(int direction);
+    void checkColBull();
 
     TileMap& getMap();
 
