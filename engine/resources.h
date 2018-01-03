@@ -5,6 +5,7 @@
 
 #include <map>
 #include <vector>
+#include <random>
 
 enum class TextureType
 {
@@ -39,6 +40,9 @@ private:
     std::map<FontType, sf::Font> m_fonts;
 
     sf::Texture m_originalTankTexture;
+
+	std::mt19937 rng;
+	std::uniform_int_distribution<int> dist;
 };
 
 #endif // RESOURCES_H

@@ -1,7 +1,7 @@
 #include "resources.h"
 
 #include <vector>
-#include <random>
+
 
 const std::string texturesPath = "graphics/";
 const std::string fontsPath = "fonts/";
@@ -15,7 +15,7 @@ const std::vector<FontType> fontTypes = {FontType::Arial};
 
 Resources Resources::m_resources = Resources();
 
-Resources::Resources()
+Resources::Resources() : rng(std::random_device()()), dist(std::uniform_int_distribution<>(0,255))
 {
     m_originalTankTexture.loadFromFile(texturesPath + "tank" + texturesExtention);
 
@@ -68,9 +68,9 @@ sf::Texture Resources::generateTankTexture()
 	loadedImages.push_back(textureImage);
 	*textureImage = m_resources.m_originalTankTexture.copyToImage();
 
-    std::mt19937 rng;
-    rng.seed(std::random_device()());
-    std::uniform_int_distribution<std::mt19937::result_type> dist(0, 255);
+    //std::mt19937 rng;
+    //rng.seed(std::random_device()());
+    //std::uniform_int_distribution<std::mt19937::result_type> dist(0, 255);
 
     sf::Vector2u size = textureImage->getSize();
     sf::Color randomizedBodyColor(dist(rng), dist(rng), dist(rng), 255);

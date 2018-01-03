@@ -45,16 +45,16 @@ private:
     sf::RenderWindow m_window;
     sf::Event m_event;
     sf::Clock m_clock;
-    Server m_server;
+	Server m_server;
     TileMap m_tilemap;
     std::map<int, Tank> m_tanks;
     std::vector<Bullets> m_vecbullets;
     Bullets m_bullet;
 
-    sf::Text m_messageText;
+	sf::Text m_messageText;
 
     int m_elapsedTime = 0;
-	
+
 };
 
 #endif // GAME_H

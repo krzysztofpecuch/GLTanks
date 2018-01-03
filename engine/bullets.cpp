@@ -38,7 +38,7 @@ void Bullets::fire(float speedx, float speedy)
 
 void Bullets::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
-    target.draw(bullet);
+    target.draw(bullet, states);
 }
 
 void Bullets::setPos(sf::Vector2f newPos)

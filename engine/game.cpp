@@ -145,7 +145,7 @@ void Game::handleKeyboardInput()
         break;
         //testowo
     case sf::Keyboard::C:
-        createBullet(m_tanks[1].getCurrentDir());
+        createBullet(m_tanks[1].getCurrentDirection());
         break;
     default:
         break;
@@ -158,8 +158,8 @@ void Game::update()
     m_elapsedTime += m_clock.restart().asMilliseconds();
 
     if (state == gameState::RUNNING)
-	{
-        for (auto& tank : m_tanks)
+    {
+		for (auto& tank : m_tanks)
         {
             tank.second.update(elapsedTime);
         }
@@ -169,7 +169,7 @@ void Game::update()
             bulletss->update(elapsedTime);
             checkColBull();
 =======
-			bulletss.update(elapsedTime);
+            bulletss.update(elapsedTime);
 >>>>>>> 57eb0b1b4143500e064c4dc44ba8b2c38cf1f4ce
         }
     }
@@ -262,7 +262,7 @@ void Game::addTank(int id)
     //    StartPosition position = START_POSITIONS[count];
 
     m_tanks[id] = Tank(position);
-
+    
 }
 
 void Game::moveTank(int id, int direction)
