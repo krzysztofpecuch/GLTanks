@@ -22,6 +22,7 @@ public:
     void run();
     void sendData(const std::map<int, Tank>& tanks);
 	void sendDataMatchEnd(int winningId);
+	void resetServerFlags();
     int connectedClientsCount() const;
 private:
     void manageConnections();
@@ -39,6 +40,7 @@ private:
     sf::Packet m_packet;
 
     bool m_running = false;
+	bool mapSizeSent = false;
 };
 
 #endif // SERVER_H

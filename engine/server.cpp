@@ -10,6 +10,7 @@
 
 const int PORT = 55000;
 
+
 Server::Server(Game &game) :
     m_game(game)
 {
@@ -40,8 +41,6 @@ void Server::sendData(const std::map<int, Tank>& tanks)
 	sf::Packet playersMapPacket;
 	sf::Packet mapSizePacket;
     std::array<Player*, MAX_PLAYER_NUMBER> players;
-
-	static bool mapSizeSent = false;
 
 	packetType << PACKET_TYPE::TYPE_MAP_CREATOR;
 	mapSizePacket << m_game.getMap().getSizeX() << m_game.getMap().getSizeY();
@@ -130,6 +129,12 @@ void Server::sendDataMatchEnd(int winningId) {
 		}
 		packetWin.clear();
 	}
+	resetServerFlags();
+}
+
+void Server::resetServerFlags()
+{
+	mapSizeSent = false;
 }
 
 int Server::connectedClientsCount() const
@@ -218,7 +223,7 @@ void Server::deleteDisconnectedClients()
         if (m_clients[i]->socket().receive(dummy) == sf::Socket::Disconnected)
         {
             std::cout << "Client with id " << m_clients[i]->id() << " disconnected from server" << std::endl;
-            m_game.setMessageText("Waiting for " + std::to_string((4-Client::connectedClients())) + " more players");
+            m_game.setMessageText("Waiting for " + std::to_string((MAX_PLAYER_NUMBER-Client::connectedClients())) + " more players");
             m_clients[i]->markAsDisconnected();
             m_game.deleteTank(m_clients[i]->id());
 

@@ -68,10 +68,6 @@ sf::Texture Resources::generateTankTexture()
 	loadedImages.push_back(textureImage);
 	*textureImage = m_resources.m_originalTankTexture.copyToImage();
 
-    //std::mt19937 rng;
-    //rng.seed(std::random_device()());
-    //std::uniform_int_distribution<std::mt19937::result_type> dist(0, 255);
-
     sf::Vector2u size = textureImage->getSize();
     sf::Color randomizedBodyColor(dist(rng), dist(rng), dist(rng), 255);
     sf::Color gunColor(255 - randomizedBodyColor.r, 255 - randomizedBodyColor.g, 255 - randomizedBodyColor.b, 255);
