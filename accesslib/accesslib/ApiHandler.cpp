@@ -88,6 +88,7 @@ void ApiHandler::listenForPacket() {
 				}
 			}
 		}
+		p->clear();
 	}
 }
 
@@ -146,7 +147,7 @@ void ApiHandler::parsePacket(Packet* p, int type)
 		packetBullets = true;
 	}
 
-	if (type == PACKET_TYPE::TYPE_MAP_CREATOR)
+	if (type == PACKET_TYPE::TYPE_MAP_CREATOR && !packetMap)
 	{
 		*p >> mapSizeX >> mapSizeY;
 		createMap(mapSizeX, mapSizeY);
@@ -172,4 +173,6 @@ void ApiHandler::parsePacket(Packet* p, int type)
 		packetBullets = false;
 		packetMapPlayers = false;
 	}
+
+	
 }
