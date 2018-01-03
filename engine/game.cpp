@@ -373,7 +373,16 @@ void Game::checkColBull()
             deleteTank(2);
         }
 
+        if(m_tilemap.getTileNumber(bullet.getTop() / TANK_SIZE, bullet.getRight() / TANK_SIZE))
+        {
+            deleteBullet();
+        }
     }
+}
+
+void Game::deleteBullet()
+{
+    m_vecbullets.erase(m_vecbullets.begin());
 }
 
 TileMap &Game::getMap()

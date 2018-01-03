@@ -1,4 +1,5 @@
 #include "bullets.h"
+#include <iostream>
 
 Bullets::Bullets()
 {
