@@ -45,6 +45,13 @@ Resources::Resources()
 
 }
 
+Resources::~Resources() {
+	for (int i = 0; i < loadedImages.size(); i++)
+	{
+		delete loadedImages[i];
+	}
+}
+
 sf::Texture& Resources::getTexture(const TextureType &type)
 {
     return m_resources.m_textures.at(type);
@@ -57,29 +64,31 @@ sf::Font &Resources::getFont(const FontType& type)
 
 sf::Texture Resources::generateTankTexture()
 {
-    sf::Image textureImage = m_resources.m_originalTankTexture.copyToImage();
+	sf::Image *textureImage = new sf::Image();
+	loadedImages.push_back(textureImage);
+	*textureImage = m_resources.m_originalTankTexture.copyToImage();
 
     std::mt19937 rng;
     rng.seed(std::random_device()());
     std::uniform_int_distribution<std::mt19937::result_type> dist(0, 255);
 
-    sf::Vector2u size = textureImage.getSize();
+    sf::Vector2u size = textureImage->getSize();
     sf::Color randomizedBodyColor(dist(rng), dist(rng), dist(rng), 255);
     sf::Color gunColor(255 - randomizedBodyColor.r, 255 - randomizedBodyColor.g, 255 - randomizedBodyColor.b, 255);
     for (unsigned int w = 0; w < size.x; w++)
     {
         for (unsigned int h = 0; h < size.y; h++)
         {
-            sf::Color currentColor = textureImage.getPixel(w, h);
+            sf::Color currentColor = textureImage->getPixel(w, h);
             if (currentColor == sf::Color(237, 28, 36, 255)) {
-                textureImage.setPixel(w, h, randomizedBodyColor);
+                textureImage->setPixel(w, h, randomizedBodyColor);
             } else {
-                textureImage.setPixel(w, h, gunColor);
+                textureImage->setPixel(w, h, gunColor);
             }
         }
     }
     sf::Texture texture;
-    texture.loadFromImage(textureImage);
+    texture.loadFromImage(*textureImage);
 
     return texture;
 }

@@ -21,7 +21,7 @@ public:
 
     void run();
     void sendData(const std::map<int, Tank>& tanks);
-
+	void sendDataMatchEnd(int winningId);
     int connectedClientsCount() const;
 private:
     void manageConnections();

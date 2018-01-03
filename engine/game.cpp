@@ -199,7 +199,7 @@ void Game::draw()
             setMessageText("Press any key to play again");
             m_window.draw(m_messageText);
             m_window.display();
-
+			//m_server.sendDataMatchEnd(m_tanks costam);
             waitForKeyPress();
             state = WAITING;
         }
