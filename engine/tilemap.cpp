@@ -1,26 +1,14 @@
 #include "tilemap.h"
 #include <fstream>
 
-TileMap::TileMap()
-{
-	sizeY = 17;
-	sizeX = 17;
-}
-
-TileMap::~TileMap()
-{
-
-}
 
 void TileMap::loadFile()
 {
     std::ifstream file("graphics/map.txt");
 
-    const int tilesCount = 289;
-
     if(file.is_open())
     {
-        for(int i = 0; i < tilesCount; ++i)
+        for(int i = 0; i < TILES_COUNT; ++i)
         {
                 file >> m_tiles[i];
         }
@@ -82,14 +70,17 @@ void TileMap::draw(sf::RenderTarget &target, sf::RenderStates states) const
     target.draw(m_vertices, states);
 }
 
-int TileMap::getSizeY() {
+int TileMap::getSizeY() const
+{
 	return sizeY;
 }
 
-int TileMap::getSizeX() {
+int TileMap::getSizeX() const
+{
 	return sizeX;
 }
 
-int TileMap::getTileCount() {
+int TileMap::getTileCount() const
+{
 	return sizeY * sizeX;
 }

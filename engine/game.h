@@ -11,7 +11,7 @@
 #include <map>
 #include <string>
 
-#define MAX_PLAYER_NUMBER 2
+const int MAX_PLAYER_NUMBER = 2;
 
 enum gameState {RUNNING, WAITING};
 
@@ -46,8 +46,6 @@ private:
     TileMap m_tilemap;
     std::map<int, Tank> m_tanks;
     sf::Text m_messageText;
-
-    sf::Font font;
 
     int m_elapsedTime = 0;
 	

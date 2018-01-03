@@ -44,13 +44,13 @@ public:
     void turnRight();
 
     sf::Vector2i getPosition() const;
-    int getCurrentDir() const;
+    int getCurrentDirection() const;
 	void update(float elapsed);
 	
 
 private:
 
-    int m_currnetDir;
+    int m_currentDirection;
 
 	sf::Sprite  m_sprite;
 	sf::Sprite m_actualSprite;

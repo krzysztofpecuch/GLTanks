@@ -39,14 +39,16 @@ void Server::sendData(const std::map<int, Tank>& tanks)
 	sf::Packet packetType;
 	sf::Packet playersMapPacket;
 	sf::Packet mapSizePacket;
-	std::array<Player*, 4> players;
+    std::array<Player*, MAX_PLAYER_NUMBER> players;
 
 	const int* map = m_game.getMap().getTileMap();
 	std::string textMap;
 	
-	for (int i = 0; i < m_game.getMap().getTileCount(); i++) {
+    for (int i = 0; i < m_game.getMap().getTileCount(); i++)
+    {
 		textMap += std::to_string(map[i]);
-		if (i != 0 && (i%m_game.getMap().getSizeY() == 0)) {
+        if (i != 0 && (i%m_game.getMap().getSizeY() == 0))
+        {
 			textMap += '\n';
 		}
 	}
@@ -56,16 +58,19 @@ void Server::sendData(const std::map<int, Tank>& tanks)
 	int index = 0;
 	for (const auto& tank : tanks)
 	{
-		Player* player = new Player;
-		player->ID = tank.first;
-		player->x = tank.second.getPosition().x;
-		player->y = tank.second.getPosition().y;
-		player->turn = tank.second.getCurrentDir();
-		players[index] = player;
+        Player player;
+        player.ID = tank.first;
+        player.x = tank.second.getPosition().x;
+        player.y = tank.second.getPosition().y;
+        player.turn = tank.second.getCurrentDirection();
+        players[index] = &player;
 		index++;
 	}
 
+
+
 	packetType << PACKET_TYPE::TYPE_MAP_PLAYERS;
+
 	for (int i = 0; i < MAX_PLAYER_NUMBER; i++)
 	{
 		playersMapPacket << *players[i];
@@ -73,8 +78,10 @@ void Server::sendData(const std::map<int, Tank>& tanks)
 
 	for (const auto& client : m_clients)
 	{
-		if (client->socket().send(packetType) == sf::Socket::Done) {
-			if (client->socket().send(playersMapPacket) == sf::Socket::Done) {
+        if (client->socket().send(packetType) == sf::Socket::Done)
+        {
+            if (client->socket().send(playersMapPacket) == sf::Socket::Done)
+            {
 				std::cout << "Wyslano pakiet z graczami do klienta " << client->id() << std::endl;
 			}
 		}
@@ -84,9 +91,12 @@ void Server::sendData(const std::map<int, Tank>& tanks)
 	packetType << PACKET_TYPE::TYPE_MAP_CREATOR;
 	mapSizePacket << m_game.getMap().getSizeX() << m_game.getMap().getSizeY();
 
-	for (const auto& client : m_clients) {
-		if (client->socket().send(packetType) == sf::Socket::Done) {
-			if (client->socket().send(mapSizePacket) == sf::Socket::Done) {
+    for (const auto& client : m_clients)
+    {
+        if (client->socket().send(packetType) == sf::Socket::Done)
+        {
+            if (client->socket().send(mapSizePacket) == sf::Socket::Done)
+            {
 				std::cout << "Wyslano pakiet z rozmiarami mapy do klienta " << client->id() << std::endl;
 			}
 		}
@@ -118,10 +128,12 @@ void Server::manageConnections()
 
     while (m_running)
     {
-		if (m_game.state == gameState::WAITING) {
+        if (m_game.state == gameState::WAITING)
+        {
 			acceptNewClients();
 		}
-		else {
+        else
+        {
 			receiveData();
 		}
         deleteDisconnectedClients();
@@ -147,7 +159,8 @@ void Server::acceptNewClients()
 
         m_clients.push_back(client);
 		
-		if (m_clients.size() == MAX_PLAYER_NUMBER) {
+        if (m_clients.size() == MAX_PLAYER_NUMBER)
+        {
 			m_game.state = gameState::RUNNING;
 		}
     }

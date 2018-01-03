@@ -19,11 +19,11 @@ Resources::Resources()
 {
     int m_texturesCount = static_cast<int>(TextureType::Count);
 
-    sf::Texture texture;
     std::string path;
 
     for (int i = 0; i < m_texturesCount; ++i)
     {
+        sf::Texture texture;
         path = texturesPath + textureFileNames[i] + texturesExtention;
 
         if (!texture.loadFromFile(path))
@@ -34,12 +34,22 @@ Resources::Resources()
         m_textures.insert(std::pair<TextureType, sf::Texture>(textureTypes[i], texture));
     }
 
-//    if (!m_font.loadFromFile("fonts/LuckiestGuy.ttf"))
-//    {
-//        qDebug() << "Can't load font!";
-//    }
-
     m_originalTankTexture = m_textures.at(TextureType::Tank);
+
+    int fontCount = static_cast<int>(FontType::Count);
+
+    for (int i = 0; i < fontCount; ++i)
+    {
+        sf::Font font;
+        path = fontsPath + fontFileNames[i] + fontsExtention;
+
+        if (!font.loadFromFile(path))
+        {
+//            qDebug() << "Can't load texture: " << path.c_str();
+        }
+
+        m_fonts.insert(std::pair<FontType, sf::Font>(fontTypes[i], font));
+    }
 
 
 }
@@ -52,9 +62,9 @@ sf::Texture& Resources::getTexture(const TextureType &type)
     return m_resources.m_textures.at(type);
 }
 
-sf::Font &Resources::getFont()
+sf::Font &Resources::getFont(const FontType& type)
 {
-    return m_resources.m_font;
+    return m_resources.m_fonts.at(type);
 }
 
 sf::Texture Resources::generateTankTexture()

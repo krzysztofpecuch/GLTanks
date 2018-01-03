@@ -23,14 +23,15 @@ public:
     Resources();
 
     static sf::Texture& getTexture(const TextureType& type);
-    static sf::Font& getFont();
+    static sf::Font& getFont(const FontType &type);
 
 private:
     sf::Texture generateTankTexture();
 
     static Resources m_resources;
     std::map<TextureType, sf::Texture> m_textures;
-    sf::Font m_font;
+    std::map<FontType, sf::Font> m_fonts;
+//    sf::Font m_font;
 
     sf::Texture m_originalTankTexture;
 };

@@ -2,6 +2,8 @@
 
 #include <conio.h>
 
+#include "resources.h"
+
 const std::vector<StartPosition> START_POSITIONS = {{sf::Vector2i{ 1,  1}, LEFT},
                                                     {sf::Vector2i{ 1, 15}, LEFT},
                                                     {sf::Vector2i{15,  1}, RIGHT},
@@ -44,11 +46,7 @@ void Game::initialize()
         throw "Tiles could not be loaded";
     }
 
-
-//    sf::Font font;
-    font.loadFromFile("fonts/arial.ttf");
-
-    m_messageText.setFont(font);
+    m_messageText.setFont(Resources::getFont(FontType::Arial));
     m_messageText.setCharacterSize(60);
     m_messageText.setFillColor(sf::Color::White);
 
@@ -81,7 +79,7 @@ void Game::handleKeyboardInput()
         m_window.close();
         break;
     case sf::Keyboard::Up:
-        switch(m_tanks[1].getCurrentDir())
+        switch(m_tanks[1].getCurrentDirection())
         {
         case Directions::UP:
             if(m_tilemap.getTileNumber(m_tanks[1].getPosition().y - 1, m_tanks[1].getPosition().x) != 1)
@@ -110,7 +108,7 @@ void Game::handleKeyboardInput()
         }
         break;
     case sf::Keyboard::Down:
-        switch(m_tanks[1].getCurrentDir())
+        switch(m_tanks[1].getCurrentDirection())
         {
         case Directions::UP:
             if(m_tilemap.getTileNumber(m_tanks[1].getPosition().y + 1, m_tanks[1].getPosition().x) != 1)
@@ -252,7 +250,7 @@ void Game::moveTank(int id, int direction)
     {
     case 0:
     {
-        switch (m_tanks[id].getCurrentDir())
+        switch (m_tanks[id].getCurrentDirection())
         {
         case Directions::UP:
             if(m_tilemap.getTileNumber(m_tanks[id].getPosition().y - 1, m_tanks[id].getPosition().x) != 1)
@@ -288,7 +286,7 @@ void Game::moveTank(int id, int direction)
         m_tanks[id].turnRight();
         break;
     case 3:
-        switch (m_tanks[id].getCurrentDir())
+        switch (m_tanks[id].getCurrentDirection())
         {
         case Directions::UP:
             if(m_tilemap.getTileNumber(m_tanks[id].getPosition().y + 1, m_tanks[id].getPosition().x) != 1)

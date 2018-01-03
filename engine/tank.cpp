@@ -5,19 +5,16 @@
 Tank::Tank(sf::Vector2i tile)
 {
     std::cout<<  tile.x << " " << tile.y << std::endl;
-    //m_sprite.setTexture(*tankTexture);
 
     m_sprite.setPosition(tile.x * TILE_SIZE ,tile.y * TILE_SIZE);
 	m_actualSprite.setPosition(tile.x * TILE_SIZE, tile.y * TILE_SIZE);
-    m_currnetDir = Directions::DOWN;
+    m_currentDirection = Directions::DOWN;
 
 }
 
-Tank::~Tank() {
-	//if (textureImage != nullptr)
-	//	delete textureImage;
-	//if (tankTexture != nullptr)
-	//	delete tankTexture;
+Tank::~Tank()
+{
+
 }
 
 Tank::Tank(StartPosition initPosition)
@@ -32,22 +29,22 @@ Tank::Tank(StartPosition initPosition)
     case UP:
 		m_sprite.rotate(180);
 		m_actualSprite.rotate(180);
-        m_currnetDir = Directions::UP;
+        m_currentDirection = Directions::UP;
         break;
     case DOWN:
-        m_currnetDir = Directions::DOWN;
+        m_currentDirection = Directions::DOWN;
         break;
     case LEFT:
 		m_sprite.rotate(90);
 		m_actualSprite.rotate(90);
-        m_currnetDir = Directions::LEFT;
+        m_currentDirection = Directions::LEFT;
 		m_sprite.move(TILE_SIZE, 0);
 		m_actualSprite.move(TILE_SIZE, 0);
         break;
     case RIGHT:
 		m_sprite.rotate(-90);
 		m_actualSprite.rotate(-90);
-        m_currnetDir = Directions::RIGHT;
+        m_currentDirection = Directions::RIGHT;
 		m_sprite.move(0, TILE_SIZE);
 		m_actualSprite.move(0, TILE_SIZE);
         break;
@@ -63,7 +60,7 @@ void Tank::shot()
 
 void Tank::moveStraight()
 {
-    switch (m_currnetDir) {
+    switch (m_currentDirection) {
     case UP:
         m_sprite.move(0, -TILE_SIZE);
         break;
@@ -83,7 +80,7 @@ void Tank::moveStraight()
 
 void Tank::moveBackward()
 {
-    switch (m_currnetDir) {
+    switch (m_currentDirection) {
     case UP:
         m_sprite.move(0, TILE_SIZE);
         break;
@@ -103,15 +100,15 @@ void Tank::moveBackward()
 
 void Tank::turnLeft()
 {
-    m_currnetDir -=1;
-    if(m_currnetDir < UP)
+    m_currentDirection -=1;
+    if(m_currentDirection < UP)
     {
-        m_currnetDir = LEFT;
+        m_currentDirection = LEFT;
     }
 	
     m_sprite.rotate(-90);
 
-    switch (m_currnetDir) {
+    switch (m_currentDirection) {
     case UP:
         m_sprite.setPosition(m_sprite.getPosition().x + TANK_SIZE, m_sprite.getPosition().y);
         break;
@@ -131,15 +128,15 @@ void Tank::turnLeft()
 
 void Tank::turnRight()
 {
-    m_currnetDir +=1;
-    if(m_currnetDir == NUMBER_DIR_STATES)
+    m_currentDirection +=1;
+    if(m_currentDirection == NUMBER_DIR_STATES)
     {
-        m_currnetDir = UP;
+        m_currentDirection = UP;
     }
 
     m_sprite.rotate(90);
 
-    switch (m_currnetDir) {
+    switch (m_currentDirection) {
     case UP:
         m_sprite.setPosition(m_sprite.getPosition().x, m_sprite.getPosition().y + TANK_SIZE);
         break;
@@ -160,7 +157,7 @@ void Tank::turnRight()
 
 sf::Vector2i Tank::getPosition() const
 {
-    switch (m_currnetDir) {
+    switch (m_currentDirection) {
     case UP:
         return(sf::Vector2i(m_sprite.getPosition().x / TANK_SIZE - 1 , m_sprite.getPosition().y / TANK_SIZE - 1));
         break;
@@ -179,9 +176,9 @@ sf::Vector2i Tank::getPosition() const
     }
 }
 
-int Tank::getCurrentDir() const
+int Tank::getCurrentDirection() const
 {
-    return m_currnetDir;
+    return m_currentDirection;
 }
 
 void Tank::draw(sf::RenderTarget &target, sf::RenderStates states) const
