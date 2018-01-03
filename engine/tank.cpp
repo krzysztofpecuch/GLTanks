@@ -148,6 +148,34 @@ void Tank::turnRight()
 
 }
 
+void Tank::setPosition(const StartPosition &position)
+{
+    m_actualSprite.setPosition(position.position.x * TILE_SIZE, position.position.y * TILE_SIZE);
+
+    switch (position.direction) {
+    case UP:
+        m_actualSprite.rotate(180);
+        m_currentDirection = Directions::UP;
+        break;
+    case DOWN:
+        m_currentDirection = Directions::DOWN;
+        break;
+    case LEFT:
+        m_actualSprite.rotate(90);
+        m_currentDirection = Directions::LEFT;
+        m_actualSprite.move(TILE_SIZE, 0);
+        break;
+    case RIGHT:
+        m_actualSprite.rotate(-90);
+        m_currentDirection = Directions::RIGHT;
+        m_actualSprite.move(0, TILE_SIZE);
+        break;
+    default:
+        break;
+    }
+
+}
+
 sf::Vector2i Tank::getPosition() const
 {
     switch (m_currentDirection) {

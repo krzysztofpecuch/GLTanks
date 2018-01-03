@@ -48,8 +48,8 @@ private:
     Server m_server;
     TileMap m_tilemap;
     std::map<int, Tank> m_tanks;
-    std::vector<Bullets*> m_vecbullets;
-    Bullets* m_bullet;
+    std::vector<Bullets> m_vecbullets;
+    Bullets m_bullet;
 
     sf::Text m_messageText;
 

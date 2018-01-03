@@ -47,6 +47,7 @@ public:
     void turnLeft();
     void turnRight();
 
+    void setPosition(const StartPosition& position);
     sf::Vector2i getPosition() const;
     int getCurrentDirection() const;
 	void update(float elapsed);
