@@ -7,7 +7,10 @@
 
 enum class TextureType
 {
-    Tank,
+    Tank1,
+    Tank2,
+    Tank3,
+    Tank4,
     Count
 };
 
@@ -31,7 +34,6 @@ private:
     static Resources m_resources;
     std::map<TextureType, sf::Texture> m_textures;
     std::map<FontType, sf::Font> m_fonts;
-//    sf::Font m_font;
 
     sf::Texture m_originalTankTexture;
 };

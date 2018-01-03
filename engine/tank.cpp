@@ -2,24 +2,12 @@
 #include "resources.h"
 #include <random>
 
-Tank::Tank(sf::Vector2i tile)
+int Tank::instancesCount = -1;
+
+Tank::Tank(const StartPosition &initPosition)
 {
-    std::cout<<  tile.x << " " << tile.y << std::endl;
-
-    m_sprite.setPosition(tile.x * TILE_SIZE ,tile.y * TILE_SIZE);
-	m_actualSprite.setPosition(tile.x * TILE_SIZE, tile.y * TILE_SIZE);
-    m_currentDirection = Directions::DOWN;
-
-}
-
-Tank::~Tank()
-{
-
-}
-
-Tank::Tank(StartPosition initPosition)
-{
-    m_actualSprite.setTexture(Resources::getTexture(TextureType::Tank));
+    instancesCount++;
+    m_actualSprite.setTexture(Resources::getTexture(static_cast<TextureType>(instancesCount)));
 	
 	//Same old
     m_sprite.setPosition(initPosition.position.x * TILE_SIZE ,initPosition.position.y * TILE_SIZE);
@@ -51,6 +39,11 @@ Tank::Tank(StartPosition initPosition)
     default:
         break;
     }
+}
+
+Tank::~Tank()
+{
+    instancesCount--;
 }
 
 void Tank::shot()

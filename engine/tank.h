@@ -21,21 +21,25 @@ enum Directions
     LEFT,
     NUMBER_DIR_STATES
 };
+
 struct StartPosition
 {
-    sf::Vector2i position;
-    Directions direction;
+    sf::Vector2i position = {};
+    Directions direction = UP;
+
+    StartPosition(const sf::Vector2i& pos = {}, const Directions& dir = UP) :
+        position(pos), direction(dir)
+    {
+
+    }
 };
 
 
 class Tank: public sf::Drawable
 {
 public:
-
-    Tank(sf::Vector2i tile = {});
-    Tank(StartPosition initPosition);
-	~Tank();
-
+    Tank(const StartPosition& initPosition = StartPosition());
+    ~Tank();
 
     void shot();
     void moveStraight();
@@ -46,10 +50,8 @@ public:
     sf::Vector2i getPosition() const;
     int getCurrentDirection() const;
 	void update(float elapsed);
-	
 
 private:
-
     int m_currentDirection;
 
 	sf::Sprite  m_sprite;
@@ -57,11 +59,10 @@ private:
     sf::Texture tankTexture;
     sf::Image textureImage;
 	
-
+    static int instancesCount;
 
 protected:
     void draw(sf::RenderTarget &target, sf::RenderStates states) const;
-	
 };
 
 #endif // TANK_H

@@ -9,7 +9,7 @@ const std::string texturesExtention = ".png";
 const std::string fontsExtention = ".ttf";
 const std::vector<std::string> textureFileNames = {"tank"};
 const std::vector<std::string> fontFileNames = { "arial" };
-const std::vector<TextureType> textureTypes = {TextureType::Tank};
+const std::vector<TextureType> textureTypes = {TextureType::Tank1, TextureType::Tank2, TextureType::Tank3, TextureType::Tank4};
 const std::vector<FontType> fontTypes = {FontType::Arial};
 
 
@@ -17,31 +17,22 @@ Resources Resources::m_resources = Resources();
 
 Resources::Resources()
 {
-    int m_texturesCount = static_cast<int>(TextureType::Count);
+    m_originalTankTexture.loadFromFile(texturesPath + "tank" + texturesExtention);
 
-    std::string path;
+    int m_texturesCount = static_cast<int>(TextureType::Count);
 
     for (int i = 0; i < m_texturesCount; ++i)
     {
-        sf::Texture texture;
-        path = texturesPath + textureFileNames[i] + texturesExtention;
-
-        if (!texture.loadFromFile(path))
-        {
-//            qDebug() << "Can't load texture: " << path.c_str();
-        }
-
+        sf::Texture texture = generateTankTexture();
         m_textures.insert(std::pair<TextureType, sf::Texture>(textureTypes[i], texture));
     }
-
-    m_originalTankTexture = m_textures.at(TextureType::Tank);
 
     int fontCount = static_cast<int>(FontType::Count);
 
     for (int i = 0; i < fontCount; ++i)
     {
         sf::Font font;
-        path = fontsPath + fontFileNames[i] + fontsExtention;
+        std::string path = fontsPath + fontFileNames[i] + fontsExtention;
 
         if (!font.loadFromFile(path))
         {
@@ -56,9 +47,6 @@ Resources::Resources()
 
 sf::Texture& Resources::getTexture(const TextureType &type)
 {
-    if (type == TextureType::Tank)
-        m_resources.m_textures[type] = m_resources.generateTankTexture();
-
     return m_resources.m_textures.at(type);
 }
 
