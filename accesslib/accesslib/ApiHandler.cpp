@@ -57,6 +57,25 @@ void ApiHandler::createMap(int sizeX, int sizeY)
 	}
 }
 
+void ApiHandler::updateMap(string data)
+{
+	int* arr = new int[data.length()];
+
+	for (int i = 0; i < data.length(); i++)
+	{
+		arr[i] = data[i];
+	}
+	for (int i = 0; i < mapSizeY; i++)
+	{
+		for (int j = 0; j < mapSizeX; j++)
+		{
+			mapArray[i][j] = arr[i*mapSizeX + j];
+		}
+	}
+
+	delete[] arr;
+}
+
 void ApiHandler::listenForPacket() {
 	int msgType;
 	while (listeningMode) {
@@ -124,6 +143,7 @@ void ApiHandler::parsePacket(Packet* p, int type)
 		{
 			*p >> *playersArr[i];
 		}
+		updateMap(mapData);
 		packetMapPlayers = true;
 	}
 

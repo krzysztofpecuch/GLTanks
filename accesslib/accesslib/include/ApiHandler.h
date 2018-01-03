@@ -59,6 +59,7 @@ private:
 	int mapSizeX;
 	int mapSizeY;
 	void createMap(int mapSizeX, int mapSizeY);
+	void updateMap(string data);
 
 	vector<Bullet*> bullets;
 	int bulletsSize;
