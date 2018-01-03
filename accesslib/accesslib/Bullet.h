@@ -17,6 +17,7 @@ typedef struct Player
 
 enum PACKET_TYPE
 {
+	TYPE_WIN,
 	TYPE_BULLETS,
 	TYPE_MAP_CREATOR,
 	TYPE_MAP_PLAYERS

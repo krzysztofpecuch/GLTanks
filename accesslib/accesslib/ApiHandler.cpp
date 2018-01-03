@@ -63,7 +63,7 @@ void ApiHandler::updateMap(string data)
 
 	for (int i = 0; i < data.length(); i++)
 	{
-		arr[i] = data[i];
+		arr[i] = data[i] - '0';
 	}
 	for (int i = 0; i < mapSizeY; i++)
 	{
@@ -98,6 +98,7 @@ void ApiHandler::sendAction(int action) {
 		if (ts->send(movementInformation) == Socket::Done) {
 			cout << "Sent move " << action << endl;
 			listeningMode = true;
+			allPacketsReceived = false;
 		}
 	}	
 }
@@ -113,6 +114,23 @@ void ApiHandler::forceSendAction(int action) {
 
 void ApiHandler::parsePacket(Packet* p, int type)
 {
+	if (type == PACKET_TYPE::TYPE_WIN) {
+		int win;
+		*p >> win;
+		if (win) {
+			cout << "You won!" << endl;
+		}
+		else {
+			cout << "You lost!" << endl;
+		}
+		allPacketsReceived = false;
+		listeningMode = true;
+		packetBullets = false;
+		packetMap = false;
+		packetMapPlayers = false;
+		return;
+	}
+
 	if (type == PACKET_TYPE::TYPE_BULLETS)
 	{
 		*p >> bulletsSize;
@@ -147,8 +165,11 @@ void ApiHandler::parsePacket(Packet* p, int type)
 		packetMapPlayers = true;
 	}
 
-	if (packetBullets && packetMap && packetMapPlayers)
+	if (!allPacketsReceived && packetMap && packetMapPlayers) //&& packetBullets
 	{
 		allPacketsReceived = true;
+		listeningMode = false;
+		packetBullets = false;
+		packetMapPlayers = false;
 	}
 }
