@@ -199,7 +199,15 @@ void Game::draw()
             setMessageText("Press any key to play again");
             m_window.draw(m_messageText);
             m_window.display();
-			//m_server.sendDataMatchEnd(m_tanks costam);
+
+            int winnerId = -1;
+
+            for (const auto& tank : m_tanks)
+            {
+                winnerId = tank.first;
+            }
+
+            m_server.sendDataMatchEnd(winnerId);
             waitForKeyPress();
             state = WAITING;
         }

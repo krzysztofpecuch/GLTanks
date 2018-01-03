@@ -46,7 +46,7 @@ Resources::Resources()
 }
 
 Resources::~Resources() {
-	for (int i = 0; i < loadedImages.size(); i++)
+    for (unsigned i = 0; i < loadedImages.size(); i++)
 	{
 		delete loadedImages[i];
 	}
