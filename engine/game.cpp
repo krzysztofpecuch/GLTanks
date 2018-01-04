@@ -203,7 +203,7 @@ void Game::draw()
         {
             m_window.draw(tank.second);
 
-            std::cout << "Tank position: ( " << tank.second.getPosition().x << ", " << tank.second.getPosition().y << " )" << std::endl;
+//            std::cout << "Tank position: ( " << tank.second.getPosition().x << ", " << tank.second.getPosition().y << " )" << std::endl;
         }
 
         if (m_tanks.size() == 1)
@@ -220,11 +220,6 @@ void Game::draw()
             }
 
             m_server.sendDataMatchEnd(winnerId);
-
-            for (const auto& tank : m_tanks)
-            {
-                std::cout << "debug: tank id " << tank.first << std::endl;
-            }
 
             waitForKeyPress();
             state = WAITING;

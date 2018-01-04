@@ -97,7 +97,7 @@ void Server::sendData(const std::map<int, Tank>& tanks)
         {
             if (client->socket().send(playersMapPacket) == sf::Socket::Done)
             {
-				std::cout << "Map and players sent to " << client->id() << std::endl;
+//				std::cout << "Map and players sent to " << client->id() << std::endl;
 			}
 		}
 	}
@@ -228,6 +228,7 @@ void Server::receiveData()
     for (const auto& client : m_clients)
     {
         m_packet.clear();
+
         if (client->socket().receive(m_packet) == sf::Socket::Done)
         {
             int data;
@@ -248,11 +249,12 @@ void Server::deleteDisconnectedClients()
 //            m_game.restart();
 //            m_game.state = WAITING;
             std::cout << "Client with id " << m_clients[i]->id() << " disconnected from server" << std::endl;
+            sendDataMatchEnd(-1);
             m_game.setMessageText("Waiting for " + std::to_string((MAX_PLAYER_NUMBER-Client::connectedClients())) + " more players");
             m_game.deleteTank(m_clients[i]->id());
 
             m_clients[i]->markAsDisonnected();
-            //fix memory leak!!!
+            delete m_clients[i];
             m_clients.erase(m_clients.begin() + i);
             break;
         }
