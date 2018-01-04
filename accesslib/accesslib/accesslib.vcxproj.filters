@@ -26,10 +26,10 @@
     <ClInclude Include="include\ApiHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Bullet.h">
+    <ClInclude Include="operators.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="operators.h">
+    <ClInclude Include="commons.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

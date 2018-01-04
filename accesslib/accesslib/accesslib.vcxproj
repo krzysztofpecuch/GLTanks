@@ -23,7 +23,7 @@
     <ClCompile Include="operators.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Bullet.h" />
+    <ClInclude Include="commons.h" />
     <ClInclude Include="include\ApiHandler.h" />
     <ClInclude Include="operators.h" />
   </ItemGroup>

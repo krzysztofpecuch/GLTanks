@@ -1,6 +1,6 @@
 #pragma once
 #include "SFML\Network.hpp"
-#include "Bullet.h"
+#include "commons.h"
 using namespace sf;
 
 Packet& operator >>(Packet& p, Bullet& bullet);
