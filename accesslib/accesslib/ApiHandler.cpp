@@ -16,7 +16,6 @@ ApiHandler::ApiHandler()
 	packetBullets = false;
 	packetMap = false;
 	packetMapPlayers = false;
-	allPacketsReceived = false;
 }
 
 ApiHandler::~ApiHandler()
@@ -34,10 +33,11 @@ ApiHandler::~ApiHandler()
 
 	bullets.clear();
 
-	if (ts != nullptr)
-		delete ts;
-	if (p != nullptr)
-		delete p;
+	delete ts;
+	ts = nullptr;
+
+	delete p;
+	p = nullptr;
 }
 
 void ApiHandler::connect(const char* serverAddr) {
@@ -141,7 +141,6 @@ void ApiHandler::parsePacket(Packet* p, int type)
 		}
 		delete[] mapArray;
 
-		allPacketsReceived = false;
 		listeningMode = true;
 		packetBullets = false;
 		packetMap = false;
@@ -193,6 +192,4 @@ void ApiHandler::parsePacket(Packet* p, int type)
 	{
 		listeningMode = false;
 	}
-
-	
 }

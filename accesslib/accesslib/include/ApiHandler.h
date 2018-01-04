@@ -51,7 +51,6 @@ private:
 	bool packetBullets;
 	bool packetMap;
 	bool packetMapPlayers;
-	bool allPacketsReceived;
 	
 	array<Player*, 4> playersArr;
 	
