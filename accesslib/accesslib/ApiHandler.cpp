@@ -20,7 +20,7 @@ ApiHandler::ApiHandler()
 
 ApiHandler::~ApiHandler()
 {
-	for (int i = 0; i < mapSizeY; i++)
+	for (int i = 0; i < mapSizeX; i++)
 	{
 		delete[] mapArray[i];
 	}
@@ -55,10 +55,10 @@ void ApiHandler::connect(const char* serverAddr) {
 
 void ApiHandler::createMap(int sizeX, int sizeY)
 {
-	mapArray = new int*[sizeY];
-	for (int i = 0; i < sizeY; i++)
+	mapArray = new int*[sizeX];
+	for (int i = 0; i < sizeX; i++)
 	{
-		mapArray[i] = new int[sizeX];
+		mapArray[i] = new int[sizeY];
 	}
 }
 
@@ -70,11 +70,11 @@ void ApiHandler::updateMap(string data)
 	{
 		arr[i] = data[i] - '0';
 	}
-	for (int i = 0; i < mapSizeY; i++)
+	for (int i = 0; i < mapSizeX; i++)
 	{
-		for (int j = 0; j < mapSizeX; j++)
+		for (int j = 0; j < mapSizeY; j++)
 		{
-			mapArray[i][j] = arr[i*mapSizeX + j];
+			mapArray[i][j] = arr[i*mapSizeY + j];
 		}
 	}
 
@@ -135,7 +135,7 @@ void ApiHandler::parsePacket(Packet* p, int type)
 			cout << "Game ended. Class state reset." << endl;
 		}
 
-		for (int i = 0; i < mapSizeY; i++)
+		for (int i = 0; i < mapSizeX; i++)
 		{
 			delete[] mapArray[i];
 		}
