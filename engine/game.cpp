@@ -385,22 +385,23 @@ void Game::checkColBull()
 {
     for(auto& bullet : m_vecbullets)
     {
-        if(bullet.getLeft() < m_tanks[2].getPosition().x * TANK_SIZE + TANK_SIZE && bullet.getRight() > m_tanks[2].getPosition().x * TANK_SIZE && bullet.getTop() < m_tanks[2].getPosition().y * TANK_SIZE + TANK_SIZE && bullet.getBottom() > m_tanks[2].getPosition().y * TANK_SIZE)
+        if(bullet.getLeft() < m_tanks[0].getPosition().x * TANK_SIZE + TANK_SIZE && bullet.getRight() > m_tanks[0].getPosition().x * TANK_SIZE && bullet.getTop() < m_tanks[0].getPosition().y * TANK_SIZE + TANK_SIZE && bullet.getBottom() > m_tanks[0].getPosition().y * TANK_SIZE)
         {
-            // enemy.setPosition(sf::Vector2f(3000, 3000));
-            deleteTank(2);
-        }
-
-        if(m_tilemap.getTileNumber(bullet.getTop() / TANK_SIZE, bullet.getRight() / TANK_SIZE))
-        {
-            deleteBullet();
+            deleteTank(0);
         }
     }
-}
 
-void Game::deleteBullet()
-{
-    m_vecbullets.erase(m_vecbullets.begin());
+    for(auto it = m_vecbullets.begin(); it != m_vecbullets.end(); )
+    {
+        if(m_tilemap.getTileNumber(it->getTop() / TANK_SIZE, it->getRight() / TANK_SIZE) || m_tilemap.getTileNumber(it->getBottom() / TANK_SIZE, it->getLeft() / TANK_SIZE))
+        {
+            m_vecbullets.erase(it);
+        }
+        else
+        {
+            ++it;
+        }
+    }
 }
 
 TileMap &Game::getMap()

@@ -28,7 +28,6 @@ public:
     void setMessageText(const std::string &text);
 	void createBullet(int direction);
     void checkColBull();
-    void deleteBullet();
 
     TileMap& getMap();
 
