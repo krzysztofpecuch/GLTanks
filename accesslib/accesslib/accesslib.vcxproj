@@ -20,9 +20,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ApiHandler.cpp" />
+    <ClCompile Include="ApiListener.cpp" />
     <ClCompile Include="operators.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ApiListener.h" />
     <ClInclude Include="commons.h" />
     <ClInclude Include="include\ApiHandler.h" />
     <ClInclude Include="operators.h" />

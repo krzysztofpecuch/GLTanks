@@ -7,9 +7,12 @@
 #include <vector>
 #include <array>
 #include <iostream>
+#include <thread>
 #include "SFML\Network.hpp"
 #include "commons.h"
 #include "operators.h"
+
+class ApiListener;
 
 using namespace std;
 using namespace sf;
@@ -22,10 +25,12 @@ struct Bullet;
 struct Player;
 struct Map;
 enum PACKET_TYPE;
+class ApiListener;
 
 #include <array>
 #include <string>
 #include <vector>
+
 using namespace std;
 #endif  
 
@@ -35,14 +40,22 @@ public:
 	~ApiHandler();
 
 	void connect(const char* serverAddr);
-	void listenForPacket();
+	TcpSocket* getSocket();
+
 	void sendAction(int action);
 	void forceSendAction(int action);
+
 	bool getState();
 	int getConnectionID();
+
+	//void listenForPacket();
+	void parsePacket(Packet* p, int type);
+
 	int** mapArray;
 private:
 	TcpSocket *ts;
+	ApiListener *al;
+	
 	Packet *p;
 	int connectionID;
 	int actionToTake;
@@ -63,7 +76,7 @@ private:
 	vector<Bullet*> bullets;
 	int bulletsSize;
 	
-	void parsePacket(Packet* p, int type);
+	
 	void sendPacket(Packet* p);
 };
 #endif // !PACKETHANDLER_H

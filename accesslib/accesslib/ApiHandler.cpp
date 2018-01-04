@@ -1,4 +1,5 @@
 #include "ApiHandler.h"
+#include "ApiListener.h"
 
 ApiHandler::ApiHandler()
 {
@@ -49,8 +50,13 @@ void ApiHandler::connect(const char* serverAddr) {
 			*p >> connectionID;
 			cout << "Connected to server at " << serverAddr << " and my ID is " << connectionID << endl;
 			p->clear();
+			al = new ApiListener(*this);
 		}		
 	}
+}
+
+TcpSocket* ApiHandler::getSocket() {
+	return ts;
 }
 
 void ApiHandler::createMap(int sizeX, int sizeY)
@@ -81,22 +87,22 @@ void ApiHandler::updateMap(string data)
 	delete[] arr;
 }
 
-void ApiHandler::listenForPacket() {
-	int msgType;
-	while (listeningMode) {
-		msgType = -1;
-		if (ts->receive(*p) == Socket::Done) {
-			*p >> msgType;
-			if (p->endOfPacket()) {
-				p->clear();
-				if (ts->receive(*p) == Socket::Done) {
-					parsePacket(p, msgType);
-				}
-			}
-			p->clear();
-		}
-	}
-}
+//void ApiHandler::listenForPacket() {
+//	int msgType;
+//	while (listeningMode) {
+//		msgType = -1;
+//		if (ts->receive(*p) == Socket::Done) {
+//			*p >> msgType;
+//			if (p->endOfPacket()) {
+//				p->clear();
+//				if (ts->receive(*p) == Socket::Done) {
+//					parsePacket(p, msgType);
+//				}
+//			}
+//			p->clear();
+//		}
+//	}
+//}
 
 void ApiHandler::sendAction(int action) {
 	if (!listeningMode) {
@@ -121,6 +127,16 @@ void ApiHandler::forceSendAction(int action) {
 		packetMapPlayers = false;
 	}
 	movementInformation.clear();
+}
+
+bool ApiHandler::getState()
+{
+	return listeningMode;
+}
+
+int ApiHandler::getConnectionID()
+{
+	return connectionID;
 }
 
 void ApiHandler::parsePacket(Packet* p, int type)
