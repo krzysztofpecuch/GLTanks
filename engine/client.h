@@ -6,24 +6,22 @@
 class Client
 {
 public:
-    Client();
-
     static int connectedClients();
 
     sf::TcpSocket& socket();
 
-    void markAsConnected();
-    void markAsDisconnected();
+    void setId(int id);
     int id() const;
 
+    void markAsConnected();
+    void markAsDisonnected();
 
 private:
     sf::TcpSocket m_socket;
 
     static int m_connectedClients;
-    static int m_counter;
 
-    int m_id;
+    int m_id = -1;
 };
 
 #endif // CLIENT_H

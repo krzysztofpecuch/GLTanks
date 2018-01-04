@@ -33,6 +33,7 @@ public:
     TileMap& getMap();
 
     gameState state = gameState::WAITING;
+    void reset();
 
 private:
     void initialize();

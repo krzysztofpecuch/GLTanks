@@ -175,6 +175,29 @@ void Server::acceptNewClients()
     Client* client = new Client();
     if (m_listener.accept(client->socket()) == sf::Socket::Done)
     {
+        if (Client::connectedClients() > 0)
+        {
+            bool idGranted = false;
+            for (unsigned i = 0; i < m_clients.size(); ++i)
+            {
+                if (m_clients[i]->id() != i)
+                {
+                    client->setId(i);
+                    idGranted = true;
+                    break;
+                }
+
+                if (!idGranted)
+                {
+                    client->setId(Client::connectedClients());
+                }
+            }
+        }
+        else
+        {
+            client->setId(Client::connectedClients());
+        }
+
         client->markAsConnected();
 
         std::cout << "Client with id " << client->id() << " connected to server" << std::endl;
@@ -222,11 +245,14 @@ void Server::deleteDisconnectedClients()
         sf::Packet dummy;
         if (m_clients[i]->socket().receive(dummy) == sf::Socket::Disconnected)
         {
+//            m_game.restart();
+//            m_game.state = WAITING;
             std::cout << "Client with id " << m_clients[i]->id() << " disconnected from server" << std::endl;
             m_game.setMessageText("Waiting for " + std::to_string((MAX_PLAYER_NUMBER-Client::connectedClients())) + " more players");
-            m_clients[i]->markAsDisconnected();
             m_game.deleteTank(m_clients[i]->id());
 
+            m_clients[i]->markAsDisonnected();
+            //fix memory leak!!!
             m_clients.erase(m_clients.begin() + i);
             break;
         }

@@ -39,7 +39,6 @@ class Tank: public sf::Drawable
 {
 public:
     Tank(const StartPosition& initPosition = StartPosition());
-    ~Tank();
 
     void shot();
     void moveStraight();
@@ -48,6 +47,7 @@ public:
     void turnRight();
 
     void setPosition(const StartPosition& position);
+    void setTexture(const sf::Texture &texture);
     sf::Vector2i getPosition() const;
     int getCurrentDirection() const;
 	void update(float elapsed);
@@ -59,8 +59,6 @@ private:
 	sf::Sprite m_actualSprite;
     sf::Texture tankTexture;
     sf::Image textureImage;
-	
-    static int instancesCount;
 
 protected:
     void draw(sf::RenderTarget &target, sf::RenderStates states) const;

@@ -1,32 +1,30 @@
 #include "client.h"
 
 int Client::m_connectedClients = 0;
-int Client::m_counter = 0;
-
-Client::Client()
-{
-}
 
 int Client::connectedClients()
 {
     return m_connectedClients;
 }
 
+int Client::id() const
+{
+    return m_id;
+}
+
 void Client::markAsConnected()
 {
-    m_counter++;
-    m_id = m_counter;
     m_connectedClients++;
 }
 
-void Client::markAsDisconnected()
+void Client::markAsDisonnected()
 {
     m_connectedClients--;
 }
 
-int Client::id() const
+void Client::setId(int id)
 {
-    return m_id;
+    m_id = id;
 }
 
 sf::TcpSocket &Client::socket()

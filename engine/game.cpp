@@ -52,7 +52,7 @@ void Game::initialize()
     m_messageText.setCharacterSize(60);
     m_messageText.setFillColor(sf::Color::White);
 
-    setMessageText("Waiting for " + std::to_string((MAX_PLAYER_NUMBER - m_tanks.size())) + " more players.");
+//    setMessageText("Waiting for " + std::to_string((MAX_PLAYER_NUMBER - m_tanks.size())) + " more players.");
 }
 
 void Game::handleEvents()
@@ -202,6 +202,8 @@ void Game::draw()
         for (const auto& tank : m_tanks)
         {
             m_window.draw(tank.second);
+
+            std::cout << "Tank position: ( " << tank.second.getPosition().x << ", " << tank.second.getPosition().y << " )" << std::endl;
         }
 
         if (m_tanks.size() == 1)
@@ -218,14 +220,21 @@ void Game::draw()
             }
 
             m_server.sendDataMatchEnd(winnerId);
+
+            for (const auto& tank : m_tanks)
+            {
+                std::cout << "debug: tank id " << tank.first << std::endl;
+            }
+
             waitForKeyPress();
             state = WAITING;
+            reset();
         }
         break;
     }
     case WAITING:
     {
-        setMessageText("Waiting for " + std::to_string((MAX_PLAYER_NUMBER -m_tanks.size())) + " more players");
+        setMessageText("Waiting for " + std::to_string((MAX_PLAYER_NUMBER - m_server.connectedClientsCount())) + " more players");
         m_window.draw(m_messageText);
         break;
     }
@@ -250,18 +259,30 @@ void Game::waitForKeyPress()
     {
         while (m_window.pollEvent(m_event))
         {
+            if (m_event.type == sf::Event::Closed)
+                m_window.close();
+
             if (m_event.type == sf::Event::KeyPressed)
                 keyPressed = true;
         }
     }
 }
 
+void Game::reset()
+{
+    for (auto& tank : m_tanks)
+    {
+        tank.second = Tank(START_POSITIONS[tank.first]);
+        tank.second.setTexture(Resources::getTexture(static_cast<TextureType>(tank.first)));
+    }
+}
+
 void Game::addTank(int id)
 {
-    StartPosition position = START_POSITIONS[m_server.connectedClientsCount() - 1];
-    //    StartPosition position = START_POSITIONS[count];
+    StartPosition position = START_POSITIONS[id];
 
     m_tanks[id] = Tank(position);
+    m_tanks[id].setTexture(Resources::getTexture(static_cast<TextureType>(id)));
     
 }
 
