@@ -54,6 +54,7 @@ public:
 
 private:
     int m_currentDirection;
+	float acceleration;
 
 	sf::Sprite  m_sprite;
 	sf::Sprite m_actualSprite;

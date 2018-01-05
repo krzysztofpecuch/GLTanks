@@ -7,6 +7,7 @@ Tank::Tank(const StartPosition &initPosition)
 	//Same old
     m_sprite.setPosition(initPosition.position.x * TILE_SIZE ,initPosition.position.y * TILE_SIZE);
 	m_actualSprite.setPosition(initPosition.position.x * TILE_SIZE, initPosition.position.y * TILE_SIZE);
+	acceleration = 50.f;
 
     switch (initPosition.direction) {
     case UP:
@@ -204,41 +205,38 @@ void Tank::draw(sf::RenderTarget &target, sf::RenderStates states) const
 }
 
 void Tank::update(float elapsed) {
+	float startingRotation = m_actualSprite.getRotation();
+	float targetRotation = m_sprite.getRotation();
+	float diffRotation = targetRotation - startingRotation;
+
+	if (diffRotation == -270 || diffRotation == 90 || diffRotation == 270 || diffRotation == -90)
+	{
+		m_actualSprite.setRotation(m_sprite.getRotation());
+		m_actualSprite.setPosition(m_sprite.getPosition().x, m_sprite.getPosition().y);
+	}
+
 	sf::Vector2f startingPosition(m_actualSprite.getPosition());
 	sf::Vector2f destinationPosition(m_sprite.getPosition());
 
 	sf::Vector2f distanceVector = destinationPosition - startingPosition;
 
 	float distanceLen = sqrt((destinationPosition.x - startingPosition.x) * (destinationPosition.x - startingPosition.x) + (destinationPosition.y - startingPosition.y) * (destinationPosition.y - startingPosition.y));
-	
-	if (distanceLen <= 0.05) {
-		return;
-	}
-
 	distanceVector /= distanceLen;
 
-	float deltaDist = elapsed * 50 * 2;
-
-	m_actualSprite.setPosition(startingPosition + distanceVector * deltaDist);
-
-	float startingRotation = m_actualSprite.getRotation();
-	float targetRotation = m_sprite.getRotation();
-	float diffRotation = targetRotation - startingRotation;
-	if (diffRotation != 0)
-		std::cout << diffRotation << std::endl;
-	
-	if (diffRotation >= -1 && diffRotation <= 1) {
+	if (distanceLen <= 0.5) {
 		return;
 	}
+	std::cout << elapsed << std::endl;
+	if (elapsed > 0.2) {
+		m_actualSprite.setPosition(m_sprite.getPosition());
+	}
+	float deltaDist;
+	if (distanceLen > 15) {
+		deltaDist = elapsed * distanceLen * 4;
+	}
+	else {
+		deltaDist = elapsed * 15 * 3;
+	}
+	m_actualSprite.setPosition(startingPosition + distanceVector * deltaDist);
 
-	if (diffRotation == -270 || diffRotation == 90)
-	{
-		m_actualSprite.setRotation(m_sprite.getRotation());
-		m_actualSprite.move(distanceVector.x * TANK_SIZE, distanceVector.y * TANK_SIZE);
-	}
-	
-	if (diffRotation == 270 || diffRotation == -90) {
-		m_actualSprite.setRotation(m_sprite.getRotation());
-		m_actualSprite.move(distanceVector.x * TANK_SIZE, distanceVector.y * TANK_SIZE);
-	}
 }

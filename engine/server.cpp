@@ -90,6 +90,15 @@ void Server::sendData(const std::map<int, Tank>& tanks)
         players[index] = &player;
 		index++;
 	}
+	for (int i = index; i < MAX_PLAYER_NUMBER; i++)
+	{
+		Player player;
+		player.ID = -1;
+		player.x = -1;
+		player.y = -1;
+		player.turn = -1;
+		players[i] = &player;
+	}
 
 	packetType << PACKET_TYPE::TYPE_MAP_PLAYERS;
 
