@@ -14,18 +14,18 @@ Bullets::Bullets(sf::Vector2f size, int direction)
     {
     case 0:
         dir.x = 0;
-        dir.y = -0.1;
+        dir.y = -1;
         break;
     case 2:
         dir.x = 0;
-        dir.y = 0.1;
+        dir.y = 1;
         break;
     case 3:
-        dir.x = -0.1;
+        dir.x = -1;
         dir.y = 0;
         break;
     case 1:
-        dir.x = 0.1;
+        dir.x = 1;
         dir.y = 0;
         break;
     }
@@ -68,6 +68,6 @@ int Bullets::getBottom()
 
 void Bullets::update(float elapsed)
 {
-    //sf::Vector2f dist = dir * (elapsed * 50);
-    fire(dir.x, dir.y);
+    sf::Vector2f dist = dir * (elapsed * 60);
+    fire(dist.x, dist.y);
 }

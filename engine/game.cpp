@@ -377,7 +377,30 @@ void Game::createBullet(int direction)
         m_bullet = Bullets(sf::Vector2f(15, 3), direction);
     }
 
-    m_bullet.setPos(sf::Vector2f(m_tanks[1].getPosition().x * TANK_SIZE + TANK_SIZE / 2, m_tanks[1].getPosition().y * TANK_SIZE + TANK_SIZE / 2));
+    switch(direction)
+    {
+    case 0:
+    {
+        m_bullet.setPos(sf::Vector2f(m_tanks[1].getPosition().x * TANK_SIZE + TANK_SIZE / 2, m_tanks[1].getPosition().y * TANK_SIZE - 15));
+        break;
+    }
+    case 1:
+    {
+        m_bullet.setPos(sf::Vector2f(m_tanks[1].getPosition().x * TANK_SIZE + TANK_SIZE , m_tanks[1].getPosition().y * TANK_SIZE + TANK_SIZE / 2));
+        break;
+    }
+    case 2:
+    {
+        m_bullet.setPos(sf::Vector2f(m_tanks[1].getPosition().x * TANK_SIZE + TANK_SIZE / 2, m_tanks[1].getPosition().y * TANK_SIZE + TANK_SIZE));
+        break;
+    }
+    case 3:
+    {
+        m_bullet.setPos(sf::Vector2f(m_tanks[1].getPosition().x * TANK_SIZE - 15, m_tanks[1].getPosition().y * TANK_SIZE + TANK_SIZE / 2));
+        break;
+    }
+    }
+
     m_vecbullets.push_back(m_bullet);
 }
 
