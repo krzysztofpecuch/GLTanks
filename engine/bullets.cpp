@@ -1,4 +1,5 @@
 #include "bullets.h"
+#include <iostream>
 
 Bullets::Bullets()
 {
@@ -7,67 +8,71 @@ Bullets::Bullets()
 
 Bullets::Bullets(sf::Vector2f size, int direction)
 {
-    bullet.setSize(size);
-    bullet.setFillColor(sf::Color::Cyan);
+    m_bullet.setSize(size);
+    m_bullet.setFillColor(sf::Color::Cyan);
 
     switch(direction)
     {
     case 0:
-        dir.x = 0;
-        dir.y = -1;
+        m_dir.x = 0;
+        m_dir.y = -50;
         break;
     case 2:
-        dir.x = 0;
-        dir.y = 1;
+        m_dir.x = 0;
+        m_dir.y = 50;
         break;
     case 3:
-        dir.x = -1;
-        dir.y = 0;
+        m_dir.x = -50;
+        m_dir.y = 0;
         break;
     case 1:
-        dir.x = 1;
-        dir.y = 0;
+        m_dir.x = 50;
+        m_dir.y = 0;
         break;
     }
 }
 
 void Bullets::fire(float speedx, float speedy)
 {
-    bullet.move(speedx, speedy);
+    m_bullet.move(speedx, speedy);
 }
 
 void Bullets::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
-    target.draw(bullet, states);
+    target.draw(m_bullet, states);
 }
 
 void Bullets::setPos(sf::Vector2f newPos)
 {
-    bullet.setPosition(newPos);
+    m_bullet.setPosition(newPos);
 }
 
 int Bullets::getRight()
 {
-    return bullet.getPosition().x + bullet.getSize().x;
+    return m_bullet.getPosition().x + m_bullet.getSize().x;
 }
 
 int Bullets::getLeft()
 {
-    return bullet.getPosition().x;
+    return m_bullet.getPosition().x;
 }
 
 int Bullets::getTop()
 {
-    return bullet.getPosition().y;
+    return m_bullet.getPosition().y;
 }
 
 int Bullets::getBottom()
 {
-    return bullet.getPosition().y + bullet.getSize().y;
+    return m_bullet.getPosition().y + m_bullet.getSize().y;
 }
 
 void Bullets::update(float elapsed)
 {
-    sf::Vector2f dist = dir * (elapsed * 60);
-    fire(dist.x, dist.y);
+    m_elapsed += elapsed;
+    if(m_elapsed > 2.0)
+    {
+        fire(m_dir.x, m_dir.y);
+        m_elapsed -= 2.0;
+    }
 }

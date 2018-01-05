@@ -20,8 +20,9 @@ public:
     void update(float elapsed);
 
 private:
-    sf::RectangleShape bullet;
-    sf::Vector2f dir;
+    sf::RectangleShape m_bullet;
+    sf::Vector2f m_dir;
+    float m_elapsed = 0.0f;
 };
 
 #endif // BULLETS_H
