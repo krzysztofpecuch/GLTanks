@@ -278,16 +278,12 @@ void Game::reset()
         m_tanks[id].setTexture(Resources::getTexture(static_cast<TextureType>(id)));
     }
 
+    m_vecbullets.clear();
+
     if (m_server.connectedClientsCount() == MAX_PLAYER_NUMBER)
         state = RUNNING;
     else
         state = WAITING;
-
-//    for (auto& tank : m_tanks)
-//    {
-//        tank.second = Tank(START_POSITIONS[tank.first]);
-//        tank.second.setTexture(Resources::getTexture(static_cast<TextureType>(tank.first)));
-//    }
 }
 
 void Game::addTank(int id)
