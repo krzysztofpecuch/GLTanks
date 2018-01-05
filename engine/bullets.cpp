@@ -15,18 +15,18 @@ Bullets::Bullets(sf::Vector2f size, int direction)
     {
     case 0:
         m_dir.x = 0;
-        m_dir.y = -50;
+        m_dir.y = -TILE_SIZE;
         break;
     case 2:
         m_dir.x = 0;
-        m_dir.y = 50;
+        m_dir.y = TILE_SIZE;
         break;
     case 3:
-        m_dir.x = -50;
+        m_dir.x = -TILE_SIZE;
         m_dir.y = 0;
         break;
     case 1:
-        m_dir.x = 50;
+        m_dir.x = TILE_SIZE;
         m_dir.y = 0;
         break;
     }
@@ -69,10 +69,7 @@ int Bullets::getBottom()
 
 void Bullets::update(float elapsed)
 {
-    m_elapsed += elapsed;
-    if(m_elapsed > 2.0)
-    {
-        fire(m_dir.x, m_dir.y);
-        m_elapsed -= 2.0;
-    }
+    m_dist = m_dir * (elapsed / 2);
+
+    fire(m_dist.x, m_dist.y);
 }

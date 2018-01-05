@@ -3,6 +3,8 @@
 
 #include <SFML/Graphics.hpp>
 
+#define TILE_SIZE 50
+
 class Bullets : public sf::Drawable
 {
 public:
@@ -22,7 +24,7 @@ public:
 private:
     sf::RectangleShape m_bullet;
     sf::Vector2f m_dir;
-    float m_elapsed = 0.0f;
+    sf::Vector2f m_dist;
 };
 
 #endif // BULLETS_H
