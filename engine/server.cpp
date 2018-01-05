@@ -19,10 +19,17 @@ Server::Server(Game &game) :
 
 Server::~Server()
 {
-    end();
+    m_running = false;
+    m_listeningThread->join();
 
     if (m_listeningThread)
         delete m_listeningThread;
+
+    for (auto& thread : m_clientsThreads)
+    {
+        thread.second->join();
+        delete thread.second;
+    }
 
     for (auto& client : m_clients)
     {
@@ -142,13 +149,6 @@ int Server::connectedClientsCount() const
     return Client::connectedClients();
 }
 
-void Server::end()
-{
-    m_running = false;
-    m_listeningThread->join();
-    std::cout << "Thread joined!" << std::endl;
-}
-
 void Server::manageConnections()
 {
     m_listener.listen(PORT);
@@ -162,11 +162,20 @@ void Server::manageConnections()
         {
 			acceptNewClients();
 		}
-        else
+
+        //join and delete threads of disconnected clients
+        for (auto& thread : m_clientsThreads)
         {
-			receiveData();
-		}
-        deleteDisconnectedClients();
+            if (disconnectedClientID == thread.first)
+            {
+                disconnectedClientID = -1;
+                thread.second->join();
+                delete thread.second;
+
+                m_clientsThreads.erase(m_clientsThreads.find(thread.first));
+                break;
+            }
+        }
     }
 }
 
@@ -200,8 +209,9 @@ void Server::acceptNewClients()
 
         client->markAsConnected();
 
+        m_clientsThreads[client->id()] = new std::thread(&Server::receiveData, this, client);
+
         std::cout << "Client with id " << client->id() << " connected to server" << std::endl;
-        client->socket().setBlocking(false);
 
         sf::Packet packet;
         packet << client->id();
@@ -223,40 +233,48 @@ void Server::acceptNewClients()
     }
 }
 
-void Server::receiveData()
+void Server::receiveData(Client* client)
 {
-    for (const auto& client : m_clients)
-    {
-        m_packet.clear();
+    bool connected = true;
 
-        if (client->socket().receive(m_packet) == sf::Socket::Done)
+    while (connected)
+    {
+        sf::Packet packet;
+
+        sf::Socket::Status status = client->socket().receive(packet);
+
+        if (status == sf::Socket::Done)
         {
             int data;
-            m_packet >> data;
+            packet >> data;
             std::cout << "Data " << data << " received" << std::endl;
             m_game.moveTank(client->id(), data);
         }
-    }
-}
-
-void Server::deleteDisconnectedClients()
-{
-    for (unsigned i = 0; i < m_clients.size(); ++i)
-    {
-        sf::Packet dummy;
-        if (m_clients[i]->socket().receive(dummy) == sf::Socket::Disconnected)
+        else if (status == sf::Socket::Disconnected)
         {
-//            m_game.restart();
-//            m_game.state = WAITING;
-            std::cout << "Client with id " << m_clients[i]->id() << " disconnected from server" << std::endl;
+            std::cout << "Client with id " << client->id() << " disconnected from server" << std::endl;
             sendDataMatchEnd(-1);
             m_game.setMessageText("Waiting for " + std::to_string((MAX_PLAYER_NUMBER-Client::connectedClients())) + " more players");
-            m_game.deleteTank(m_clients[i]->id());
+            m_game.deleteTank(client->id());
 
-            m_clients[i]->markAsDisonnected();
-            delete m_clients[i];
-            m_clients.erase(m_clients.begin() + i);
-            break;
+            client->markAsDisonnected();
+
+            //find client's index to remove client from vector
+            int clientIndex = -1;
+            for (unsigned i = 0; i < m_clients.size(); ++i)
+            {
+                if (m_clients[i]->id() == client->id())
+                {
+                    clientIndex = i;
+                    break;
+                }
+            }
+
+            disconnectedClientID = client->id();
+            delete client;
+            m_clients.erase(m_clients.begin() + clientIndex);
+
+            connected = false;
         }
     }
 }

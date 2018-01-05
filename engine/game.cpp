@@ -11,8 +11,6 @@ const std::vector<StartPosition> START_POSITIONS = {
     StartPosition(sf::Vector2i( 15,  15), RIGHT)
 };
 
-//const std::vector<StartPosition> START_POSITIONS = { {1, 1, LEFT} };
-
 //int count = 0;
 
 Game::Game() :
@@ -255,7 +253,11 @@ void Game::waitForKeyPress()
         while (m_window.pollEvent(m_event))
         {
             if (m_event.type == sf::Event::Closed)
+            {
                 m_window.close();
+                keyPressed = true;
+                break;
+            }
 
             if (m_event.type == sf::Event::KeyPressed)
                 keyPressed = true;
