@@ -418,24 +418,22 @@ void Game::createBullet(int direction)
 
 void Game::checkColBull()
 {
-    for(auto& bullet : m_vecbullets)
-    {
-        if(bullet.getLeft() < m_tanks[0].getPosition().x * TANK_SIZE + TANK_SIZE && bullet.getRight() > m_tanks[0].getPosition().x * TANK_SIZE && bullet.getTop() < m_tanks[0].getPosition().y * TANK_SIZE + TANK_SIZE && bullet.getBottom() > m_tanks[0].getPosition().y * TANK_SIZE)
-        {
-            deleteTank(0);
-        }
-    }
-
     for(auto it = m_vecbullets.begin(); it != m_vecbullets.end(); )
     {
-        if(m_tilemap.getTileNumber(it->getTop() / TANK_SIZE, it->getRight() / TANK_SIZE) || m_tilemap.getTileNumber(it->getBottom() / TANK_SIZE, it->getLeft() / TANK_SIZE))
+        if(it->getLeft() < m_tanks[0].getPosition().x * TANK_SIZE + TANK_SIZE && it->getRight() > m_tanks[0].getPosition().x * TANK_SIZE && it->getTop() < m_tanks[0].getPosition().y * TANK_SIZE + TANK_SIZE && it->getBottom() > m_tanks[0].getPosition().y * TANK_SIZE)
         {
-            m_vecbullets.erase(it);
+            deleteTank(0);
+            it = m_vecbullets.erase(it);
         }
         else
-        {
-            ++it;
-        }
+            if(m_tilemap.getTileNumber(it->getTop() / TANK_SIZE, it->getRight() / TANK_SIZE) || m_tilemap.getTileNumber(it->getBottom() / TANK_SIZE, it->getLeft() / TANK_SIZE))
+            {
+                it = m_vecbullets.erase(it);
+            }
+            else
+            {
+                ++it;
+            }
     }
 }
 
