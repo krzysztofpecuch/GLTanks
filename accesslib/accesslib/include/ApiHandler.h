@@ -34,7 +34,8 @@ class ApiListener;
 using namespace std;
 #endif  
 
-class API ApiHandler {
+class API ApiHandler
+{
 public:
 	ApiHandler();
 	~ApiHandler();

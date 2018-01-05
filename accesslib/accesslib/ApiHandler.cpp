@@ -41,12 +41,14 @@ ApiHandler::~ApiHandler()
 	p = nullptr;
 }
 
-void ApiHandler::connect(const char* serverAddr) {
+void ApiHandler::connect(const char* serverAddr)
+{
 	ts = new TcpSocket();
 	if (ts->connect(serverAddr, 55000) == sf::Socket::Done)
 	{
 		p = new Packet();
-		if (ts->receive(*p) == sf::Socket::Done) {
+		if (ts->receive(*p) == sf::Socket::Done)
+		{
 			*p >> connectionID;
 			cout << "Connected to server at " << serverAddr << " and my ID is " << connectionID << endl;
 			p->clear();
@@ -55,7 +57,8 @@ void ApiHandler::connect(const char* serverAddr) {
 	}
 }
 
-TcpSocket* ApiHandler::getSocket() {
+TcpSocket* ApiHandler::getSocket()
+{
 	return ts;
 }
 
@@ -76,6 +79,7 @@ void ApiHandler::updateMap(string data)
 	{
 		arr[i] = data[i] - '0';
 	}
+
 	for (int i = 0; i < mapSizeX; i++)
 	{
 		for (int j = 0; j < mapSizeY; j++)
@@ -104,11 +108,14 @@ void ApiHandler::updateMap(string data)
 //	}
 //}
 
-void ApiHandler::sendAction(int action) {
-	if (!listeningMode) {
+void ApiHandler::sendAction(int action)
+{
+	if (!listeningMode)
+	{
 		Packet movementInformation;
 		movementInformation << action;
-		if (ts->send(movementInformation) == Socket::Done) {
+		if (ts->send(movementInformation) == Socket::Done)
+		{
 			cout << "Sent move " << action << endl;
 			listeningMode = true;
 			packetBullets = false;
@@ -117,10 +124,12 @@ void ApiHandler::sendAction(int action) {
 	}	
 }
 
-void ApiHandler::forceSendAction(int action) {
+void ApiHandler::forceSendAction(int action)
+{
 	Packet movementInformation;
 	movementInformation << action;
-	if (ts->send(movementInformation) == Socket::Done) {
+	if (ts->send(movementInformation) == Socket::Done)
+	{
 		cout << "Sent move " << action << endl;
 		listeningMode = true;
 		packetBullets = false;
@@ -141,13 +150,16 @@ int ApiHandler::getConnectionID()
 
 void ApiHandler::parsePacket(Packet* p, int type)
 {
-	if (type == PACKET_TYPE::TYPE_WIN) {
+	if (type == PACKET_TYPE::TYPE_WIN)
+	{
 		int win;
 		*p >> win;
-		if (win) {
+		if (win)
+		{
 			cout << "You won! Class state reset." << endl;
 		}
-		else {
+		else
+		{
 			cout << "Game ended. Class state reset." << endl;
 		}
 
@@ -161,10 +173,8 @@ void ApiHandler::parsePacket(Packet* p, int type)
 		packetBullets = false;
 		packetMap = false;
 		packetMapPlayers = false;
-		return;
 	}
-
-	if (type == PACKET_TYPE::TYPE_BULLETS)
+	else if (type == PACKET_TYPE::TYPE_BULLETS)
 	{
 		*p >> bulletsSize;
 
@@ -180,8 +190,7 @@ void ApiHandler::parsePacket(Packet* p, int type)
 
 		cout << "Recieved bullet packet" << endl;
 	}
-
-	if (type == PACKET_TYPE::TYPE_MAP_CREATOR && !packetMap)
+	else if (type == PACKET_TYPE::TYPE_MAP_CREATOR && !packetMap)
 	{
 		*p >> mapSizeX >> mapSizeY;
 		createMap(mapSizeX, mapSizeY);
@@ -190,8 +199,7 @@ void ApiHandler::parsePacket(Packet* p, int type)
 
 		cout << "Recieved map size packet" << endl;
 	}
-
-	if (type == PACKET_TYPE::TYPE_MAP_PLAYERS)
+	else if (type == PACKET_TYPE::TYPE_MAP_PLAYERS)
 	{
 		*p >> mapData;
 		for (int i = 0; i < 2; i++)
@@ -203,8 +211,7 @@ void ApiHandler::parsePacket(Packet* p, int type)
 
 		cout << "Recieved map and player data packet" << endl;
 	}
-
-	if (packetMap && packetMapPlayers) //&& packetBullets
+	else if (packetMap && packetMapPlayers) //&& packetBullets
 	{
 		listeningMode = false;
 	}
