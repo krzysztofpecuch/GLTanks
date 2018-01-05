@@ -227,6 +227,9 @@ void Game::draw()
     }
     case WAITING:
     {
+        if (m_server.connectedClientsCount() == MAX_PLAYER_NUMBER)
+            state = RUNNING;
+
         setMessageText("Waiting for " + std::to_string((MAX_PLAYER_NUMBER - m_server.connectedClientsCount())) + " more players");
         m_window.draw(m_messageText);
         break;
@@ -267,11 +270,24 @@ void Game::waitForKeyPress()
 
 void Game::reset()
 {
-    for (auto& tank : m_tanks)
+    m_tanks.clear();
+
+    for (int id = 0; id < MAX_PLAYER_NUMBER; ++id)
     {
-        tank.second = Tank(START_POSITIONS[tank.first]);
-        tank.second.setTexture(Resources::getTexture(static_cast<TextureType>(tank.first)));
+        m_tanks[id] = Tank(START_POSITIONS[id]);
+        m_tanks[id].setTexture(Resources::getTexture(static_cast<TextureType>(id)));
     }
+
+    if (m_server.connectedClientsCount() == MAX_PLAYER_NUMBER)
+        state = RUNNING;
+    else
+        state = WAITING;
+
+//    for (auto& tank : m_tanks)
+//    {
+//        tank.second = Tank(START_POSITIONS[tank.first]);
+//        tank.second.setTexture(Resources::getTexture(static_cast<TextureType>(tank.first)));
+//    }
 }
 
 void Game::addTank(int id)
