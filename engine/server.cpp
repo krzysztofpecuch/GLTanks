@@ -263,7 +263,10 @@ void Server::receiveData(Client* client)
 //            std::cout << "Data " << action << " received" << std::endl;
 
             if (!m_game.isTankInGame(client->id()))
-                return;
+            {
+                std::cout << "tank not in game!" << std::endl;
+                continue;
+            }
 
             if (action == Shoot)
                 m_game.performTankShoot(client->id());
