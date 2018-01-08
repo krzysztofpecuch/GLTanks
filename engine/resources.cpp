@@ -1,6 +1,7 @@
 #include "resources.h"
 
 #include <vector>
+#include <iostream>
 
 
 const std::string texturesPath = "graphics/";
@@ -45,11 +46,15 @@ Resources::Resources() : rng(std::random_device()()), dist(std::uniform_int_dist
 
 }
 
-Resources::~Resources() {
+Resources::~Resources()
+{
     for (unsigned i = 0; i < loadedImages.size(); i++)
 	{
 		delete loadedImages[i];
 	}
+
+    m_textures.clear();
+    m_fonts.clear();
 }
 
 sf::Texture& Resources::getTexture(const TextureType &type)

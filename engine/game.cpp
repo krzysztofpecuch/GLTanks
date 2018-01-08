@@ -20,6 +20,15 @@ Game::Game() :
 
 }
 
+Game::~Game()
+{
+    m_server.close();
+
+    std::cout << "Destructor map tank size: " << m_tanks.size();
+
+    m_tanks.clear();
+}
+
 void Game::run()
 {
     initialize();
@@ -216,6 +225,11 @@ void Game::draw()
 
             m_server.sendDataMatchEnd(winnerId);
 
+            for (const auto& tank : m_tanks)
+            {
+                std::cout << "Tank ID:" << tank.first << std::endl;
+            }
+
             waitForKeyPress();
             state = WAITING;
             reset();
@@ -224,7 +238,7 @@ void Game::draw()
     }
     case WAITING:
     {
-        if (m_server.connectedClientsCount() == MAX_PLAYER_NUMBER)
+        if (m_tanks.size() == MAX_PLAYER_NUMBER)
             state = RUNNING;
 
         setMessageText("Waiting for " + std::to_string((MAX_PLAYER_NUMBER - m_server.connectedClientsCount())) + " more players");
@@ -295,8 +309,7 @@ void Game::addTank(int id)
     std::cout << "Tank added" << std::endl;
 
     m_tanks[id] = Tank(position);
-    m_tanks[id].setTexture(Resources::getTexture(static_cast<TextureType>(id)));
-    
+    m_tanks[id].setTexture(Resources::getTexture(static_cast<TextureType>(id))); 
 }
 
 void Game::moveTank(int id, int direction)
@@ -382,10 +395,10 @@ void Game::deleteTank(int id)
     m_tanks.erase(position);
     std::cout << "deleteTank(): size after: " << m_tanks.size() << std::endl;
 
-    for (const auto& tank : m_tanks)
-    {
-        std::cout << "Tank ID:" << tank.first << std::endl;
-    }
+//    for (const auto& tank : m_tanks)
+//    {
+//        std::cout << "Tank ID:" << tank.first << std::endl;
+//    }
 
     std::cout << std::endl;
 }
@@ -467,6 +480,11 @@ void Game::checkColBull()
 bool Game::isTankInGame(int id)
 {
     return (m_tanks.find(id) != m_tanks.end());
+}
+
+unsigned Game::tanksCount() const
+{
+    return m_tanks.size();
 }
 
 TileMap &Game::getMap()

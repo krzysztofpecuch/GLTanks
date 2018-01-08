@@ -24,6 +24,7 @@ public:
 	void sendDataMatchEnd(int winningId);
 	void resetServerFlags();
     int connectedClientsCount() const;
+    void close();
 private:
     void manageConnections();
 

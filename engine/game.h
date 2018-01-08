@@ -20,6 +20,7 @@ class Game
 {
 public:
     Game();
+    ~Game();
 
     void run();
     void addTank(int id);
@@ -29,6 +30,7 @@ public:
     void performTankShoot(int tankId);
     void checkColBull();
     bool isTankInGame(int id);
+    unsigned tanksCount() const;
 
     TileMap& getMap();
 	std::vector<Bullets> getBullets();

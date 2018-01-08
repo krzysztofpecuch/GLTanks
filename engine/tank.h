@@ -37,6 +37,10 @@ class Tank: public sf::Drawable
 {
 public:
     Tank(const StartPosition& initPosition = StartPosition());
+    ~Tank()
+    {
+        std::cout << "Tank destructor" << std::endl;
+    }
 
     void shot();
     void moveStraight();

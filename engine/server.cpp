@@ -25,14 +25,34 @@ Server::~Server()
     if (m_listeningThread)
         delete m_listeningThread;
 
+    //    for (auto& thread : m_clientsThreads)
+    //    {
+    //        thread.second->join();
+    //        delete thread.second;
+    //    }
+
+    //    for (auto& client : m_clients)
+    //    {
+    //        delete client;
+    //    }
+    close();
+}
+
+void Server::close()
+{
+    m_running = false;
+
     for (auto& thread : m_clientsThreads)
     {
+        std::cout << (thread.second->joinable()) ? "JOINABLE" : "NOT JOINABLE";
+
         thread.second->join();
         delete thread.second;
     }
 
-    for (auto& client : m_clients)
+    for (const auto& client : m_clients)
     {
+        client->socket().disconnect();
         delete client;
     }
 }
@@ -47,7 +67,7 @@ void Server::sendData(const std::map<int, Tank>& tanks)
     sf::Packet packetType;
     sf::Packet playersMapPacket;
     sf::Packet mapSizePacket;
-	sf::Packet bulletPacket;
+    sf::Packet bulletPacket;
     std::array<Player*, 4> players;
 
     packetType << PACKET_TYPE::TYPE_MAP_CREATOR;
@@ -60,7 +80,7 @@ void Server::sendData(const std::map<int, Tank>& tanks)
             {
                 if (client->socket().send(mapSizePacket) == sf::Socket::Done)
                 {
-//                    std::cout << "Map size sent to " << client->id() << std::endl;
+                    //                    std::cout << "Map size sent to " << client->id() << std::endl;
                 }
             }
         }
@@ -114,43 +134,43 @@ void Server::sendData(const std::map<int, Tank>& tanks)
         {
             if (client->socket().send(playersMapPacket) == sf::Socket::Done)
             {
-				std::cout << "Map and players sent to " << client->id() << std::endl;
-			}
-		}
-	}
+                std::cout << "Map and players sent to " << client->id() << std::endl;
+            }
+        }
+    }
 
     packetType.clear();
     playersMapPacket.clear();
 
-	packetType << PACKET_TYPE::TYPE_BULLETS;
+    packetType << PACKET_TYPE::TYPE_BULLETS;
 
-	if (m_game.getBullets().size() > 0)
-	{
-		bulletPacket << (int)m_game.getBullets().size();
-		for (int i = 0; i < m_game.getBullets().size(); i++)
-		{
-			Bullet b;
-			b.turn = m_game.getBullets()[i].getDirection();
-			b.x = m_game.getBullets()[i].getTile().y;
-			b.y = m_game.getBullets()[i].getTile().x;
-			bulletPacket << b;
-		}
+    if (m_game.getBullets().size() > 0)
+    {
+        bulletPacket << (int)m_game.getBullets().size();
+        for (int i = 0; i < m_game.getBullets().size(); i++)
+        {
+            Bullet b;
+            b.turn = m_game.getBullets()[i].getDirection();
+            b.x = m_game.getBullets()[i].getTile().y;
+            b.y = m_game.getBullets()[i].getTile().x;
+            bulletPacket << b;
+        }
 
-	
-		for (const auto& client : m_clients)
-		{
-			if (client->socket().send(packetType) == sf::Socket::Done)
-			{
-				if (client->socket().send(bulletPacket) == sf::Socket::Done)
-				{
-					std::cout << "Bullets sent to " << client->id() << std::endl;
-				}
-			}
-		}
-	}
 
-	packetType.clear();
-	bulletPacket.clear();
+        for (const auto& client : m_clients)
+        {
+            if (client->socket().send(packetType) == sf::Socket::Done)
+            {
+                if (client->socket().send(bulletPacket) == sf::Socket::Done)
+                {
+                    std::cout << "Bullets sent to " << client->id() << std::endl;
+                }
+            }
+        }
+    }
+
+    packetType.clear();
+    bulletPacket.clear();
 }
 
 void Server::sendDataMatchEnd(int winningId) {
@@ -171,7 +191,7 @@ void Server::sendDataMatchEnd(int winningId) {
         {
             if (client->socket().send(packetWin) == sf::Socket::Done)
             {
-//                std::cout << "Winning state sent to " << client->id() << std::endl;
+                //                std::cout << "Winning state sent to " << client->id() << std::endl;
             }
         }
         packetWin.clear();
@@ -251,7 +271,7 @@ void Server::acceptNewClients()
 
         m_clientsThreads[client->id()] = new std::thread(&Server::receiveData, this, client);
 
-//        std::cout << "Client with id " << client->id() << " connected to server" << std::endl;
+        //        std::cout << "Client with id " << client->id() << " connected to server" << std::endl;
 
         sf::Packet packet;
         packet << client->id();
@@ -274,6 +294,9 @@ void Server::receiveData(Client* client)
 
     while (connected)
     {
+        if (!m_running)
+            return;
+
         sf::Packet packet;
 
         sf::Socket::Status status = client->socket().receive(packet);
@@ -291,7 +314,7 @@ void Server::receiveData(Client* client)
 
             int action;
             packet >> action;
-//            std::cout << "Data " << action << " received" << std::endl;
+            //            std::cout << "Data " << action << " received" << std::endl;
 
             if (!m_game.isTankInGame(client->id()))
             {
@@ -306,10 +329,11 @@ void Server::receiveData(Client* client)
         }
         else if (status == sf::Socket::Disconnected)
         {
-//            std::cout << "Client with id " << client->id() << " disconnected from server" << std::endl;
+            std::cout << "Client with id " << client->id() << " disconnected from server" << std::endl;
 
             //ogarnac
-            m_game.deleteTank(client->id());
+            if (m_game.tanksCount() > 0)
+                m_game.deleteTank(client->id());
 
             client->markAsDisonnected();
 
