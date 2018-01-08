@@ -7,6 +7,7 @@ ApiHandler::ApiHandler()
 	listeningMode = true;
 	ts = nullptr;
 	p = nullptr;
+	mapArray = nullptr;
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -163,12 +164,15 @@ void ApiHandler::parsePacket(Packet* p, int type)
 			cout << "Game ended. Class state reset." << endl;
 		}
 
-		for (int i = 0; i < mapSizeX; i++)
+		if (mapArray != nullptr)
 		{
-			delete[] mapArray[i];
+			for (int i = 0; i < mapSizeX; i++)
+			{
+				delete[] mapArray[i];
+			}
+			delete[] mapArray;
 		}
-		delete[] mapArray;
-
+		
 		listeningMode = true;
 		packetBullets = false;
 		packetMap = false;
