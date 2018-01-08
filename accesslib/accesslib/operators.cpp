@@ -2,7 +2,7 @@
 
 Packet& operator >>(Packet& p, Bullet& b)
 {
-	return p >> b.ID >> b.x >> b.y >> b.turn;
+	return p >> b.x >> b.y >> b.turn;
 }
 
 Packet& operator >>(Packet& p, Player& pArray)
@@ -12,7 +12,7 @@ Packet& operator >>(Packet& p, Player& pArray)
 
 Packet& operator <<(Packet& p, Bullet& b)
 {
-	return p << b.ID << b.x << b.y << b.turn;
+	return p << b.x << b.y << b.turn;
 }
 
 Packet& operator <<(Packet& p, Player& pArray)

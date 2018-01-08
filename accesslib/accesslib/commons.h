@@ -1,7 +1,6 @@
 #pragma once
 typedef struct Bullet
 {
-	int ID;
 	int x;
 	int y;
 	int turn;
