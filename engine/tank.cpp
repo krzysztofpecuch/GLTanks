@@ -223,20 +223,21 @@ void Tank::update(float elapsed) {
 	float distanceLen = sqrt((destinationPosition.x - startingPosition.x) * (destinationPosition.x - startingPosition.x) + (destinationPosition.y - startingPosition.y) * (destinationPosition.y - startingPosition.y));
 	distanceVector /= distanceLen;
 
-	if (distanceLen <= 0.5) {
+	if (distanceLen <= 1) 
+	{
 		return;
 	}
-//	std::cout << elapsed << std::endl;
-	if (elapsed > 0.2) {
-		m_actualSprite.setPosition(m_sprite.getPosition());
-	}
+
 	float deltaDist;
-	if (distanceLen > 15) {
+	if (distanceLen > 10) 
+	{
 		deltaDist = elapsed * distanceLen * 4;
 	}
-	else {
-		deltaDist = elapsed * 15 * 3;
+	else 
+	{
+		deltaDist = elapsed * 5 * 3;
 	}
+
 	m_actualSprite.setPosition(startingPosition + distanceVector * deltaDist);
 
 }

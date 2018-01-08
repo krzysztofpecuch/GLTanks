@@ -31,6 +31,7 @@ public:
     bool isTankInGame(int id);
 
     TileMap& getMap();
+	std::vector<Bullets> getBullets();
 
     gameState state = gameState::WAITING;
     void reset();

@@ -4,7 +4,7 @@
 #include <iostream>
 #include <chrono>
 
-#include "acceslib/Bullet.h"
+#include "acceslib/commons.h"
 #include "acceslib/operators.h"
 
 
@@ -47,7 +47,8 @@ void Server::sendData(const std::map<int, Tank>& tanks)
     sf::Packet packetType;
     sf::Packet playersMapPacket;
     sf::Packet mapSizePacket;
-    std::array<Player*, MAX_PLAYER_NUMBER> players;
+	sf::Packet bulletPacket;
+    std::array<Player*, 4> players;
 
     packetType << PACKET_TYPE::TYPE_MAP_CREATOR;
     mapSizePacket << m_game.getMap().getSizeX() << m_game.getMap().getSizeY();
@@ -90,7 +91,7 @@ void Server::sendData(const std::map<int, Tank>& tanks)
         players[index] = &player;
         index++;
     }
-    for (int i = index; i < MAX_PLAYER_NUMBER; i++)
+    for (int i = index; i < 4; i++)
     {
         Player player;
         player.ID = -1;
@@ -102,7 +103,7 @@ void Server::sendData(const std::map<int, Tank>& tanks)
 
     packetType << PACKET_TYPE::TYPE_MAP_PLAYERS;
 
-    for (int i = 0; i < MAX_PLAYER_NUMBER; i++)
+    for (int i = 0; i < 4; i++)
     {
         playersMapPacket << *players[i];
     }
@@ -113,13 +114,40 @@ void Server::sendData(const std::map<int, Tank>& tanks)
         {
             if (client->socket().send(playersMapPacket) == sf::Socket::Done)
             {
-                //				std::cout << "Map and players sent to " << client->id() << std::endl;
-            }
-        }
-    }
+				std::cout << "Map and players sent to " << client->id() << std::endl;
+			}
+		}
+	}
 
     packetType.clear();
     playersMapPacket.clear();
+
+	packetType << PACKET_TYPE::TYPE_BULLETS;
+	for (int i = 0; i < m_game.getBullets().size(); i++)
+	{
+		Bullet b;
+		b.turn = m_game.getBullets()[i].getDirection();
+		b.x = m_game.getBullets()[i].getTile().y;
+		b.y = m_game.getBullets()[i].getTile().x;
+		bulletPacket << b;
+	}
+
+	if (!bulletPacket.endOfPacket())
+	{
+		for (const auto& client : m_clients)
+		{
+			if (client->socket().send(packetType) == sf::Socket::Done)
+			{
+				if (client->socket().send(bulletPacket) == sf::Socket::Done)
+				{
+					std::cout << "Bullets sent to " << client->id() << std::endl;
+				}
+			}
+		}
+	}
+
+	packetType.clear();
+	bulletPacket.clear();
 }
 
 void Server::sendDataMatchEnd(int winningId) {

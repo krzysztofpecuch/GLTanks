@@ -152,10 +152,10 @@ void Game::handleKeyboardInput()
 
 void Game::update()
 {
-    float elapsedTime = m_clock.getElapsedTime().asSeconds();
+	float elapsedTime = m_clock.getElapsedTime().asSeconds();
     m_elapsedTime += m_clock.restart().asMilliseconds();
-
-    if (state == gameState::RUNNING)
+	
+	if (state == gameState::RUNNING)
     {
 		for (auto& tank : m_tanks)
         {
@@ -167,15 +167,16 @@ void Game::update()
             checkColBull();
         }
     }
-
-    if (m_elapsedTime >= 1000)
+	
+	if (m_elapsedTime >= 1000)
     {
         if (state == gameState::RUNNING)
         {
             m_server.sendData(m_tanks);
         }
         m_elapsedTime = 0;
-    }}
+    }
+}
 
 void Game::draw()
 {
@@ -471,4 +472,9 @@ bool Game::isTankInGame(int id)
 TileMap &Game::getMap()
 {
     return m_tilemap;
+}
+
+std::vector<Bullets> Game::getBullets()
+{
+	return m_vecbullets;
 }

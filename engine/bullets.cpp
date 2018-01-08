@@ -10,7 +10,7 @@ Bullets::Bullets(sf::Vector2f size, const int& direction)
 {
     m_bullet.setSize(size);
     m_bullet.setFillColor(sf::Color::Cyan);
-
+	m_intDir = direction;
     switch(direction)
     {
     case 0:
@@ -79,4 +79,9 @@ void Bullets::update(float elapsed)
 sf::Vector2f Bullets::getTile()
 {
     return sf::Vector2f(getTop() / TILE_SIZE, getLeft() / TILE_SIZE);
+}
+
+int Bullets::getDirection()
+{
+	return m_intDir;
 }

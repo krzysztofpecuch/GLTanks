@@ -8,8 +8,6 @@
 #include <fstream>
 #include <string>
 
-
-
 #define TANK_SIZE 50
 #define TILE_SIZE 50
 

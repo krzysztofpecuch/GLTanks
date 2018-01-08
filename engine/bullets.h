@@ -21,11 +21,13 @@ public:
     int getBottom();
     void update(float elapsed);
     sf::Vector2f getTile();
+	int getDirection();
 
 private:
     sf::RectangleShape m_bullet;
     sf::Vector2f m_dir;
     sf::Vector2f m_dist;
+	int m_intDir;
 };
 
 #endif // BULLETS_H
