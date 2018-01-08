@@ -12,7 +12,7 @@
 #include <map>
 #include <string>
 
-const int MAX_PLAYER_NUMBER = 4;
+const int MAX_PLAYER_NUMBER = 2;
 
 enum gameState {RUNNING, WAITING};
 

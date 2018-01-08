@@ -307,8 +307,6 @@ void Server::receiveData(Client* client)
         else if (status == sf::Socket::Disconnected)
         {
 //            std::cout << "Client with id " << client->id() << " disconnected from server" << std::endl;
-            sendDataMatchEnd(-1);
-            m_game.setMessageText("Waiting for " + std::to_string((MAX_PLAYER_NUMBER-Client::connectedClients())) + " more players");
 
             //ogarnac
             m_game.deleteTank(client->id());
