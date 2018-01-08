@@ -69,7 +69,8 @@ int Bullets::getBottom()
 
 void Bullets::update(float elapsed)
 {
-    m_dist = m_dir * (elapsed / 2);
+    std::cout << getBottom() << "bottom" << std::endl;
+    m_dist = m_dir * elapsed;
 
     fire(m_dist.x, m_dist.y);
 }

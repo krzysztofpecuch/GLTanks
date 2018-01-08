@@ -163,12 +163,8 @@ void Game::update()
         }
         for(auto& bulletss : m_vecbullets)
         {
-
             bulletss.update(elapsedTime);
             checkColBull();
-
-            bulletss.update(elapsedTime);
-
         }
     }
 
@@ -420,20 +416,31 @@ void Game::checkColBull()
 {
     for(auto it = m_vecbullets.begin(); it != m_vecbullets.end(); )
     {
-        if(it->getLeft() < m_tanks[0].getPosition().x * TANK_SIZE + TANK_SIZE && it->getRight() > m_tanks[0].getPosition().x * TANK_SIZE && it->getTop() < m_tanks[0].getPosition().y * TANK_SIZE + TANK_SIZE && it->getBottom() > m_tanks[0].getPosition().y * TANK_SIZE)
+        bool removeBullet = false;
+
+        for(auto& tank : m_tanks)
         {
-            deleteTank(0);
+            if(it->getLeft() < tank.second.getPosition().x * TANK_SIZE + TANK_SIZE && it->getRight() > tank.second.getPosition().x * TANK_SIZE && it->getTop() < tank.second.getPosition().y * TANK_SIZE + TANK_SIZE && it->getBottom() > tank.second.getPosition().y * TANK_SIZE)
+            {
+                deleteTank(tank.first);
+                removeBullet = true;
+                break;
+            }
+        }
+
+        if(m_tilemap.getTileNumber(it->getTop() / TANK_SIZE, it->getRight() / TANK_SIZE) || m_tilemap.getTileNumber(it->getBottom() / TANK_SIZE, it->getLeft() / TANK_SIZE))
+        {
+            removeBullet = true;
+        }
+
+        if (removeBullet)
+        {
             it = m_vecbullets.erase(it);
         }
         else
-            if(m_tilemap.getTileNumber(it->getTop() / TANK_SIZE, it->getRight() / TANK_SIZE) || m_tilemap.getTileNumber(it->getBottom() / TANK_SIZE, it->getLeft() / TANK_SIZE))
-            {
-                it = m_vecbullets.erase(it);
-            }
-            else
-            {
-                ++it;
-            }
+        {
+            ++it;
+        }
     }
 }
 
