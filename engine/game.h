@@ -12,7 +12,7 @@
 #include <map>
 #include <string>
 
-const int MAX_PLAYER_NUMBER = 2;
+const int MAX_PLAYER_NUMBER = 4;
 
 enum gameState {RUNNING, WAITING};
 
@@ -26,8 +26,9 @@ public:
     void moveTank(int id, int direction);
     void deleteTank(int id);
     void setMessageText(const std::string &text);
-	void createBullet(int direction);
+    void performTankShoot(int tankId);
     void checkColBull();
+    bool isTankInGame(int id);
 
     TileMap& getMap();
 
@@ -42,6 +43,7 @@ private:
     void draw();
 
     void waitForKeyPress();
+    void createBullet(int tankId, int direction);
 
     sf::RenderWindow m_window;
     sf::Event m_event;

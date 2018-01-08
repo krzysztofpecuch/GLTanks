@@ -59,7 +59,7 @@ void Server::sendData(const std::map<int, Tank>& tanks)
             {
                 if (client->socket().send(mapSizePacket) == sf::Socket::Done)
                 {
-                    std::cout << "Map size sent to " << client->id() << std::endl;
+//                    std::cout << "Map size sent to " << client->id() << std::endl;
                 }
             }
         }
@@ -140,7 +140,7 @@ void Server::sendDataMatchEnd(int winningId) {
         {
             if (client->socket().send(packetWin) == sf::Socket::Done)
             {
-                std::cout << "Winning state sent to " << client->id() << std::endl;
+//                std::cout << "Winning state sent to " << client->id() << std::endl;
             }
         }
         packetWin.clear();
@@ -220,7 +220,7 @@ void Server::acceptNewClients()
 
         m_clientsThreads[client->id()] = new std::thread(&Server::receiveData, this, client);
 
-        std::cout << "Client with id " << client->id() << " connected to server" << std::endl;
+//        std::cout << "Client with id " << client->id() << " connected to server" << std::endl;
 
         sf::Packet packet;
         packet << client->id();
@@ -230,11 +230,6 @@ void Server::acceptNewClients()
         m_game.addTank(client->id());
 
         m_clients.push_back(client);
-
-        if (m_clients.size() == MAX_PLAYER_NUMBER)
-        {
-            m_game.state = gameState::RUNNING;
-        }
     }
     else
     {
@@ -254,14 +249,30 @@ void Server::receiveData(Client* client)
 
         if (status == sf::Socket::Done)
         {
-            int data;
-            packet >> data;
-            std::cout << "Data " << data << " received" << std::endl;
-            m_game.moveTank(client->id(), data);
+            enum Action
+            {
+                MoveUp,
+                MoveLeft,
+                MoveRight,
+                MoveDown,
+                Shoot
+            };
+
+            int action;
+            packet >> action;
+//            std::cout << "Data " << action << " received" << std::endl;
+
+            if (!m_game.isTankInGame(client->id()))
+                return;
+
+            if (action == Shoot)
+                m_game.performTankShoot(client->id());
+            else
+                m_game.moveTank(client->id(), action);
         }
         else if (status == sf::Socket::Disconnected)
         {
-            std::cout << "Client with id " << client->id() << " disconnected from server" << std::endl;
+//            std::cout << "Client with id " << client->id() << " disconnected from server" << std::endl;
             sendDataMatchEnd(-1);
             m_game.setMessageText("Waiting for " + std::to_string((MAX_PLAYER_NUMBER-Client::connectedClients())) + " more players");
 

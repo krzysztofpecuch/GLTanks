@@ -226,7 +226,7 @@ void Tank::update(float elapsed) {
 	if (distanceLen <= 0.5) {
 		return;
 	}
-	std::cout << elapsed << std::endl;
+//	std::cout << elapsed << std::endl;
 	if (elapsed > 0.2) {
 		m_actualSprite.setPosition(m_sprite.getPosition());
 	}

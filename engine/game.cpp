@@ -143,7 +143,7 @@ void Game::handleKeyboardInput()
         break;
         //testowo
     case sf::Keyboard::C:
-        createBullet(m_tanks[1].getCurrentDirection());
+        createBullet(1, m_tanks[1].getCurrentDirection());
         break;
     default:
         break;
@@ -244,6 +244,11 @@ void Game::setMessageText(const std::string& text)
     m_messageText.setPosition(m_window.getSize().x / 2.0f,  m_window.getSize().y / 2.0f);
 }
 
+void Game::performTankShoot(int tankId)
+{
+    createBullet(tankId, m_tanks[tankId].getCurrentDirection());
+}
+
 void Game::waitForKeyPress()
 {
     bool keyPressed = false;
@@ -285,6 +290,8 @@ void Game::reset()
 void Game::addTank(int id)
 {
     StartPosition position = START_POSITIONS[id];
+
+    std::cout << "Tank added" << std::endl;
 
     m_tanks[id] = Tank(position);
     m_tanks[id].setTexture(Resources::getTexture(static_cast<TextureType>(id)));
@@ -370,10 +377,19 @@ void Game::moveTank(int id, int direction)
 void Game::deleteTank(int id)
 {
     const auto& position = m_tanks.find(id);
+    std::cout << "deleteTank(): size before: " << m_tanks.size() << std::endl;
     m_tanks.erase(position);
+    std::cout << "deleteTank(): size after: " << m_tanks.size() << std::endl;
+
+    for (const auto& tank : m_tanks)
+    {
+        std::cout << "Tank ID:" << tank.first << std::endl;
+    }
+
+    std::cout << std::endl;
 }
 
-void Game::createBullet(int direction)
+void Game::createBullet(int tankId, int direction)
 {
     if(direction == 0 || direction == 2)
     {
@@ -389,22 +405,22 @@ void Game::createBullet(int direction)
     {
     case 0:
     {
-        m_bullet.setPos(sf::Vector2f(m_tanks[1].getPosition().x * TANK_SIZE + TANK_SIZE / 2, m_tanks[1].getPosition().y * TANK_SIZE - 15));
+        m_bullet.setPos(sf::Vector2f(m_tanks[tankId].getPosition().x * TANK_SIZE + TANK_SIZE / 2, m_tanks[tankId].getPosition().y * TANK_SIZE - 15));
         break;
     }
     case 1:
     {
-        m_bullet.setPos(sf::Vector2f(m_tanks[1].getPosition().x * TANK_SIZE + TANK_SIZE , m_tanks[1].getPosition().y * TANK_SIZE + TANK_SIZE / 2));
+        m_bullet.setPos(sf::Vector2f(m_tanks[tankId].getPosition().x * TANK_SIZE + TANK_SIZE , m_tanks[tankId].getPosition().y * TANK_SIZE + TANK_SIZE / 2));
         break;
     }
     case 2:
     {
-        m_bullet.setPos(sf::Vector2f(m_tanks[1].getPosition().x * TANK_SIZE + TANK_SIZE / 2, m_tanks[1].getPosition().y * TANK_SIZE + TANK_SIZE));
+        m_bullet.setPos(sf::Vector2f(m_tanks[tankId].getPosition().x * TANK_SIZE + TANK_SIZE / 2, m_tanks[tankId].getPosition().y * TANK_SIZE + TANK_SIZE));
         break;
     }
     case 3:
     {
-        m_bullet.setPos(sf::Vector2f(m_tanks[1].getPosition().x * TANK_SIZE - 15, m_tanks[1].getPosition().y * TANK_SIZE + TANK_SIZE / 2));
+        m_bullet.setPos(sf::Vector2f(m_tanks[tankId].getPosition().x * TANK_SIZE - 15, m_tanks[tankId].getPosition().y * TANK_SIZE + TANK_SIZE / 2));
         break;
     }
     }
@@ -424,6 +440,9 @@ void Game::checkColBull()
             {
                 deleteTank(tank.first);
                 removeBullet = true;
+
+                std::cout << "m_tanks.size(): " << m_tanks.size() << std::endl;
+
                 break;
             }
         }
@@ -442,6 +461,11 @@ void Game::checkColBull()
             ++it;
         }
     }
+}
+
+bool Game::isTankInGame(int id)
+{
+    return (m_tanks.find(id) != m_tanks.end());
 }
 
 TileMap &Game::getMap()
