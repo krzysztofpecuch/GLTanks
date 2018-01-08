@@ -6,7 +6,7 @@ Bullets::Bullets()
 
 }
 
-Bullets::Bullets(sf::Vector2f size, int direction)
+Bullets::Bullets(sf::Vector2f size, const int& direction)
 {
     m_bullet.setSize(size);
     m_bullet.setFillColor(sf::Color::Cyan);
@@ -32,7 +32,7 @@ Bullets::Bullets(sf::Vector2f size, int direction)
     }
 }
 
-void Bullets::fire(float speedx, float speedy)
+void Bullets::fire(const float& speedx, const float& speedy)
 {
     m_bullet.move(speedx, speedy);
 }
@@ -69,8 +69,14 @@ int Bullets::getBottom()
 
 void Bullets::update(float elapsed)
 {
-//    std::cout << getBottom() << "bottom" << std::endl;
+
+    getTile();
     m_dist = m_dir * elapsed;
 
     fire(m_dist.x, m_dist.y);
+}
+
+sf::Vector2f Bullets::getTile()
+{
+    return sf::Vector2f(getTop() / TILE_SIZE, getLeft() / TILE_SIZE);
 }

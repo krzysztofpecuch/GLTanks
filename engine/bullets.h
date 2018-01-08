@@ -9,9 +9,9 @@ class Bullets : public sf::Drawable
 {
 public:
     Bullets();
-    Bullets(sf::Vector2f size, int direction);
+    Bullets(sf::Vector2f size, const int& direction);
 
-    void fire(float speedx, float speedy);
+    void fire(const float &speedx, const float &speedy);
     void draw(sf::RenderTarget &target, sf::RenderStates states) const;
     void setPos(sf::Vector2f newPos);
 
@@ -20,6 +20,7 @@ public:
     int getTop();
     int getBottom();
     void update(float elapsed);
+    sf::Vector2f getTile();
 
 private:
     sf::RectangleShape m_bullet;
