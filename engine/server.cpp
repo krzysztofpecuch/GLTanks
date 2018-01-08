@@ -123,17 +123,20 @@ void Server::sendData(const std::map<int, Tank>& tanks)
     playersMapPacket.clear();
 
 	packetType << PACKET_TYPE::TYPE_BULLETS;
-	for (int i = 0; i < m_game.getBullets().size(); i++)
-	{
-		Bullet b;
-		b.turn = m_game.getBullets()[i].getDirection();
-		b.x = m_game.getBullets()[i].getTile().y;
-		b.y = m_game.getBullets()[i].getTile().x;
-		bulletPacket << b;
-	}
 
-	if (!bulletPacket.endOfPacket())
+	if (m_game.getBullets().size() > 0)
 	{
+		bulletPacket << (int)m_game.getBullets().size();
+		for (int i = 0; i < m_game.getBullets().size(); i++)
+		{
+			Bullet b;
+			b.turn = m_game.getBullets()[i].getDirection();
+			b.x = m_game.getBullets()[i].getTile().y;
+			b.y = m_game.getBullets()[i].getTile().x;
+			bulletPacket << b;
+		}
+
+	
 		for (const auto& client : m_clients)
 		{
 			if (client->socket().send(packetType) == sf::Socket::Done)
