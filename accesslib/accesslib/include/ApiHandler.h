@@ -11,6 +11,7 @@
 #include "SFML\Network.hpp"
 #include "commons.h"
 #include "operators.h"
+#define MAX_PLAYER_NUMBER 4
 
 class ApiListener;
 
@@ -49,35 +50,36 @@ public:
 	bool getState();
 	int getConnectionID();
 
-	//void listenForPacket();
 	void parsePacket(Packet* p, int type);
 
-	int** mapArray;
+	int** getMap();
+	vector<Bullet*> getBullets();
+	int** getPlayers();
+
 private:
+	void createMap(int mapSizeX, int mapSizeY);
+	void updateMap(string data);
+
 	TcpSocket *ts;
 	ApiListener *al;
-	
 	Packet *p;
+
 	int connectionID;
-	int actionToTake;
 	bool listeningMode;
+
+	int** mapArray;
+	int** playerArr;
+	array<Player*, 4> playersArray;
 
 	bool packetBullets;
 	bool packetMap;
 	bool packetMapPlayers;
 	
-	array<Player*, 4> playersArr;
-	
 	std::string mapData;
 	int mapSizeX;
 	int mapSizeY;
-	void createMap(int mapSizeX, int mapSizeY);
-	void updateMap(string data);
 
 	vector<Bullet*> bullets;
 	int bulletsSize;
-	
-	
-	void sendPacket(Packet* p);
 };
 #endif // !PACKETHANDLER_H

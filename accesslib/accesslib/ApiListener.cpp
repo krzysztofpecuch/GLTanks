@@ -15,8 +15,6 @@ ApiListener::~ApiListener() {
 }
 
 void ApiListener::listen() {
-	//apihandler.getSocket()->setBlocking(false);
-
 	while (true) {
 		if (startWait)
 		{
@@ -30,10 +28,8 @@ void ApiListener::listen() {
 			if (p->endOfPacket()) {
 				p->clear();
 				if (ah.getSocket()->receive(*p) == Socket::Done) {
-					cout << "Packet type " << msgType << endl;
 					if (ah.getState())
 					{
-						cout << "Parsing packet" << endl;
 						ah.parsePacket(p, msgType);
 					}
 					startWait = true;

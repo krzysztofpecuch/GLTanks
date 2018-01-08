@@ -3,43 +3,65 @@
 
 ApiHandler::ApiHandler()
 {
+	ts = nullptr;
+	al = nullptr;
+	p = nullptr;
+
 	connectionID = -1;
 	listeningMode = true;
-	ts = nullptr;
-	p = nullptr;
+
 	mapArray = nullptr;
 
-	for (int i = 0; i < 4; i++)
+	playerArr = new int*[MAX_PLAYER_NUMBER];
+	for (int i = 0; i < MAX_PLAYER_NUMBER; i++)
 	{
-		playersArr[i] = new Player;
+		playerArr[i] = new int[MAX_PLAYER_NUMBER];
 	}
 
-	bulletsSize = 0;
+	for (int i = 0; i < MAX_PLAYER_NUMBER; i++)
+	{
+		playersArray[i] = new Player;
+	}
+
 	packetBullets = false;
 	packetMap = false;
 	packetMapPlayers = false;
+
+	mapSizeX = 0;
+	mapSizeY = 0;
+
+	bulletsSize = 0;
 }
 
 ApiHandler::~ApiHandler()
 {
+	delete ts;
+	ts = nullptr;
+
+	delete al;
+	al = nullptr;
+
+	delete p;
+	p = nullptr;
+
 	for (int i = 0; i < mapSizeX; i++)
 	{
 		delete[] mapArray[i];
 	}
 	delete[] mapArray;
 
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < MAX_PLAYER_NUMBER; i++)
 	{
-		delete playersArr[i];
+		delete[] playerArr[i];
+	}
+	delete[] playerArr;
+
+	for (int i = 0; i < MAX_PLAYER_NUMBER; i++)
+	{
+		delete playersArray[i];
 	}
 
 	bullets.clear();
-
-	delete ts;
-	ts = nullptr;
-
-	delete p;
-	p = nullptr;
 }
 
 void ApiHandler::connect(const char* serverAddr)
@@ -92,23 +114,6 @@ void ApiHandler::updateMap(string data)
 	delete[] arr;
 }
 
-//void ApiHandler::listenForPacket() {
-//	int msgType;
-//	while (listeningMode) {
-//		msgType = -1;
-//		if (ts->receive(*p) == Socket::Done) {
-//			*p >> msgType;
-//			if (p->endOfPacket()) {
-//				p->clear();
-//				if (ts->receive(*p) == Socket::Done) {
-//					parsePacket(p, msgType);
-//				}
-//			}
-//			p->clear();
-//		}
-//	}
-//}
-
 void ApiHandler::sendAction(int action)
 {
 	if (!listeningMode)
@@ -117,7 +122,6 @@ void ApiHandler::sendAction(int action)
 		movementInformation << action;
 		if (ts->send(movementInformation) == Socket::Done)
 		{
-			cout << "Sent move " << action << endl;
 			listeningMode = true;
 			packetBullets = false;
 			packetMapPlayers = false;
@@ -131,7 +135,6 @@ void ApiHandler::forceSendAction(int action)
 	movementInformation << action;
 	if (ts->send(movementInformation) == Socket::Done)
 	{
-		cout << "Sent move " << action << endl;
 		listeningMode = true;
 		packetBullets = false;
 		packetMapPlayers = false;
@@ -191,8 +194,6 @@ void ApiHandler::parsePacket(Packet* p, int type)
 		}
 
 		packetBullets = true;
-
-		cout << "Recieved bullet packet" << endl;
 	}
 	else if (type == PACKET_TYPE::TYPE_MAP_CREATOR && !packetMap)
 	{
@@ -200,23 +201,42 @@ void ApiHandler::parsePacket(Packet* p, int type)
 		createMap(mapSizeX, mapSizeY);
 
 		packetMap = true;
-
-		cout << "Recieved map size packet" << endl;
 	}
 	else if (type == PACKET_TYPE::TYPE_MAP_PLAYERS)
 	{
 		*p >> mapData;
-		for (int i = 0; i < 2; i++)
+		for (int i = 0; i < MAX_PLAYER_NUMBER; i++)
 		{
-			*p >> *playersArr[i];
+			*p >> *playersArray[i];
 		}
 		updateMap(mapData);
 		packetMapPlayers = true;
-
-		cout << "Recieved map and player data packet" << endl;
 	}
-	else if (packetMap && packetMapPlayers) //&& packetBullets
+	else if (packetMap && packetMapPlayers) 
 	{
 		listeningMode = false;
 	}
+}
+
+int** ApiHandler::getMap()
+{
+	return mapArray;
+}
+
+vector<Bullet*> ApiHandler::getBullets()
+{
+	return bullets;
+}
+
+int** ApiHandler::getPlayers()
+{
+	for (int i = 0; i < MAX_PLAYER_NUMBER; i++)
+	{
+		playerArr[i][0] = playersArray[i]->ID;
+		playerArr[i][1] = playersArray[i]->turn;
+		playerArr[i][2] = playersArray[i]->x;
+		playerArr[i][3] = playersArray[i]->y;
+	}
+
+	return playerArr;
 }
