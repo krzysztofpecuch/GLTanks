@@ -12,7 +12,7 @@ Game::Game() :
     m_window(sf::VideoMode(850, 850), "GL Tanks", sf::Style::Titlebar | sf::Style::Close),
     m_server(*this)
 {
-	state = gameState::WAITING;
+    state = GameState::WAITING;
 }
 
 Game::~Game()
