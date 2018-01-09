@@ -1,20 +1,22 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include <SFML/Graphics.hpp>
+
 #include "tank.h"
 #include "server.h"
-#include "bullets.h"
-
-#include <SFML/Graphics.hpp>
-#include <SFML/Window.hpp>
+#include "bulletgfx.h"
 #include "tilemap.h"
 
 #include <map>
-#include <string>
 
-const int MAX_PLAYER_NUMBER = 2;
+const int MAX_PLAYER_NUMBER = 4;
 
-enum gameState {RUNNING, WAITING};
+enum class GameState
+{
+    RUNNING,
+    WAITING
+};
 
 class Game
 {
@@ -28,15 +30,14 @@ public:
     void deleteTank(int id);
     void setMessageText(const std::string &text);
     void performTankShoot(int tankId);
-    void checkColBull();
-    bool isTankInGame(int id);
+    bool isTankInGame(int id) const;
 	float getElapsedTime();
     unsigned tanksCount() const;
 
     TileMap& getMap();
-	std::vector<Bullets> getBullets();
+    const std::vector<BulletGFX>& getBullets();
 
-    gameState state;
+    GameState state;
     void reset();
 
 private:
@@ -50,6 +51,7 @@ private:
 
     void waitForKeyPress();
     void createBullet(int tankId, int direction);
+    void checkBulletCollisions();
 
     sf::RenderWindow m_window;
     sf::Event m_event;
@@ -61,13 +63,10 @@ private:
 	Server m_server;
     TileMap m_tilemap;
     std::map<int, Tank> m_tanks;
-    std::vector<Bullets> m_vecbullets;
-    Bullets m_bullet;
-
+    std::vector<BulletGFX> m_bullets;
+    BulletGFX m_bullet;
 	sf::Text m_messageText;
-
     
-
 };
 
 #endif // GAME_H

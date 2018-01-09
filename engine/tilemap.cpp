@@ -1,8 +1,10 @@
 #include "tilemap.h"
 #include <fstream>
 
+const int sizeX = 17;
+const int sizeY = 17;
 
-void TileMap::loadFile()
+void TileMap::loadTextMap()
 {
     std::ifstream file("graphics/map.txt");
 
@@ -16,10 +18,9 @@ void TileMap::loadFile()
     file.close();
 }
 
-bool TileMap::load(const std::string& tileset, sf::Vector2u tileSize, unsigned int width, unsigned int height)
+bool TileMap::loadTileMap(const std::string& filePath, const sf::Vector2u &tileSize, unsigned int width, unsigned int height)
 {
-
-    if(!m_tileset.loadFromFile(tileset))
+    if(!m_tileset.loadFromFile(filePath))
     {
         return false;
     }
@@ -54,12 +55,13 @@ bool TileMap::load(const std::string& tileset, sf::Vector2u tileSize, unsigned i
     return true;
 }
 
-const int &TileMap::getTileNumber(const int& row, const int& col) const
+int TileMap::getTileNumber(const int& row, const int& col) const
 {
     return m_tiles[row * 17 + col];
 }
 
-const int* TileMap::getTileMap() {
+const int* TileMap::getTileMap()
+{
 	return m_tiles;
 }
 

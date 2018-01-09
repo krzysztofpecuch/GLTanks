@@ -1,7 +1,4 @@
 #include "game.h"
-
-#include <conio.h>
-
 #include "resources.h"
 
 const std::vector<StartPosition> START_POSITIONS = {
@@ -10,8 +7,6 @@ const std::vector<StartPosition> START_POSITIONS = {
     StartPosition(sf::Vector2i( 15,  1), RIGHT),
     StartPosition(sf::Vector2i( 15,  15), RIGHT)
 };
-
-//int count = 0;
 
 Game::Game() :
     m_window(sf::VideoMode(850, 850), "GL Tanks", sf::Style::Titlebar | sf::Style::Close),
@@ -45,8 +40,8 @@ void Game::initialize()
 {
     m_server.run();
 
-    m_tilemap.loadFile();
-    if(!m_tilemap.load("graphics/tilenew.png", sf::Vector2u(50, 50), 17, 17))
+    m_tilemap.loadTextMap();
+    if(!m_tilemap.loadTileMap("graphics/tilenew.png", sf::Vector2u(50, 50), 17, 17))
     {
         throw "Tiles could not be loaded";
     }
@@ -54,8 +49,6 @@ void Game::initialize()
     m_messageText.setFont(Resources::getFont(FontType::Arial));
     m_messageText.setCharacterSize(60);
     m_messageText.setFillColor(sf::Color::White);
-
-//    setMessageText("Waiting for " + std::to_string((MAX_PLAYER_NUMBER - m_tanks.size())) + " more players.");
 }
 
 void Game::handleEvents()
@@ -85,25 +78,25 @@ void Game::handleKeyboardInput()
     case sf::Keyboard::Up:
         switch(m_tanks[1].getCurrentDirection())
         {
-        case Directions::UP:
+        case Direction::UP:
             if(m_tilemap.getTileNumber(m_tanks[1].getPosition().y - 1, m_tanks[1].getPosition().x) != 1)
             {
                 m_tanks[1].moveStraight();
             }
             break;
-        case Directions::DOWN:
+        case Direction::DOWN:
             if(m_tilemap.getTileNumber(m_tanks[1].getPosition().y + 1, m_tanks[1].getPosition().x) != 1)
             {
                 m_tanks[1].moveStraight();
             }
             break;
-        case Directions::RIGHT:
+        case Direction::RIGHT:
             if(m_tilemap.getTileNumber(m_tanks[1].getPosition().y, m_tanks[1].getPosition().x + 1) != 1)
             {
                 m_tanks[1].moveStraight();
             }
             break;
-        case Directions::LEFT:
+        case Direction::LEFT:
             if(m_tilemap.getTileNumber(m_tanks[1].getPosition().y, m_tanks[1].getPosition().x - 1) != 1)
             {
                 m_tanks[1].moveStraight();
@@ -114,25 +107,25 @@ void Game::handleKeyboardInput()
     case sf::Keyboard::Down:
         switch(m_tanks[1].getCurrentDirection())
         {
-        case Directions::UP:
+        case Direction::UP:
             if(m_tilemap.getTileNumber(m_tanks[1].getPosition().y + 1, m_tanks[1].getPosition().x) != 1)
             {
                 m_tanks[1].moveBackward();
             }
             break;
-        case Directions::DOWN:
+        case Direction::DOWN:
             if(m_tilemap.getTileNumber(m_tanks[1].getPosition().y - 1, m_tanks[1].getPosition().x) != 1)
             {
                 m_tanks[1].moveBackward();
             }
             break;
-        case Directions::RIGHT:
+        case Direction::RIGHT:
             if(m_tilemap.getTileNumber(m_tanks[1].getPosition().y, m_tanks[1].getPosition().x - 1) != 1)
             {
                 m_tanks[1].moveBackward();
             }
             break;
-        case Directions::LEFT:
+        case Direction::LEFT:
             if(m_tilemap.getTileNumber(m_tanks[1].getPosition().y, m_tanks[1].getPosition().x + 1) != 1)
             {
                 m_tanks[1].moveBackward();
@@ -157,23 +150,23 @@ void Game::handleKeyboardInput()
 
 void Game::update()
 {
-	if (state == gameState::RUNNING)
+    if (state == GameState::RUNNING)
     {
 		updateClock();
 		for (auto& tank : m_tanks)
         {
             tank.second.update(m_elapsedTime);
         }
-        for(auto& bulletss : m_vecbullets)
+
+        for(auto& bullet : m_bullets)
         {
-            bulletss.update(m_elapsedTime);
-        }
-		checkColBull();
+			bullet.update(m_elapsedTime);        }
+		checkBulletCollisions();
     }
 
 	if (m_secondCounter >= 1000)
     {
-        if (state == gameState::RUNNING)
+        if (state == GameState::RUNNING)
         {
 			m_server.setSecondFlag();
 			while (!true);
@@ -194,14 +187,13 @@ void Game::draw()
 {
     m_window.clear(sf::Color::Black);
 
-    //draw things here
     m_window.draw(m_tilemap);
 
     switch (state)
     {
-    case RUNNING:
+    case GameState::RUNNING:
     {
-		for(auto& bullet : m_vecbullets)
+        for(auto& bullet : m_bullets)
         {
             m_window.draw(bullet);
         }
@@ -227,17 +219,17 @@ void Game::draw()
             m_server.sendDataMatchEnd(winnerId);
 
             waitForKeyPress();
-            state = WAITING;
+            state = GameState::WAITING;
             reset();
         }
         break;
     }
-    case WAITING:
+    case GameState::WAITING:
     {
 		resetClock();
 
         if (m_tanks.size() == MAX_PLAYER_NUMBER)
-            state = RUNNING;
+            state = GameState::RUNNING;
 
         setMessageText("Waiting for " + std::to_string((MAX_PLAYER_NUMBER - m_server.connectedClientsCount())) + " more players");
         m_window.draw(m_messageText);
@@ -298,12 +290,12 @@ void Game::reset()
         m_tanks[id].setTexture(Resources::getTexture(static_cast<TextureType>(id)));
     }
 
-    m_vecbullets.clear();
+    m_bullets.clear();
 
     if (m_server.connectedClientsCount() == MAX_PLAYER_NUMBER)
-        state = RUNNING;
+        state = GameState::RUNNING;
     else
-        state = WAITING;
+        state = GameState::WAITING;
 }
 
 void Game::addTank(int id)
@@ -322,25 +314,25 @@ void Game::moveTank(int id, int direction)
     {
         switch (m_tanks[id].getCurrentDirection())
         {
-        case Directions::UP:
+        case Direction::UP:
             if(m_tilemap.getTileNumber(m_tanks[id].getPosition().y - 1, m_tanks[id].getPosition().x) != 1)
             {
                 m_tanks[id].moveStraight();
             }
             break;
-        case Directions::DOWN:
+        case Direction::DOWN:
             if(m_tilemap.getTileNumber(m_tanks[id].getPosition().y + 1, m_tanks[id].getPosition().x) != 1)
             {
                 m_tanks[id].moveStraight();
             }
             break;
-        case Directions::RIGHT:
+        case Direction::RIGHT:
             if(m_tilemap.getTileNumber(m_tanks[id].getPosition().y, m_tanks[id].getPosition().x + 1) != 1)
             {
                 m_tanks[id].moveStraight();
             }
             break;
-        case Directions::LEFT:
+        case Direction::LEFT:
             if(m_tilemap.getTileNumber(m_tanks[id].getPosition().y, m_tanks[id].getPosition().x - 1) != 1)
             {
                 m_tanks[id].moveStraight();
@@ -358,25 +350,25 @@ void Game::moveTank(int id, int direction)
     case 3:
         switch (m_tanks[id].getCurrentDirection())
         {
-        case Directions::UP:
+        case Direction::UP:
             if(m_tilemap.getTileNumber(m_tanks[id].getPosition().y + 1, m_tanks[id].getPosition().x) != 1)
             {
                 m_tanks[id].moveBackward();
             }
             break;
-        case Directions::DOWN:
+        case Direction::DOWN:
             if(m_tilemap.getTileNumber(m_tanks[id].getPosition().y - 1, m_tanks[id].getPosition().x) != 1)
             {
                 m_tanks[id].moveBackward();
             }
             break;
-        case Directions::RIGHT:
+        case Direction::RIGHT:
             if(m_tilemap.getTileNumber(m_tanks[id].getPosition().y, m_tanks[id].getPosition().x - 1) != 1)
             {
                 m_tanks[id].moveBackward();
             }
             break;
-        case Directions::LEFT:
+        case Direction::LEFT:
             if(m_tilemap.getTileNumber(m_tanks[id].getPosition().y, m_tanks[id].getPosition().x + 1) != 1)
             {
                 m_tanks[id].moveBackward();
@@ -402,12 +394,13 @@ void Game::createBullet(int tankId, int direction)
 {
     if(direction == 0 || direction == 2)
     {
-        m_bullet = Bullets(sf::Vector2f(3, 15), direction);
-        m_bullet = Bullets(sf::Vector2f(3, 15), direction);
-    }else
+        m_bullet = BulletGFX(sf::Vector2f(3, 15), direction);
+        m_bullet = BulletGFX(sf::Vector2f(3, 15), direction);
+    }
+    else
     {
-        m_bullet = Bullets(sf::Vector2f(15, 3), direction);
-        m_bullet = Bullets(sf::Vector2f(15, 3), direction);
+        m_bullet = BulletGFX(sf::Vector2f(15, 3), direction);
+        m_bullet = BulletGFX(sf::Vector2f(15, 3), direction);
     }
 
     switch(direction)
@@ -434,12 +427,12 @@ void Game::createBullet(int tankId, int direction)
     }
     }
 
-    m_vecbullets.push_back(m_bullet);
+    m_bullets.push_back(m_bullet);
 }
 
-void Game::checkColBull()
+void Game::checkBulletCollisions()
 {
-    for(auto it = m_vecbullets.begin(); it != m_vecbullets.end(); )
+    for(auto it = m_bullets.begin(); it != m_bullets.end(); )
     {
         bool removeBullet = false;
 
@@ -460,7 +453,7 @@ void Game::checkColBull()
 
         if (removeBullet)
         {
-            it = m_vecbullets.erase(it);
+            it = m_bullets.erase(it);
         }
         else
         {
@@ -469,7 +462,7 @@ void Game::checkColBull()
     }
 }
 
-bool Game::isTankInGame(int id)
+bool Game::isTankInGame(int id) const
 {
     return (m_tanks.find(id) != m_tanks.end());
 }
@@ -489,7 +482,7 @@ TileMap &Game::getMap()
     return m_tilemap;
 }
 
-std::vector<Bullets> Game::getBullets()
+const std::vector<BulletGFX> &Game::getBullets()
 {
-	return m_vecbullets;
+    return m_bullets;
 }

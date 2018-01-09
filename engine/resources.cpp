@@ -1,6 +1,5 @@
 #include "resources.h"
 
-#include <vector>
 #include <iostream>
 
 
@@ -16,13 +15,17 @@ const std::vector<FontType> fontTypes = {FontType::Arial};
 
 Resources Resources::m_resources = Resources();
 
-Resources::Resources() : rng(std::random_device()()), dist(std::uniform_int_distribution<>(0,255))
+Resources::Resources()
 {
+    srand(time(nullptr));
+    m_randomNumberGenerator = std::mt19937(std::random_device()());
+    m_range = std::uniform_int_distribution<>(0, 255);
+
     m_originalTankTexture.loadFromFile(texturesPath + "tank" + texturesExtention);
 
-    int m_texturesCount = static_cast<int>(TextureType::Count);
+    int texturesCount = static_cast<int>(TextureType::Count);
 
-    for (int i = 0; i < m_texturesCount; ++i)
+    for (int i = 0; i < texturesCount; ++i)
     {
         sf::Texture texture = generateTankTexture();
         m_textures.insert(std::pair<TextureType, sf::Texture>(textureTypes[i], texture));
@@ -32,27 +35,20 @@ Resources::Resources() : rng(std::random_device()()), dist(std::uniform_int_dist
 
     for (int i = 0; i < fontCount; ++i)
     {
-        sf::Font font;
         std::string path = fontsPath + fontFileNames[i] + fontsExtention;
 
+        sf::Font font;
         if (!font.loadFromFile(path))
         {
-//            qDebug() << "Can't load texture: " << path.c_str();
+            std::cout << "Can't load font " << path.c_str() << std::endl;
         }
 
         m_fonts.insert(std::pair<FontType, sf::Font>(fontTypes[i], font));
     }
-
-
 }
 
 Resources::~Resources()
 {
-    for (unsigned i = 0; i < loadedImages.size(); i++)
-	{
-		delete loadedImages[i];
-	}
-
     m_textures.clear();
     m_fonts.clear();
 }
@@ -69,27 +65,30 @@ sf::Font &Resources::getFont(const FontType& type)
 
 sf::Texture Resources::generateTankTexture()
 {
-	sf::Image *textureImage = new sf::Image();
-	loadedImages.push_back(textureImage);
-	*textureImage = m_resources.m_originalTankTexture.copyToImage();
+    sf::Image textureImage = m_resources.m_originalTankTexture.copyToImage();
 
-    sf::Vector2u size = textureImage->getSize();
-    sf::Color randomizedBodyColor(dist(rng), dist(rng), dist(rng), 255);
+    sf::Vector2u size = textureImage.getSize();
+    sf::Color randomizedBodyColor(m_range(m_randomNumberGenerator), m_range(m_randomNumberGenerator), m_range(m_randomNumberGenerator), 255);
     sf::Color gunColor(255 - randomizedBodyColor.r, 255 - randomizedBodyColor.g, 255 - randomizedBodyColor.b, 255);
-    for (unsigned int w = 0; w < size.x; w++)
+    for (unsigned int width = 0; width < size.x; width++)
     {
-        for (unsigned int h = 0; h < size.y; h++)
+        for (unsigned int height = 0; height < size.y; height++)
         {
-            sf::Color currentColor = textureImage->getPixel(w, h);
-            if (currentColor == sf::Color(237, 28, 36, 255)) {
-                textureImage->setPixel(w, h, randomizedBodyColor);
-            } else {
-                textureImage->setPixel(w, h, gunColor);
+            sf::Color currentColor = textureImage.getPixel(width, height);
+
+            if (currentColor == sf::Color(237, 28, 36, 255))
+            {
+                textureImage.setPixel(width, height, randomizedBodyColor);
+            }
+            else
+            {
+                textureImage.setPixel(width, height, gunColor);
             }
         }
     }
+
     sf::Texture texture;
-    texture.loadFromImage(*textureImage);
+    texture.loadFromImage(textureImage);
 
     return texture;
 }

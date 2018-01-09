@@ -2,47 +2,36 @@
 #define TANK_H
 
 #include <SFML\Graphics.hpp>
-#include <SFML\Network.hpp>
-#include <SFML\System.hpp>
-#include <iostream>
+
 #include <fstream>
-#include <string>
+#include <iostream>
 
-#define TANK_SIZE 50
-#define TILE_SIZE 50
+const int TANK_SIZE = 50;
+const int TILE_SIZE = 50;
 
-enum Directions
+enum Direction
 {
     UP,
     RIGHT,
     DOWN,
     LEFT,
-    NUMBER_DIR_STATES
+    DIRECTIONS_COUNT
 };
 
 struct StartPosition
 {
     sf::Vector2i position = {};
-    Directions direction = UP;
+    Direction direction = UP;
 
-    StartPosition(const sf::Vector2i& pos = {}, const Directions& dir = UP) :
-        position(pos), direction(dir)
-    {
-
-    }
+    StartPosition(const sf::Vector2i& position = {}, const Direction& direction = UP) :
+        position(position), direction(direction) { }
 };
-
 
 class Tank: public sf::Drawable
 {
 public:
     Tank(const StartPosition& initPosition = StartPosition());
-    ~Tank()
-    {
-//        std::cout << "Tank destructor" << std::endl;
-    }
 
-    void shot();
     void moveStraight();
     void moveBackward();
     void turnLeft();
@@ -54,17 +43,13 @@ public:
     int getCurrentDirection() const;
 	void update(float elapsed);
 
-private:
-    int m_currentDirection;
-	float acceleration;
-
-	sf::Sprite  m_sprite;
-	sf::Sprite m_actualSprite;
-    sf::Texture tankTexture;
-    sf::Image textureImage;
-
 protected:
     void draw(sf::RenderTarget &target, sf::RenderStates states) const;
+
+private:
+    sf::Sprite  m_ghostSprite;
+    sf::Sprite m_sprite;
+    int m_currentDirection;
 };
 
 #endif // TANK_H

@@ -18,9 +18,7 @@ public:
 
 private:
     sf::TcpSocket m_socket;
-
     static int m_connectedClients;
-
     int m_id = -1;
 };
 
