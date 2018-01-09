@@ -12,6 +12,8 @@ ApiHandler::ApiHandler()
 
 	mapArray = nullptr;
 
+	bulArray = nullptr;
+
 	playerArr = new int*[MAX_PLAYER_NUMBER];
 	for (int i = 0; i < MAX_PLAYER_NUMBER; i++)
 	{
@@ -141,11 +143,9 @@ void ApiHandler::forceSendAction(int action)
 {
 	Packet movementInformation;
 	movementInformation << action;
-	if (ts->send(movementInformation) == Socket::Done)
+	if (!ts->send(movementInformation) == Socket::Done)
 	{
-		listeningMode = true;
-		packetBullets = false;
-		packetMapPlayers = false;
+		cout << "Error during send" << endl;
 	}
 	movementInformation.clear();
 }
@@ -193,6 +193,51 @@ void ApiHandler::parsePacket(Packet* p, int type)
 	{
 		*p >> bulletsSize;
 
+		
+
+
+		for (int i = 0; i < bulletsSize; i++)
+		{
+			Bullet *b = new Bullet;
+			*p >> *b;
+			bullets.push_back(b);
+		}
+
+		if (bulletsSize > 0) 
+		{
+			if (bulArray != nullptr) 
+			{
+				for (int i = 0; i < savedBulletSize; i++)
+				{
+					delete[] bulArray[i];
+				}
+				delete[] bulArray;
+			}
+
+			bulArray = new int*[bulletsSize];
+			for (int i = 0; i < bulletsSize; i++)
+			{
+				bulArray[i] = new int[3];
+				bulArray[i][0] = bullets[i]->turn;
+				bulArray[i][1] = bullets[i]->x;
+				bulArray[i][2] = bullets[i]->y;
+			}
+			savedBulletSize = bulletsSize;
+		}
+		else 
+		{
+			if (bulArray != nullptr)
+			{
+				for (int i = 0; i < savedBulletSize; i++)
+				{
+					delete[] bulArray[i];
+				}
+				delete[] bulArray;
+			}
+			bulArray = nullptr;
+			savedBulletSize = bulletsSize;
+		}
+
 		for (int i = 0; i < bullets.size(); i++)
 		{
 			if (bullets[i] != nullptr)
@@ -202,13 +247,6 @@ void ApiHandler::parsePacket(Packet* p, int type)
 			}
 		}
 		bullets.clear();
-
-		for (int i = 0; i < bulletsSize; i++)
-		{
-			Bullet* b = new Bullet;
-			*p >> *b;
-			bullets.push_back(b);
-		}
 
 		packetBullets = true;
 	}
@@ -229,10 +267,18 @@ void ApiHandler::parsePacket(Packet* p, int type)
 		updateMap(mapData);
 		packetMapPlayers = true;
 	}
-	else if (packetMap && packetMapPlayers) 
+	
+	if (packetMap && packetMapPlayers && packetBullets) 
 	{
 		listeningMode = false;
 	}
+}
+
+void ApiHandler::setReadyFlag()
+{
+	listeningMode = true;
+	packetBullets = false;
+	packetMapPlayers = false;
 }
 
 int** ApiHandler::getMap()
@@ -240,9 +286,14 @@ int** ApiHandler::getMap()
 	return mapArray;
 }
 
-vector<Bullet*> ApiHandler::getBullets()
+int** ApiHandler::getBullets()
 {
-	return bullets;
+	return bulArray;
+}
+
+int ApiHandler::getBulletsCount()
+{
+	return savedBulletSize;
 }
 
 int** ApiHandler::getPlayers()

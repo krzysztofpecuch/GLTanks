@@ -52,8 +52,11 @@ public:
 
 	void parsePacket(Packet* p, int type);
 
+	void setReadyFlag();
+
 	int** getMap();
-	vector<Bullet*> getBullets();
+	int** getBullets();
+	int getBulletsCount();
 	int** getPlayers();
 
 private:
@@ -69,6 +72,7 @@ private:
 
 	int** mapArray;
 	int** playerArr;
+	int** bulArray;
 	array<Player*, 4> playersArray;
 
 	bool packetBullets;
@@ -81,5 +85,6 @@ private:
 
 	vector<Bullet*> bullets;
 	int bulletsSize;
+	int savedBulletSize;
 };
 #endif // !PACKETHANDLER_H

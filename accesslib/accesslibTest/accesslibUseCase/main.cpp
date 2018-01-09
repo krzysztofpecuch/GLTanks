@@ -9,18 +9,22 @@ int main() {
 
 	ah->connect("10.0.80.43");
 	char c = 'z';
-	while (c != 'q') {
+	while (c != 'q') {		
 		cin.get(c);
 		if (c == '\n')
 			continue;
 		int q = c - '0';
 		ah->forceSendAction(q);
+		
+		
+		ah->setReadyFlag();
+		
 		/*ah->listenForPacket();*/
 		//obliczanie taktyki
 		//send
 	}
-	
-	
+
+
 	system("pause");
 	return 0;
 }
