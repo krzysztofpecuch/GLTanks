@@ -23,6 +23,7 @@ public:
     void sendData(const std::map<int, Tank>& tanks);
 	void sendDataMatchEnd(int winningId);
 	void resetServerFlags();
+	void setSecondFlag();
     int connectedClientsCount() const;
     void close();
 private:
@@ -38,6 +39,9 @@ private:
     sf::TcpListener m_listener;
     std::vector<Client*> m_clients;
     sf::Packet m_packet;
+
+	bool secondPassed = false;
+	int m_serverSecondCounter;
 
     bool m_running = false;
 	bool mapSizeSent = false;

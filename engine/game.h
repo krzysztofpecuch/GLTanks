@@ -30,12 +30,13 @@ public:
     void performTankShoot(int tankId);
     void checkColBull();
     bool isTankInGame(int id);
+	float getElapsedTime();
     unsigned tanksCount() const;
 
     TileMap& getMap();
 	std::vector<Bullets> getBullets();
 
-    gameState state = gameState::WAITING;
+    gameState state;
     void reset();
 
 private:
@@ -43,14 +44,20 @@ private:
     void handleEvents();
     void handleKeyboardInput();
     void update();
+	void updateClock();
     void draw();
+	void resetClock();
 
     void waitForKeyPress();
     void createBullet(int tankId, int direction);
 
     sf::RenderWindow m_window;
     sf::Event m_event;
-    sf::Clock m_clock;
+    
+	sf::Clock m_clock;
+	float m_elapsedTime;
+	int m_secondCounter = 0;
+
 	Server m_server;
     TileMap m_tilemap;
     std::map<int, Tank> m_tanks;
@@ -59,7 +66,7 @@ private:
 
 	sf::Text m_messageText;
 
-    int m_elapsedTime = 0;
+    
 
 };
 

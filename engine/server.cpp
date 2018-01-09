@@ -65,9 +65,9 @@ void Server::sendData(const std::map<int, Tank>& tanks)
         {
             if (client->socket().send(packetType) == sf::Socket::Done)
             {
-                if (client->socket().send(mapSizePacket) == sf::Socket::Done)
+                if (!client->socket().send(mapSizePacket) == sf::Socket::Done)
                 {
-                    //                    std::cout << "Map size sent to " << client->id() << std::endl;
+					std::cout << "Error sending map size packet" << client->id() << std::endl;
                 }
             }
         }
@@ -88,24 +88,27 @@ void Server::sendData(const std::map<int, Tank>& tanks)
     playersMapPacket << textMap;
 
     int index = 0;
+	std::vector<Player*> playerData;
     for (const auto& tank : tanks)
     {
-        Player player;
-        player.ID = tank.first;
-        player.x = tank.second.getPosition().x;
-        player.y = tank.second.getPosition().y;
-        player.turn = tank.second.getCurrentDirection();
-        players[index] = &player;
+		Player *player = new Player;
+		playerData.push_back(player);
+        player->ID = tank.first;
+        player->x = tank.second.getPosition().x;
+        player->y = tank.second.getPosition().y;
+        player->turn = tank.second.getCurrentDirection();
+        players[index] = player;
         index++;
     }
     for (int i = index; i < 4; i++)
     {
-        Player player;
-        player.ID = -1;
-        player.x = -1;
-        player.y = -1;
-        player.turn = -1;
-        players[i] = &player;
+		Player *player = new Player;
+		playerData.push_back(player);
+        player->ID = -1;
+        player->x = -1;
+        player->y = -1;
+		player->turn = -1;
+        players[i] = player;
     }
 
     packetType << PACKET_TYPE::TYPE_MAP_PLAYERS;
@@ -119,45 +122,50 @@ void Server::sendData(const std::map<int, Tank>& tanks)
     {
         if (client->socket().send(packetType) == sf::Socket::Done)
         {
-            if (client->socket().send(playersMapPacket) == sf::Socket::Done)
+            if (!client->socket().send(playersMapPacket) == sf::Socket::Done)
             {
-                std::cout << "Map and players sent to " << client->id() << std::endl;
+                std::cout << "Error sending map and players packet to " << client->id() << std::endl;
             }
         }
     }
+
+	for (int i = 0; i < playerData.size(); i++)
+	{
+		delete playerData[i];
+	}
+
+	playerData.clear();
 
     packetType.clear();
     playersMapPacket.clear();
 
     packetType << PACKET_TYPE::TYPE_BULLETS;
 
-    if (m_game.getBullets().size() > 0)
-    {
-        bulletPacket << (int)m_game.getBullets().size();
-        for (int i = 0; i < m_game.getBullets().size(); i++)
-        {
-            Bullet b;
-            b.turn = m_game.getBullets()[i].getDirection();
-            b.x = m_game.getBullets()[i].getTile().y;
-            b.y = m_game.getBullets()[i].getTile().x;
-            bulletPacket << b;
-        }
+	bulletPacket << (int)m_game.getBullets().size();
+	for (int i = 0; i < m_game.getBullets().size(); i++)
+	{
+		Bullet b;
+		b.turn = m_game.getBullets()[i].getDirection();
+		b.x = m_game.getBullets()[i].getTile().y;
+		b.y = m_game.getBullets()[i].getTile().x;
+		bulletPacket << b;
+	}
 
+	
+	for (const auto& client : m_clients)
+	{
+		if (client->socket().send(packetType) == sf::Socket::Done)
+		{
+			if (!client->socket().send(bulletPacket) == sf::Socket::Done)
+			{
+				std::cout << "Error sending bullet packet to " << client->id() << std::endl;
+			}
+		}
+	}
+	
 
-        for (const auto& client : m_clients)
-        {
-            if (client->socket().send(packetType) == sf::Socket::Done)
-            {
-                if (client->socket().send(bulletPacket) == sf::Socket::Done)
-                {
-                    std::cout << "Bullets sent to " << client->id() << std::endl;
-                }
-            }
-        }
-    }
-
-    packetType.clear();
-    bulletPacket.clear();
+	packetType.clear();
+	bulletPacket.clear();
 }
 
 void Server::sendDataMatchEnd(int winningId) {
@@ -178,7 +186,7 @@ void Server::sendDataMatchEnd(int winningId) {
         {
             if (client->socket().send(packetWin) == sf::Socket::Done)
             {
-                //                std::cout << "Winning state sent to " << client->id() << std::endl;
+                std::cout << "Winning state sent to " << client->id() << std::endl;
             }
         }
         packetWin.clear();
@@ -189,6 +197,11 @@ void Server::sendDataMatchEnd(int winningId) {
 void Server::resetServerFlags()
 {
     mapSizeSent = false;
+}
+
+void Server::setSecondFlag()
+{
+	secondPassed = true;
 }
 
 int Server::connectedClientsCount() const
@@ -278,6 +291,8 @@ void Server::acceptNewClients()
 void Server::receiveData(Client* client)
 {
     bool connected = true;
+	
+	sf::Socket::Status status;
 
     while (connected)
     {
@@ -286,7 +301,15 @@ void Server::receiveData(Client* client)
 
         sf::Packet packet;
 
-        sf::Socket::Status status = client->socket().receive(packet);
+		if (secondPassed)
+		{
+			status = client->socket().receive(packet);
+			secondPassed = false;
+		}
+		else 
+		{
+			continue;
+		}
 
         if (status == sf::Socket::Done)
         {

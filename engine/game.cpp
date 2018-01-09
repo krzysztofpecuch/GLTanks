@@ -17,7 +17,7 @@ Game::Game() :
     m_window(sf::VideoMode(850, 850), "GL Tanks", sf::Style::Titlebar | sf::Style::Close),
     m_server(*this)
 {
-
+	state = gameState::WAITING;
 }
 
 Game::~Game()
@@ -157,30 +157,37 @@ void Game::handleKeyboardInput()
 
 void Game::update()
 {
-	float elapsedTime = m_clock.getElapsedTime().asSeconds();
-    m_elapsedTime += m_clock.restart().asMilliseconds();
-	
 	if (state == gameState::RUNNING)
     {
+		updateClock();
 		for (auto& tank : m_tanks)
         {
-            tank.second.update(elapsedTime);
+            tank.second.update(m_elapsedTime);
         }
         for(auto& bulletss : m_vecbullets)
         {
-            bulletss.update(elapsedTime);
-            checkColBull();
+            bulletss.update(m_elapsedTime);
         }
+		checkColBull();
     }
-	
-	if (m_elapsedTime >= 1000)
+
+	if (m_secondCounter >= 1000)
     {
         if (state == gameState::RUNNING)
         {
-            m_server.sendData(m_tanks);
+			m_server.setSecondFlag();
+			while (!true);
+			m_server.sendData(m_tanks);
+			
         }
-        m_elapsedTime = 0;
+		m_secondCounter = 0;
     }
+}
+
+void Game::updateClock()
+{
+	m_elapsedTime = m_clock.getElapsedTime().asSeconds();
+	m_secondCounter += m_clock.restart().asMilliseconds();
 }
 
 void Game::draw()
@@ -227,6 +234,8 @@ void Game::draw()
     }
     case WAITING:
     {
+		resetClock();
+
         if (m_tanks.size() == MAX_PLAYER_NUMBER)
             state = RUNNING;
 
@@ -237,6 +246,12 @@ void Game::draw()
     }
 
     m_window.display();
+}
+
+void Game::resetClock()
+{
+	m_elapsedTime = 0.f;
+	m_secondCounter = 0;
 }
 
 void Game::setMessageText(const std::string& text)
@@ -457,6 +472,11 @@ void Game::checkColBull()
 bool Game::isTankInGame(int id)
 {
     return (m_tanks.find(id) != m_tanks.end());
+}
+
+float Game::getElapsedTime()
+{
+	return m_elapsedTime;
 }
 
 unsigned Game::tanksCount() const
