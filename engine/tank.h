@@ -39,7 +39,7 @@ public:
     Tank(const StartPosition& initPosition = StartPosition());
     ~Tank()
     {
-        std::cout << "Tank destructor" << std::endl;
+//        std::cout << "Tank destructor" << std::endl;
     }
 
     void shot();

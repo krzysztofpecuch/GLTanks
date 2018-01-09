@@ -19,42 +19,29 @@ Server::Server(Game &game) :
 
 Server::~Server()
 {
-    m_running = false;
-    m_listeningThread->join();
 
-    if (m_listeningThread)
-        delete m_listeningThread;
-
-    //    for (auto& thread : m_clientsThreads)
-    //    {
-    //        thread.second->join();
-    //        delete thread.second;
-    //    }
-
-    //    for (auto& client : m_clients)
-    //    {
-    //        delete client;
-    //    }
-    close();
 }
 
 void Server::close()
 {
     m_running = false;
 
+    for (const auto& client : m_clients)
+    {
+        client->socket().disconnect();
+    }
+
     for (auto& thread : m_clientsThreads)
     {
-        std::cout << (thread.second->joinable()) ? "JOINABLE" : "NOT JOINABLE";
-
         thread.second->join();
         delete thread.second;
     }
 
-    for (const auto& client : m_clients)
-    {
-        client->socket().disconnect();
-        delete client;
-    }
+    m_listeningThread->join();
+
+    if (m_listeningThread)
+        delete m_listeningThread;
+
 }
 
 void Server::run()

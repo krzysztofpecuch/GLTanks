@@ -23,10 +23,6 @@ Game::Game() :
 Game::~Game()
 {
     m_server.close();
-
-    std::cout << "Destructor map tank size: " << m_tanks.size();
-
-    m_tanks.clear();
 }
 
 void Game::run()
@@ -206,8 +202,6 @@ void Game::draw()
         for (const auto& tank : m_tanks)
         {
             m_window.draw(tank.second);
-
-//            std::cout << "Tank position: ( " << tank.second.getPosition().x << ", " << tank.second.getPosition().y << " )" << std::endl;
         }
 
         if (m_tanks.size() == 1)
@@ -224,11 +218,6 @@ void Game::draw()
             }
 
             m_server.sendDataMatchEnd(winnerId);
-
-            for (const auto& tank : m_tanks)
-            {
-                std::cout << "Tank ID:" << tank.first << std::endl;
-            }
 
             waitForKeyPress();
             state = WAITING;
@@ -288,7 +277,7 @@ void Game::reset()
 {
     m_tanks.clear();
 
-    for (int id = 0; id < MAX_PLAYER_NUMBER; ++id)
+    for (int id = 0; id < m_server.connectedClientsCount(); ++id)
     {
         m_tanks[id] = Tank(START_POSITIONS[id]);
         m_tanks[id].setTexture(Resources::getTexture(static_cast<TextureType>(id)));
@@ -305,8 +294,6 @@ void Game::reset()
 void Game::addTank(int id)
 {
     StartPosition position = START_POSITIONS[id];
-
-    std::cout << "Tank added" << std::endl;
 
     m_tanks[id] = Tank(position);
     m_tanks[id].setTexture(Resources::getTexture(static_cast<TextureType>(id))); 
@@ -391,16 +378,9 @@ void Game::moveTank(int id, int direction)
 void Game::deleteTank(int id)
 {
     const auto& position = m_tanks.find(id);
-    std::cout << "deleteTank(): size before: " << m_tanks.size() << std::endl;
-    m_tanks.erase(position);
-    std::cout << "deleteTank(): size after: " << m_tanks.size() << std::endl;
 
-//    for (const auto& tank : m_tanks)
-//    {
-//        std::cout << "Tank ID:" << tank.first << std::endl;
-//    }
-
-    std::cout << std::endl;
+    if (position != m_tanks.end())
+        m_tanks.erase(position);
 }
 
 void Game::createBullet(int tankId, int direction)
@@ -454,9 +434,6 @@ void Game::checkColBull()
             {
                 deleteTank(tank.first);
                 removeBullet = true;
-
-                std::cout << "m_tanks.size(): " << m_tanks.size() << std::endl;
-
                 break;
             }
         }
