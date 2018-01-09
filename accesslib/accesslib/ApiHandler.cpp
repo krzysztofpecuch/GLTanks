@@ -60,8 +60,16 @@ ApiHandler::~ApiHandler()
 	{
 		delete playersArray[i];
 	}
-
+	for (int i = 0; i < bullets.size(); i++)
+	{
+		if (bullets[i] != nullptr)
+		{
+			delete bullets[i];
+			bullets[i] = nullptr;
+		}
+	}
 	bullets.clear();
+
 }
 
 void ApiHandler::connect(const char* serverAddr)
@@ -185,12 +193,21 @@ void ApiHandler::parsePacket(Packet* p, int type)
 	{
 		*p >> bulletsSize;
 
+		for (int i = 0; i < bullets.size(); i++)
+		{
+			if (bullets[i] != nullptr)
+			{
+				delete bullets[i];
+				bullets[i] = nullptr;
+			}
+		}
 		bullets.clear();
-		Bullet b = {};
+
 		for (int i = 0; i < bulletsSize; i++)
 		{
-			*p >> b;
-			bullets.push_back(&b);
+			Bullet* b = new Bullet;
+			*p >> *b;
+			bullets.push_back(b);
 		}
 
 		packetBullets = true;
