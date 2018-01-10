@@ -152,7 +152,8 @@ void Game::update()
 {
     if (state == GameState::RUNNING)
     {
-		updateClock();
+
+
 		for (auto& tank : m_tanks)
         {
             tank.second.update(m_elapsedTime);
@@ -160,31 +161,37 @@ void Game::update()
 
         for(auto& bullet : m_bullets)
         {
-			bullet.update(m_elapsedTime);        }
+            bullet.update(m_elapsedTime);
+        }
+
 		checkBulletCollisions();
     }
 
-	if (m_secondCounter >= 1000)
+//    std::cout << m_secondCounter << std::endl;
+
+    if (m_secondCounter2 >= 1)
     {
         if (state == GameState::RUNNING)
         {
-			m_server.setSecondFlag();
-			while (!true);
+//            std::cout << "Second" << std::endl;
+            updateTanks();
 			m_server.sendData(m_tanks);
 			
         }
-		m_secondCounter = 0;
+
+        m_secondCounter2 = 0;
     }
 }
 
 void Game::updateClock()
 {
 	m_elapsedTime = m_clock.getElapsedTime().asSeconds();
-	m_secondCounter += m_clock.restart().asMilliseconds();
+    m_secondCounter2 += m_clock.restart().asSeconds();
 }
 
 void Game::draw()
 {
+
     m_window.clear(sf::Color::Black);
 
     m_window.draw(m_tilemap);
@@ -193,6 +200,7 @@ void Game::draw()
     {
     case GameState::RUNNING:
     {
+        updateClock();
         for(auto& bullet : m_bullets)
         {
             m_window.draw(bullet);
@@ -475,6 +483,31 @@ float Game::getElapsedTime()
 unsigned Game::tanksCount() const
 {
     return m_tanks.size();
+}
+
+void Game::updateTanks()
+{
+    std::map<int, Action> actions = m_server.getActionsToPerform();
+
+    if (actions.size() != m_tanks.size())
+    {
+        std::cout << "Invalid actions map size!" << std::endl;
+        return;
+    }
+
+    for (const auto& tank : m_tanks)
+    {
+        int id = tank.first;
+
+        if (actions[id] == Stay)
+            continue;
+
+        else if (actions[id] == Shoot)
+            performTankShoot(id);
+
+        else
+            moveTank(id, actions[id]);
+    }
 }
 
 TileMap &Game::getMap()

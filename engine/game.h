@@ -34,6 +34,7 @@ public:
 	float getElapsedTime();
     unsigned tanksCount() const;
 
+
     TileMap& getMap();
     const std::vector<BulletGFX>& getBullets();
 
@@ -46,6 +47,7 @@ private:
     void handleKeyboardInput();
     void update();
 	void updateClock();
+    void updateTanks();
     void draw();
 	void resetClock();
 
@@ -59,6 +61,7 @@ private:
 	sf::Clock m_clock;
 	float m_elapsedTime;
 	int m_secondCounter = 0;
+    float m_secondCounter2 = 0;
 
 	Server m_server;
     TileMap m_tilemap;

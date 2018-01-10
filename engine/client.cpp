@@ -22,6 +22,16 @@ void Client::markAsDisonnected()
     m_connectedClients--;
 }
 
+Action Client::currentAction() const
+{
+    return m_currentAction;
+}
+
+void Client::setCurrentAction(Action currentAction)
+{
+    m_currentAction = currentAction;
+}
+
 void Client::setId(int id)
 {
     m_id = id;

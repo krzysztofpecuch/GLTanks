@@ -36,6 +36,24 @@ void Server::close()
 
 }
 
+std::map<int, Action> Server::getActionsToPerform() const
+{
+    std::map<int, Action> actions;
+
+    for (auto& client : m_clients)
+    {
+        int id = client->id();
+
+        if (m_game.isTankInGame(id))
+        {
+            actions[id] = client->currentAction();
+            client->setCurrentAction(Stay);
+        }
+    }
+
+    return actions;
+}
+
 void Server::run()
 {
     m_listeningThread = new std::thread(&Server::manageConnections, this);
@@ -200,11 +218,6 @@ void Server::resetServerFlags()
     m_mapSizeSent = false;
 }
 
-void Server::setSecondFlag()
-{
-	secondPassed = true;
-}
-
 int Server::connectedClientsCount() const
 {
     return Client::connectedClients();
@@ -302,15 +315,7 @@ void Server::receiveData(Client* client)
 
         sf::Packet packet;
 
-		if (secondPassed)
-		{
-			status = client->socket().receive(packet);
-			secondPassed = false;
-		}
-		else 
-		{
-			continue;
-		}
+        status = client->socket().receive(packet);
 
         if (status == sf::Socket::Done)
         {
@@ -319,23 +324,11 @@ void Server::receiveData(Client* client)
                 continue;
             }
 
-            enum Action
-            {
-                MoveUp,
-                MoveLeft,
-                MoveRight,
-                MoveDown,
-                Shoot
-            };
-
             int action;
             packet >> action;
             //            std::cout << "Data " << action << " received" << std::endl;
 
-            if (action == Shoot)
-                m_game.performTankShoot(client->id());
-            else
-                m_game.moveTank(client->id(), action);
+            client->setCurrentAction(static_cast<Action>(action));
         }
         else if (status == sf::Socket::Disconnected)
         {

@@ -22,9 +22,9 @@ public:
     void sendData(const std::map<int, Tank>& tanks);
 	void sendDataMatchEnd(int winningId);
 	void resetServerFlags();
-	void setSecondFlag();
     int connectedClientsCount() const;
     void close();
+    std::map<int, Action> getActionsToPerform() const;
 
 private:
     void manageConnections();
@@ -36,9 +36,6 @@ private:
     std::thread* m_listeningThread = nullptr;
     std::map<int, std::thread*> m_clientsThreads;
     std::vector<Client*> m_clients;
-
-	bool secondPassed = false;
-	int m_serverSecondCounter;
 
     bool m_running = false;
     bool m_mapSizeSent = false;
