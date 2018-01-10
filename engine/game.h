@@ -60,8 +60,7 @@ private:
     
 	sf::Clock m_clock;
 	float m_elapsedTime;
-	int m_secondCounter = 0;
-    float m_secondCounter2 = 0;
+    float m_secondCounter = 0.f;
 
 	Server m_server;
     TileMap m_tilemap;

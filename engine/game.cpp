@@ -150,10 +150,10 @@ void Game::handleKeyboardInput()
 
 void Game::update()
 {
+//    std::cout << "Update" << std::endl;
+//    std::cout << m_secondCounter2 << std::endl;
     if (state == GameState::RUNNING)
     {
-
-
 		for (auto& tank : m_tanks)
         {
             tank.second.update(m_elapsedTime);
@@ -167,10 +167,12 @@ void Game::update()
 		checkBulletCollisions();
     }
 
-//    std::cout << m_secondCounter << std::endl;
 
-    if (m_secondCounter2 >= 1)
+//    timer += m_clock.restart().asSeconds();
+//    std::cout << m_secondCounter2 << std::endl;
+    if (m_secondCounter >= 1.f)
     {
+
         if (state == GameState::RUNNING)
         {
 //            std::cout << "Second" << std::endl;
@@ -179,19 +181,18 @@ void Game::update()
 			
         }
 
-        m_secondCounter2 = 0;
+        m_secondCounter = 0.f;
     }
 }
 
 void Game::updateClock()
 {
 	m_elapsedTime = m_clock.getElapsedTime().asSeconds();
-    m_secondCounter2 += m_clock.restart().asSeconds();
+    m_secondCounter += m_clock.restart().asSeconds();
 }
 
 void Game::draw()
 {
-
     m_window.clear(sf::Color::Black);
 
     m_window.draw(m_tilemap);
@@ -251,7 +252,7 @@ void Game::draw()
 void Game::resetClock()
 {
 	m_elapsedTime = 0.f;
-	m_secondCounter = 0;
+    m_secondCounter = 0.f;
 }
 
 void Game::setMessageText(const std::string& text)

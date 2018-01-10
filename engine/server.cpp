@@ -61,6 +61,7 @@ void Server::run()
 
 void Server::sendData(const std::map<int, Tank>& tanks)
 {
+    std::cout << "sendData()" << std::endl;
     sf::Packet packetType;
     sf::Packet playersMapPacket;
     sf::Packet mapSizePacket;
@@ -129,7 +130,6 @@ void Server::sendData(const std::map<int, Tank>& tanks)
     {
         playersMapPacket << *players[i];
     }
-
     for (const auto& client : m_clients)
     {
         if (client->socket().send(packetType) == sf::Socket::Done)
@@ -140,7 +140,6 @@ void Server::sendData(const std::map<int, Tank>& tanks)
             }
         }
     }
-
 	for (int i = 0; i < playerData.size(); i++)
 	{
 		delete playerData[i];
@@ -166,8 +165,10 @@ void Server::sendData(const std::map<int, Tank>& tanks)
     }
 
 	
+    std::cout << "Before sending" << std::endl;
 	for (const auto& client : m_clients)
 	{
+        std::cout << "client->id()" << client->id() << std::endl;
 		if (client->socket().send(packetType) == sf::Socket::Done)
 		{
 			if (!client->socket().send(bulletPacket) == sf::Socket::Done)
@@ -176,10 +177,13 @@ void Server::sendData(const std::map<int, Tank>& tanks)
 			}
 		}
 	}
+    std::cout << "After sending" << std::endl;
 	
 
 	packetType.clear();
 	bulletPacket.clear();
+
+    std::cout << "end of sendData()" << std::endl;
 }
 
 void Server::sendDataMatchEnd(int winningId)
@@ -326,7 +330,7 @@ void Server::receiveData(Client* client)
 
             int action;
             packet >> action;
-            //            std::cout << "Data " << action << " received" << std::endl;
+//                        std::cout << "Data " << action << " received" << std::endl;
 
             client->setCurrentAction(static_cast<Action>(action));
         }
