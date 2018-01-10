@@ -71,7 +71,6 @@ ApiHandler::~ApiHandler()
 		}
 	}
 	bullets.clear();
-
 }
 
 void ApiHandler::connect(const char* serverAddr)
@@ -166,6 +165,7 @@ void ApiHandler::parsePacket(Packet* p, int type)
 	{
 		int win;
 		*p >> win;
+
 		if (win)
 		{
 			cout << "You won! Class state reset." << endl;
@@ -192,9 +192,6 @@ void ApiHandler::parsePacket(Packet* p, int type)
 	else if (type == PACKET_TYPE::TYPE_BULLETS)
 	{
 		*p >> bulletsSize;
-
-		
-
 
 		for (int i = 0; i < bulletsSize; i++)
 		{

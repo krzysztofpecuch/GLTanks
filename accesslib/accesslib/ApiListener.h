@@ -17,7 +17,7 @@ private:
 	std::thread* listeningThread;
 	sf::Packet *p;
 	void listen();
-	bool waitSecond;
+	bool waitTime;
 };
 
 

@@ -5,7 +5,7 @@ ApiListener::ApiListener(ApiHandler& ah) : ah(ah)
 {
 	p = new sf::Packet();
 	listeningThread = new thread(&ApiListener::listen, this);
-	waitSecond = false;
+	waitTime = false;
 }
 
 ApiListener::~ApiListener() {
@@ -16,7 +16,7 @@ ApiListener::~ApiListener() {
 
 void ApiListener::listen() {
 	while (true) {
-		if (waitSecond)
+		if (waitTime)
 		{
 			this_thread::sleep_until(chrono::system_clock::now() + chrono::milliseconds(50));
 		}
@@ -31,7 +31,7 @@ void ApiListener::listen() {
 					{
 						ah.parsePacket(p, msgType);
 					}
-					waitSecond = true;
+					waitTime = true;
 				}
 			}
 			p->clear();
