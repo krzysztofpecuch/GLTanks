@@ -79,25 +79,33 @@ void Game::handleKeyboardInput()
         switch(m_tanks[1].getCurrentDirection())
         {
         case Direction::UP:
-            if(m_tilemap.getTileNumber(m_tanks[1].getPosition().y - 1, m_tanks[1].getPosition().x) != 1)
+            if(m_tilemap.getTileNumber(m_tanks[1].getPosition().y - 1, m_tanks[1].getPosition().x) != 3
+                    && m_tilemap.getTileNumber(m_tanks[1].getPosition().y - 1, m_tanks[1].getPosition().x) != 2
+                    && m_tilemap.getTileNumber(m_tanks[1].getPosition().y - 1, m_tanks[1].getPosition().x) != 1)
             {
                 m_tanks[1].moveStraight();
             }
             break;
         case Direction::DOWN:
-            if(m_tilemap.getTileNumber(m_tanks[1].getPosition().y + 1, m_tanks[1].getPosition().x) != 1)
+            if(m_tilemap.getTileNumber(m_tanks[1].getPosition().y + 1, m_tanks[1].getPosition().x) != 3
+                    && m_tilemap.getTileNumber(m_tanks[1].getPosition().y + 1, m_tanks[1].getPosition().x) != 2
+                    && m_tilemap.getTileNumber(m_tanks[1].getPosition().y + 1, m_tanks[1].getPosition().x) != 1)
             {
                 m_tanks[1].moveStraight();
             }
             break;
         case Direction::RIGHT:
-            if(m_tilemap.getTileNumber(m_tanks[1].getPosition().y, m_tanks[1].getPosition().x + 1) != 1)
+            if(m_tilemap.getTileNumber(m_tanks[1].getPosition().y, m_tanks[1].getPosition().x + 1) != 3
+                    && m_tilemap.getTileNumber(m_tanks[1].getPosition().y, m_tanks[1].getPosition().x + 1) != 2
+                    && m_tilemap.getTileNumber(m_tanks[1].getPosition().y, m_tanks[1].getPosition().x + 1) != 1)
             {
                 m_tanks[1].moveStraight();
             }
             break;
         case Direction::LEFT:
-            if(m_tilemap.getTileNumber(m_tanks[1].getPosition().y, m_tanks[1].getPosition().x - 1) != 1)
+            if(m_tilemap.getTileNumber(m_tanks[1].getPosition().y, m_tanks[1].getPosition().x - 1) != 3
+                    && m_tilemap.getTileNumber(m_tanks[1].getPosition().y, m_tanks[1].getPosition().x - 1) != 2
+                    && m_tilemap.getTileNumber(m_tanks[1].getPosition().y, m_tanks[1].getPosition().x - 1) != 1)
             {
                 m_tanks[1].moveStraight();
             }
@@ -108,25 +116,33 @@ void Game::handleKeyboardInput()
         switch(m_tanks[1].getCurrentDirection())
         {
         case Direction::UP:
-            if(m_tilemap.getTileNumber(m_tanks[1].getPosition().y + 1, m_tanks[1].getPosition().x) != 1)
+            if(m_tilemap.getTileNumber(m_tanks[1].getPosition().y + 1, m_tanks[1].getPosition().x) != 3
+                    && m_tilemap.getTileNumber(m_tanks[1].getPosition().y + 1, m_tanks[1].getPosition().x) != 2
+                    && m_tilemap.getTileNumber(m_tanks[1].getPosition().y + 1, m_tanks[1].getPosition().x) != 1)
             {
                 m_tanks[1].moveBackward();
             }
             break;
         case Direction::DOWN:
-            if(m_tilemap.getTileNumber(m_tanks[1].getPosition().y - 1, m_tanks[1].getPosition().x) != 1)
+            if(m_tilemap.getTileNumber(m_tanks[1].getPosition().y - 1, m_tanks[1].getPosition().x) != 3
+                    && m_tilemap.getTileNumber(m_tanks[1].getPosition().y - 1, m_tanks[1].getPosition().x) != 2
+                    && m_tilemap.getTileNumber(m_tanks[1].getPosition().y - 1, m_tanks[1].getPosition().x) != 1)
             {
                 m_tanks[1].moveBackward();
             }
             break;
         case Direction::RIGHT:
-            if(m_tilemap.getTileNumber(m_tanks[1].getPosition().y, m_tanks[1].getPosition().x - 1) != 1)
+            if(m_tilemap.getTileNumber(m_tanks[1].getPosition().y, m_tanks[1].getPosition().x - 1) != 3
+                    && m_tilemap.getTileNumber(m_tanks[1].getPosition().y, m_tanks[1].getPosition().x - 1) != 2
+                    && m_tilemap.getTileNumber(m_tanks[1].getPosition().y, m_tanks[1].getPosition().x - 1) != 1)
             {
                 m_tanks[1].moveBackward();
             }
             break;
         case Direction::LEFT:
-            if(m_tilemap.getTileNumber(m_tanks[1].getPosition().y, m_tanks[1].getPosition().x + 1) != 1)
+            if(m_tilemap.getTileNumber(m_tanks[1].getPosition().y, m_tanks[1].getPosition().x + 1) != 3
+                    && m_tilemap.getTileNumber(m_tanks[1].getPosition().y, m_tanks[1].getPosition().x + 1) != 2
+                    && m_tilemap.getTileNumber(m_tanks[1].getPosition().y, m_tanks[1].getPosition().x + 1) != 1)
             {
                 m_tanks[1].moveBackward();
             }
@@ -164,7 +180,7 @@ void Game::update()
             bullet.update(m_elapsedTime);
         }
 
-		checkBulletCollisions();
+        checkBulletCollisions();
     }
 
 
@@ -175,10 +191,15 @@ void Game::update()
 
         if (state == GameState::RUNNING)
         {
-//            std::cout << "Second" << std::endl;
+            //            std::cout << "Second" << std::endl;
             updateTanks();
-			m_server.sendData(m_tanks);
-			
+            m_server.sendData(m_tanks);
+//            if(m_bullets.size() > 5)
+//            {
+//                m_tilemap.updateMap(0, 5);
+//                m_tilemap.updateMap(0, 8);
+//                m_tilemap.updateMap(0, 12);
+//            }
         }
 
         m_secondCounter = 0.f;
@@ -197,6 +218,7 @@ void Game::draw()
 
     m_window.draw(m_tilemap);
 
+
     switch (state)
     {
     case GameState::RUNNING:
@@ -211,6 +233,8 @@ void Game::draw()
         {
             m_window.draw(tank.second);
         }
+
+
 
         if (m_tanks.size() == 1)
         {
@@ -324,25 +348,33 @@ void Game::moveTank(int id, int direction)
         switch (m_tanks[id].getCurrentDirection())
         {
         case Direction::UP:
-            if(m_tilemap.getTileNumber(m_tanks[id].getPosition().y - 1, m_tanks[id].getPosition().x) != 1)
+            if(m_tilemap.getTileNumber(m_tanks[id].getPosition().y - 1, m_tanks[id].getPosition().x) != 3
+                    && m_tilemap.getTileNumber(m_tanks[id].getPosition().y - 1, m_tanks[id].getPosition().x) != 2
+                    && m_tilemap.getTileNumber(m_tanks[id].getPosition().y - 1, m_tanks[id].getPosition().x) != 1)
             {
                 m_tanks[id].moveStraight();
             }
             break;
         case Direction::DOWN:
-            if(m_tilemap.getTileNumber(m_tanks[id].getPosition().y + 1, m_tanks[id].getPosition().x) != 1)
+            if(m_tilemap.getTileNumber(m_tanks[id].getPosition().y + 1, m_tanks[id].getPosition().x) != 3
+                    && m_tilemap.getTileNumber(m_tanks[id].getPosition().y + 1, m_tanks[id].getPosition().x) != 2
+                    && m_tilemap.getTileNumber(m_tanks[id].getPosition().y + 1, m_tanks[id].getPosition().x) != 1)
             {
                 m_tanks[id].moveStraight();
             }
             break;
         case Direction::RIGHT:
-            if(m_tilemap.getTileNumber(m_tanks[id].getPosition().y, m_tanks[id].getPosition().x + 1) != 1)
+            if(m_tilemap.getTileNumber(m_tanks[id].getPosition().y, m_tanks[id].getPosition().x + 1) != 3
+                    && m_tilemap.getTileNumber(m_tanks[id].getPosition().y, m_tanks[id].getPosition().x + 1) != 2
+                    && m_tilemap.getTileNumber(m_tanks[id].getPosition().y, m_tanks[id].getPosition().x + 1) != 1)
             {
                 m_tanks[id].moveStraight();
             }
             break;
         case Direction::LEFT:
-            if(m_tilemap.getTileNumber(m_tanks[id].getPosition().y, m_tanks[id].getPosition().x - 1) != 1)
+            if(m_tilemap.getTileNumber(m_tanks[id].getPosition().y, m_tanks[id].getPosition().x - 1) != 3
+                    && m_tilemap.getTileNumber(m_tanks[id].getPosition().y, m_tanks[id].getPosition().x - 1) != 2
+                    && m_tilemap.getTileNumber(m_tanks[id].getPosition().y, m_tanks[id].getPosition().x - 1) != 1)
             {
                 m_tanks[id].moveStraight();
             }
@@ -360,25 +392,33 @@ void Game::moveTank(int id, int direction)
         switch (m_tanks[id].getCurrentDirection())
         {
         case Direction::UP:
-            if(m_tilemap.getTileNumber(m_tanks[id].getPosition().y + 1, m_tanks[id].getPosition().x) != 1)
+            if(m_tilemap.getTileNumber(m_tanks[id].getPosition().y + 1, m_tanks[id].getPosition().x) != 3
+                    && m_tilemap.getTileNumber(m_tanks[id].getPosition().y + 1, m_tanks[id].getPosition().x) != 2
+                    && m_tilemap.getTileNumber(m_tanks[id].getPosition().y + 1, m_tanks[id].getPosition().x) != 1)
             {
                 m_tanks[id].moveBackward();
             }
             break;
         case Direction::DOWN:
-            if(m_tilemap.getTileNumber(m_tanks[id].getPosition().y - 1, m_tanks[id].getPosition().x) != 1)
+            if(m_tilemap.getTileNumber(m_tanks[id].getPosition().y - 1, m_tanks[id].getPosition().x) != 3
+                    && m_tilemap.getTileNumber(m_tanks[id].getPosition().y - 1, m_tanks[id].getPosition().x) != 2
+                    && m_tilemap.getTileNumber(m_tanks[id].getPosition().y - 1, m_tanks[id].getPosition().x) != 1)
             {
                 m_tanks[id].moveBackward();
             }
             break;
         case Direction::RIGHT:
-            if(m_tilemap.getTileNumber(m_tanks[id].getPosition().y, m_tanks[id].getPosition().x - 1) != 1)
+            if(m_tilemap.getTileNumber(m_tanks[id].getPosition().y, m_tanks[id].getPosition().x - 1) != 3
+                    && m_tilemap.getTileNumber(m_tanks[id].getPosition().y, m_tanks[id].getPosition().x - 1) != 2
+                    && m_tilemap.getTileNumber(m_tanks[id].getPosition().y, m_tanks[id].getPosition().x - 1) != 1)
             {
                 m_tanks[id].moveBackward();
             }
             break;
         case Direction::LEFT:
-            if(m_tilemap.getTileNumber(m_tanks[id].getPosition().y, m_tanks[id].getPosition().x + 1) != 1)
+            if(m_tilemap.getTileNumber(m_tanks[id].getPosition().y, m_tanks[id].getPosition().x + 1) != 3
+                    && m_tilemap.getTileNumber(m_tanks[id].getPosition().y, m_tanks[id].getPosition().x + 1) != 2
+                    && m_tilemap.getTileNumber(m_tanks[id].getPosition().y, m_tanks[id].getPosition().x + 1) != 1)
             {
                 m_tanks[id].moveBackward();
             }
@@ -457,6 +497,24 @@ void Game::checkBulletCollisions()
 
         if(m_tilemap.getTileNumber(it->getTop() / TANK_SIZE, it->getRight() / TANK_SIZE) || m_tilemap.getTileNumber(it->getBottom() / TANK_SIZE, it->getLeft() / TANK_SIZE))
         {
+            if(m_tilemap.getTileNumber(it->getTop() / TANK_SIZE, it->getRight() / TANK_SIZE))
+            {
+                if(m_tilemap.getTileNumber(it->getTop() / TANK_SIZE, it->getRight() / TANK_SIZE) != 3 )
+                {
+
+                    m_tilemap.updateMap(it->getTop() / TANK_SIZE, it->getRight() / TANK_SIZE);
+                    std::cout << m_tilemap.getTileNumber(it->getTop() / TANK_SIZE, it->getRight() / TANK_SIZE) << std::endl;
+                }
+            }else
+            if(m_tilemap.getTileNumber(it->getBottom() / TANK_SIZE, it->getLeft() / TANK_SIZE))
+            {
+                if(m_tilemap.getTileNumber(it->getBottom() / TANK_SIZE, it->getLeft() / TANK_SIZE) != 3 )
+                {
+
+                    m_tilemap.updateMap(it->getBottom() / TANK_SIZE, it->getLeft() / TANK_SIZE);
+                    std::cout << m_tilemap.getTileNumber(it->getBottom() / TANK_SIZE, it->getLeft() / TANK_SIZE) << std::endl;
+                }
+            }
             removeBullet = true;
         }
 

@@ -61,7 +61,7 @@ void Server::run()
 
 void Server::sendData(const std::map<int, Tank>& tanks)
 {
-    std::cout << "sendData()" << std::endl;
+ //   std::cout << "sendData()" << std::endl;
     sf::Packet packetType;
     sf::Packet playersMapPacket;
     sf::Packet mapSizePacket;
@@ -165,10 +165,10 @@ void Server::sendData(const std::map<int, Tank>& tanks)
     }
 
 	
-    std::cout << "Before sending" << std::endl;
+ //   std::cout << "Before sending" << std::endl;
 	for (const auto& client : m_clients)
 	{
-        std::cout << "client->id()" << client->id() << std::endl;
+    //    std::cout << "client->id()" << client->id() << std::endl;
 		if (client->socket().send(packetType) == sf::Socket::Done)
 		{
 			if (!client->socket().send(bulletPacket) == sf::Socket::Done)
@@ -177,13 +177,13 @@ void Server::sendData(const std::map<int, Tank>& tanks)
 			}
 		}
 	}
-    std::cout << "After sending" << std::endl;
+  //  std::cout << "After sending" << std::endl;
 	
 
 	packetType.clear();
 	bulletPacket.clear();
 
-    std::cout << "end of sendData()" << std::endl;
+  //  std::cout << "end of sendData()" << std::endl;
 }
 
 void Server::sendDataMatchEnd(int winningId)

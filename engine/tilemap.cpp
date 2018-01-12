@@ -1,8 +1,10 @@
 #include "tilemap.h"
 #include <fstream>
+#include <iostream>
 
 const int sizeX = 17;
 const int sizeY = 17;
+const int TILE_SIZE = 50;
 
 void TileMap::loadTextMap()
 {
@@ -12,7 +14,7 @@ void TileMap::loadTextMap()
     {
         for(int i = 0; i < TILES_COUNT; ++i)
         {
-                file >> m_tiles[i];
+            file >> m_tiles[i];
         }
     }
     file.close();
@@ -34,22 +36,30 @@ bool TileMap::loadTileMap(const std::string& filePath, const sf::Vector2u &tileS
         {
             int tileNumber = m_tiles[i + j * width];
 
-            int tu = tileNumber % (m_tileset.getSize().x / tileSize.x);
-            int tv = tileNumber / (m_tileset.getSize().x / tileSize.x);
+//            int tu = tileNumber % (m_tileset.getSize().x / tileSize.x);
+//            int tv = tileNumber / (m_tileset.getSize().x / tileSize.x);
+            int tv = 0;
+            int tu = 0;
+            if(tileNumber > 0)
+            {
+                tu = 1;
+            }
+            else
+            {
+                tu = 0;
+            }
 
-            sf::Vertex* quad = &m_vertices[(i + j * width) * 4];
+            m_quad = &m_vertices[(i + j * width) * 4];
 
-            quad[0].position = sf::Vector2f(i * tileSize.x, j * tileSize.y);
-            quad[1].position = sf::Vector2f((i + 1) * tileSize.x, j * tileSize.y);
-            quad[2].position = sf::Vector2f((i + 1) * tileSize.x, (j + 1) * tileSize.y);
-            quad[3].position = sf::Vector2f(i * tileSize.x, (j + 1) * tileSize.y);
+            m_quad[0].position = sf::Vector2f(i * tileSize.x, j * tileSize.y);
+            m_quad[1].position = sf::Vector2f((i + 1) * tileSize.x, j * tileSize.y);
+            m_quad[2].position = sf::Vector2f((i + 1) * tileSize.x, (j + 1) * tileSize.y);
+            m_quad[3].position = sf::Vector2f(i * tileSize.x, (j + 1) * tileSize.y);
 
-            quad[0].texCoords = sf::Vector2f(tu * tileSize.x, tv * tileSize.y);
-            quad[1].texCoords = sf::Vector2f((tu + 1) * tileSize.x, tv * tileSize.y);
-            quad[2].texCoords = sf::Vector2f((tu + 1) * tileSize.x, (tv + 1) * tileSize.y);
-            quad[3].texCoords = sf::Vector2f(tu * tileSize.x, (tv + 1) * tileSize.y);
-
-
+            m_quad[0].texCoords = sf::Vector2f(tu * tileSize.x, tv * tileSize.y);
+            m_quad[1].texCoords = sf::Vector2f((tu + 1) * tileSize.x, tv * tileSize.y);
+            m_quad[2].texCoords = sf::Vector2f((tu + 1) * tileSize.x, (tv + 1) * tileSize.y);
+            m_quad[3].texCoords = sf::Vector2f(tu * tileSize.x, (tv + 1) * tileSize.y);
         }
     }
     return true;
@@ -57,12 +67,38 @@ bool TileMap::loadTileMap(const std::string& filePath, const sf::Vector2u &tileS
 
 int TileMap::getTileNumber(const int& row, const int& col) const
 {
-    return m_tiles[row * 17 + col];
+    return m_tiles[row * sizeX + col];
+}
+
+void TileMap::updateMap(const int &row, const int &col)
+{
+
+    if(m_tiles[row * sizeX + col] > 0)
+    {
+        m_tiles[row * sizeX + col] -= 1;
+    }
+    std::cout << m_tiles[row * sizeX + col] << std::endl;
+    if(m_tiles[row * sizeX + col] == 0)
+    {
+        m_quad = &m_vertices[(row * sizeX + col) * 4];
+        m_quad[0].position = sf::Vector2f(col * TILE_SIZE, row * TILE_SIZE);
+        m_quad[1].position = sf::Vector2f((col + 1) * TILE_SIZE, row * TILE_SIZE);
+        m_quad[2].position = sf::Vector2f((col + 1) * TILE_SIZE, (row + 1) * TILE_SIZE);
+        m_quad[3].position = sf::Vector2f(col * TILE_SIZE, (row + 1) * TILE_SIZE);
+
+        m_quad[0].texCoords = sf::Vector2f(0 * TILE_SIZE, 0 * TILE_SIZE);
+        m_quad[1].texCoords = sf::Vector2f((0 + 1) * TILE_SIZE, 0 * TILE_SIZE);
+        m_quad[2].texCoords = sf::Vector2f((0 + 1) * TILE_SIZE, (0 + 1) * TILE_SIZE);
+        m_quad[3].texCoords = sf::Vector2f(0 * TILE_SIZE, (0 + 1) * TILE_SIZE);
+    }
+
+   // std::cout << getTileNumber(16, 16) << std::endl;
+
 }
 
 const int* TileMap::getTileMap()
 {
-	return m_tiles;
+    return m_tiles;
 }
 
 void TileMap::draw(sf::RenderTarget &target, sf::RenderStates states) const
@@ -74,15 +110,15 @@ void TileMap::draw(sf::RenderTarget &target, sf::RenderStates states) const
 
 int TileMap::getSizeY() const
 {
-	return sizeY;
+    return sizeY;
 }
 
 int TileMap::getSizeX() const
 {
-	return sizeX;
+    return sizeX;
 }
 
 int TileMap::getTileCount() const
 {
-	return sizeY * sizeX;
+    return sizeY * sizeX;
 }

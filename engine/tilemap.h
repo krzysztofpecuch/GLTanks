@@ -15,7 +15,8 @@ public:
     int getSizeX() const;
     int getSizeY() const;
     int getTileCount() const;
-    int getTileNumber(const int &row, const int &col) const;
+    int getTileNumber(const int& row, const int& col) const;
+    void updateMap(const int& row, const int& col);
 
 private:
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
@@ -23,6 +24,7 @@ private:
     int m_tiles[TILES_COUNT];
     sf::VertexArray m_vertices;
     sf::Texture m_tileset;
+    sf::Vertex* m_quad;
 };
 
 #endif // TILEMAP_H
